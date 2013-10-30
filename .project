@@ -24,4 +24,10 @@
 		<nature>org.eclipse.cdt.core.ccnature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<variableList>
+		<variable>
+			<name>SRC_ROOT</name>
+			<value>$%7BPARENT-2-CCS_INSTALL_ROOT%7D/tidcs/c28/boot_rom/2803x/2803x_boot_rom_v1/2803x_boot_rom_v1</value>
+		</variable>
+	</variableList>
 </projectDescription>
