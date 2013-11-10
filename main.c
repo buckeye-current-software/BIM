@@ -13,6 +13,7 @@ extern ops_struct ops;
 int main(void)
 {
 	StartUp();
+	BootISRSetup();
 	ops.State = STATE_INIT;
 	while(1)
 	{
@@ -76,4 +77,9 @@ void StartUp()
 
 		//Initialize Flash
 		InitFlash();
+}
+
+void BootISRSetup()
+{
+
 }

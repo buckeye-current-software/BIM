@@ -11,7 +11,6 @@
 
 void Initilize();
 
-void BootISRSetup();
 void OperationsSetup();
 void DataSetup();
 void CANSetup();

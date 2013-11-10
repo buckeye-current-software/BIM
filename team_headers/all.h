@@ -16,6 +16,7 @@
 #include "Boot.h"
 #include "PowerDown.h"
 #include "common.h"
+#include "main.h"
 
 extern ops_struct ops;
 extern data_struct data;

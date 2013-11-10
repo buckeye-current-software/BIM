@@ -12,17 +12,14 @@ data_struct data;
 
 void Initilize()
 {
-	BootISRSetup();
 	OperationsSetup();
 	DataSetup();
 	CANSetup();
 	ClockSetup();
+	ops.State = STATE_SENSOR_COV;
 }
 
-void BootISRSetup()
-{
 
-}
 
 void OperationsSetup()
 {
