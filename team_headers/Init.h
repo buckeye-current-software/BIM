@@ -13,7 +13,7 @@ void Initilize();
 
 void OperationsSetup();
 void DataSetup();
-void CANSetup();
-void ClockSetup();
+
+
 
 #endif /* INIT_H_ */

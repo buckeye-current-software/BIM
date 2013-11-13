@@ -22,17 +22,7 @@
 #include "DSP2803x_Device.h"     // DSP2803x Headerfile Include File
 #include "DSP2803x_Examples.h"   // DSP2803x Examples Include File
 
-// Connected to INT13 of CPU (use MINT13 mask):
-// ISR can be used by the user.
-__interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
-{
-  // Insert ISR Code here
 
-  // Next two lines for debug only to halt the processor here
-  // Remove after inserting ISR Code
-  __asm ("      ESTOP0");
-  for(;;);
-}
 
 __interrupt void INT14_ISR(void)     // INT14 or CPU-Timer2
 {
@@ -300,19 +290,6 @@ __interrupt void  ADCINT9_ISR(void)     // ADC
   for(;;);
 }
 
-// INT1.7
-__interrupt void  TINT0_ISR(void)      // CPU-Timer 0
-{
-  // Insert ISR Code here
-
-  // To receive more interrupts from this PIE group, acknowledge this interrupt
-  // PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
-
-  // Next two lines for debug only to halt the processor here
-  // Remove after inserting ISR Code
-  __asm ("      ESTOP0");
-  for(;;);
-}
 
 // INT1.8
 __interrupt void  WAKEINT_ISR(void)    // WD, LOW Power
@@ -802,20 +779,7 @@ __interrupt void ECAN0INTA_ISR(void)  // eCAN-A
 
 }
 
-// INT9.6
-__interrupt void ECAN1INTA_ISR(void)  // eCAN-A
-{
-  // Insert ISR Code here
 
-  // To receive more interrupts from this PIE group, acknowledge this interrupt
-  // PieCtrlRegs.PIEACK.all = PIEACK_GROUP9;
-
-  // Next two lines for debug only to halt the processor here
-  // Remove after inserting ISR Code
-  __asm ("      ESTOP0");
-  for(;;);
-
-}
 
 // INT9.7 - Reserved
 // INT9.8 - Reserved

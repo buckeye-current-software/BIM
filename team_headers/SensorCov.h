@@ -11,7 +11,6 @@
 void SensorCov();
 
 void SensorCovInit();
-char isNewState();
 void LatchStruct();
 void SensorCovMeasure();
 void UpdateStruct();

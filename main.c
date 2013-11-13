@@ -5,15 +5,13 @@
 
 #include "all.h"
 
-void NextState();
-void StartUp();
-
 extern ops_struct ops;
 
 int main(void)
 {
 	StartUp();
 	BootISRSetup();
+	PowerDownISRSetup();
 	ops.State = STATE_INIT;
 	while(1)
 	{
@@ -36,6 +34,7 @@ void NextState()
 		break;
 	case STATE_POWER_DOWN:
 		PowerDown();
+		break;
 	default:
 		Initilize();
 	}
@@ -73,13 +72,22 @@ void StartUp()
 		// is not used in this example.  This is useful for debug purposes.
 		// The shell ISR routines are found in DSP2803x_DefaultIsr.c.
 		// This function is found in DSP2803x_PieVect.c.
+		//todo NATHAN: check if this turns on all interrupts that we need
 		InitPieVectTable();
 
 		//Initialize Flash
 		InitFlash();
+
+		EINT;   // Enable Global interrupt INTM
+		ERTM;   // Enable Global realtime interrupt DBGM
 }
 
 void BootISRSetup()
+{
+
+}
+
+void PowerDownISRSetup()
 {
 
 }
