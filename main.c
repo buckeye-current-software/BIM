@@ -87,7 +87,3 @@ void BootISRSetup()
 
 }
 
-void PowerDownISRSetup()
-{
-
-}

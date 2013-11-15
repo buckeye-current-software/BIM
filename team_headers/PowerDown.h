@@ -13,5 +13,10 @@ void PowerDown();
 void UserPowerDown();
 void NodePowerDown();
 char isPowerOn();
+void PowerDownISRSetup();
+
+#define COMPVOLTAGE 	1
+#define VDDA			3
+#define VSSA			0
 
 #endif /* POWERDOWN_H_ */

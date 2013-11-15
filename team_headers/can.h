@@ -9,8 +9,7 @@
 #define CAN_H_
 
 
-void CANSetup();
-void SendFillCAN(struct CANmsg *msg, char issend);
+
 
 struct CANmsg {
    char MBox;
@@ -18,6 +17,10 @@ struct CANmsg {
    union CANMDL_REG       MDL;
    union CANMDH_REG       MDH;
 };
+
+
+void CANSetup();
+void SendFillCAN(struct CANmsg *msg, char issend);
 
 #define COMMAND_ID 0x01
 #define COMMAND_BOX 0

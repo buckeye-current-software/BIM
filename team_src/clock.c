@@ -49,7 +49,7 @@ __interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
 		Clock_Ticks.DataOut1 = 0;
 	}
 
-	if (Clock_Ticks.HeartBeat == HEART_BEAT_TICKS)
+	if (Clock_Ticks.HeartBeat == HEARTBEAT_TICKS)
 	{
 		HeartBeat();
 		Clock_Ticks.HeartBeat = 0;

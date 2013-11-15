@@ -309,19 +309,7 @@ __interrupt void  WAKEINT_ISR(void)    // WD, LOW Power
 // PIE Group 2 - MUXed into CPU INT2
 // -----------------------------------------------------------
 
-// INT2.1
-__interrupt void EPWM1_TZINT_ISR(void)    // EPWM-1
-{
-  // Insert ISR Code here
 
-  // To receive more interrupts from this PIE group, acknowledge this interrupt
-  // PieCtrlRegs.PIEACK.all = PIEACK_GROUP2;
-
-  // Next two lines for debug only to halt the processor here
-  // Remove after inserting ISR Code
-  __asm ("      ESTOP0");
-  for(;;);
-}
 
 // INT2.2
 __interrupt void EPWM2_TZINT_ISR(void)    // EPWM-2

@@ -66,6 +66,7 @@ void CANSetup()
 __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
 {
 	Uint32 ops_id;
+	Uint32 dummy;
   	unsigned int mailbox_nr;
   	mailbox_nr = ECanaRegs.CANGIF1.bit.MIV1;
   	//todo USER: Setup ops command

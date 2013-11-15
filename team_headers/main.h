@@ -12,7 +12,7 @@
 void BootISRSetup();
 void NextState();
 void StartUp();
-void PowerDownISRSetup();
+
 
 
 #endif /* MAIN_H_ */
