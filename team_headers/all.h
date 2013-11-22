@@ -24,7 +24,6 @@
 extern ops_struct ops;
 extern data_struct data;
 
-//todo NATHAN set correct freq
 #define CPU_FREQ_MHZ	60
 
 #endif /* ALL_H_ */

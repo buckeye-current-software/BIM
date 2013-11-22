@@ -22,6 +22,7 @@
 #include "DSP2803x_Device.h"     // DSP2803x Headerfile Include File
 #include "DSP2803x_Examples.h"   // DSP2803x Examples Include File
 
+//TODO USER: copy and change isr accordingly
 
 
 __interrupt void INT14_ISR(void)     // INT14 or CPU-Timer2
@@ -246,20 +247,6 @@ __interrupt void ADCINT2_ISR(void)  // ADC  (Can also be ISR for INT10.2 when en
 
 // INT1.3 - Reserved
 
-// INT1.4
-__interrupt void  XINT1_ISR(void)
-{
-  // Insert ISR Code here
-
-  // To receive more interrupts from this PIE group, acknowledge this interrupt
-  // PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
-
-  // Next two lines for debug only to halt the processor here
-  // Remove after inserting ISR Code
-  __asm ("      ESTOP0");
-  for(;;);
-
-}
 
 // INT1.5
 __interrupt void  XINT2_ISR(void)

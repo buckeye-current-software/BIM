@@ -58,9 +58,9 @@ void InitSysCtrl(void)
         SysCtrlRegs.PCLKCR0.bit.ADCENCLK = 0; // Return ADC clock to original state
         EDIS;
 
-   // Select Internal Oscillator 1 as Clock Source (default), and turn off all unused clocks to
-   // conserve power.
-   IntOsc1Sel();
+   //External CRYSTAL oscillator and turns off all other clock
+   // sources to minimize power consumption.
+   XtalOscSel();
 
    // Initialize the PLL control: PLLCR and CLKINDIV
    // DSP28_PLLCR and DSP28_CLKINDIV are defined in DSP2803x_Examples.h
@@ -276,7 +276,7 @@ void InitPeripheralClocks(void)
 // Refer to the datasheet for your particular device.
 //
 // This function is not written to be an example of efficient code.
-
+   //todo nathan: turn on and off clocks?
    SysCtrlRegs.PCLKCR0.bit.ADCENCLK = 1;      // ADC
    SysCtrlRegs.PCLKCR3.bit.COMP1ENCLK = 1;    // COMP1
    SysCtrlRegs.PCLKCR3.bit.COMP2ENCLK = 1;    // COMP2

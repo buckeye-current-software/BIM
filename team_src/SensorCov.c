@@ -19,6 +19,7 @@ void SensorCov()
 		LatchStruct();
 		SensorCovMeasure();
 		UpdateStruct();
+		FillCANData();
 	}
 	SensorCovDeInit();
 }
@@ -33,6 +34,7 @@ void LatchStruct()
 {
 	memcpy(&ops, &ops_temp, sizeof ops);
 	memcpy(&data, &data_temp, sizeof data);
+	ops.Change.all = 0;	//clear change states
 }
 
 void SensorCovMeasure()

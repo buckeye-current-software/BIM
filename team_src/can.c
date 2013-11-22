@@ -62,6 +62,54 @@ void CANSetup()
     PieCtrlRegs.PIEIER9.bit.INTx6= 1;
 }
 
+
+
+char FillCAN(unsigned int Mbox)
+{
+	//todo USER: setup for all transmit MBOXs
+	switch (Mbox)								//choose mailbox
+	{
+	case HEARTBEAT_BOX:
+		//todo Nathan define heartbeat
+//		ECanaMboxes.MBOX1.MSGCTRL = 0;	//set control
+//		ECanaMboxes.MBOX1.MDH = 0;			//set high
+//		ECanaMboxes.MBOX1.MDL = 0;			//set low
+		return 1;
+		break;
+	}
+	return 0;
+}
+
+void FillSendCAN(unsigned Mbox)
+{
+	if (FillCAN(Mbox) == 1)
+	{
+		SendCAN(Mbox);
+	}
+}
+
+void SendCAN(unsigned int Mbox)
+{
+	unsigned int mask = 1 << Mbox;
+	ECanaRegs.CANTRS.all = mask;
+	while((ECanaRegs.CANTA.all & mask) != 1) {}		//wait to send
+	ECanaRegs.CANTA.all = mask;						//clear flag
+}
+
+
+void SendCANBatch(struct TRS_REG *TRS)
+{
+	ECanaRegs.CANTRS.all = TRS->TRS.all;
+	while((ECanaRegs.CANTA.all & TRS->TRS.all) != 1) {}		//wait to send
+	ECanaRegs.CANTA.all = TRS->TRS.all;
+
+}
+
+void FillCANData()
+{
+	//todo USER: use FillCAN to put data into correct mailboxes
+}
+
 // INT9.6
 __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
 {
@@ -86,32 +134,10 @@ __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
 			memcpy(&ops.StopWatchError,&dummy,sizeof ops.StopWatchError);
 			ops.Change.bit.StopWatchError = 1;
 			break;
-		default:
 		}
   	}
   	//todo USER: Setup other reads
 
   	//To receive more interrupts from this PIE group, acknowledge this interrupt
   	PieCtrlRegs.PIEACK.all = PIEACK_GROUP9;
-}
-
-void SendFillCAN(struct CANmsg *msg, char issend)
-{
-	//todo USER: setup for all transmit MBOXs
-	switch (msg->MBox)								//choose mailbox
-	{
-	case 1:
-		ECanaMboxes.MBOX1.MSGCTRL = msg->MSGCTRL;	//set control
-		ECanaMboxes.MBOX1.MDH = msg->MDH;			//set high
-		ECanaMboxes.MBOX1.MDL = msg->MDL;			//set low
-		if (issend == 1)
-		{
-			ECanaRegs.CANTRS.bit.TRS1 = 1; 				//send if flagged
-			//todo Nathan: Stopwatch?
-			while(ECanaRegs.CANTA.bit.TA1 != 1) {}		//wait to send
-			ECanaRegs.CANTA.bit.TA1 = 1;				//clear flog
-		}
-		break;
-	default:
-	}
 }

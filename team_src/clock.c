@@ -61,8 +61,5 @@ __interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
 
 void HeartBeat()
 {
-	//todo Nathan define heartbeat
-	struct CANmsg msg;
-	msg.MBox = HEARTBEAT_BOX;
-	SendFillCAN(&msg,1); //send msg
+	FillSendCAN(HEARTBEAT_BOX);
 }

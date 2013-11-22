@@ -17,17 +17,20 @@ void PowerDown()
 
 void UserPowerDown()
 {
-
+	//todo USER: special user power down
 }
 
 void NodePowerDown()
 {
-
+	//todo NATHAN: special node power down
+	DINT;				// disable interrupts
 }
 
 char isPowerOn()
 {
-	return !Comp3Regs.COMPSTS.bit.COMPSTS; // 1 means cause interrupt so should invert so 1 means no interrupt
+	return !Comp3Regs.COMPSTS.bit.COMPSTS; 	// 1 means cause interrupt = no power
+											// 0 = no power
+											//to correspond to True False invert
 }
 
 void PowerDownISRSetup()
@@ -59,10 +62,8 @@ void PowerDownISRSetup()
 // INT2.1
 __interrupt void EPWM1_TZINT_ISR(void)    // EPWM-1
 {
-  ops.State = STATE_POWER_DOWN;
-  ops.Change.bit.State = 1;
-  // To receive more interrupts from this PIE group, acknowledge this interrupt
-  PieCtrlRegs.PIEACK.all = PIEACK_GROUP2;
-
-  for(;;);
+	ops.State = STATE_POWER_DOWN;
+	ops.Change.bit.State = 1;
+	// To receive more interrupts from this PIE group, acknowledge this interrupt
+	PieCtrlRegs.PIEACK.all = PIEACK_GROUP2;
 }
