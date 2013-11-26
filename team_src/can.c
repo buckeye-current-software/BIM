@@ -92,17 +92,41 @@ void SendCAN(unsigned int Mbox)
 {
 	unsigned int mask = 1 << Mbox;
 	ECanaRegs.CANTRS.all = mask;
-	while((ECanaRegs.CANTA.all & mask) != 1) {}		//wait to send
+
+	//todo Nathan: calibrate sendcan stopwatch
+	stopwatch_struct* watch = StartStopWatch(SENDCAN_STOPWATCH);
+
+	while(((ECanaRegs.CANTA.all & mask) != 1) && (isStopWatchComplete(watch) == 0)); //wait to send or hit stop watch
+
 	ECanaRegs.CANTA.all = mask;						//clear flag
+	if (isStopWatchComplete(watch) == 1)					//if stopwatch flag
+	{
+		ops.Stopwatch.bit.can_error = 1;
+	}
+	else if (ops.Stopwatch.bit.can_error == 1)		//if no stopwatch and flagged reset
+	{
+		ops.Stopwatch.bit.can_error = 0;
+	}
+
 }
 
 
 void SendCANBatch(struct TRS_REG *TRS)
 {
+	stopwatch_struct* watch = StartStopWatch(SENDCAN_STOPWATCH);
+
 	ECanaRegs.CANTRS.all = TRS->TRS.all;
-	while((ECanaRegs.CANTA.all & TRS->TRS.all) != 1) {}		//wait to send
+	while(((ECanaRegs.CANTA.all & TRS->TRS.all) != 1) && (isStopWatchComplete(watch) == 0));		//wait to send or stopwatch
 	ECanaRegs.CANTA.all = TRS->TRS.all;
 
+	if (isStopWatchComplete(watch) == 1)					//if stopwatch flag
+	{
+		ops.Stopwatch.bit.can_error = 1;
+	}
+	else if (ops.Stopwatch.bit.can_error == 1)		//if no stopwatch and flagged reset
+	{
+		ops.Stopwatch.bit.can_error = 0;
+	}
 }
 
 void FillCANData()
@@ -131,7 +155,7 @@ __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
 			ops.Change.bit.State = 1;
 			break;
 		case OPS_ID_STOPWATCHERROR:
-			memcpy(&ops.StopWatchError,&dummy,sizeof ops.StopWatchError);
+			memcpy(&ops.Stopwatch.all,&dummy,sizeof ops.Stopwatch.all);
 			ops.Change.bit.StopWatchError = 1;
 			break;
 		}

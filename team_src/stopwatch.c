@@ -10,7 +10,7 @@
 
 struct CPUTIMER_VARS StopWatch;
 
-void ConfigStopWatch(float time)
+void StopWatchSetUp(float time)
 {
     // CPU Timer0
 	// Initialize address pointers to respective timer registers:
@@ -32,24 +32,42 @@ void ConfigStopWatch(float time)
 	//pie interrupt
 	IER |= M_INT1;
 	PieCtrlRegs.PIEIER1.bit.INTx7 = 1;
-}
 
-void StartStopWatch()
-{
-	StopWatch.InterruptCount = 0;
 	ReloadCpuTimer0();
 	StartCpuTimer0();
 }
 
-char isStopWatchComplete()
+stopwatch_struct* StartStopWatch(unsigned int time)
 {
-	return StopWatch.InterruptCount;
+
+
+	stopwatch_struct* watch = (stopwatch_struct*)malloc(sizeof(stopwatch_struct));
+	watch->Start = StopWatch.InterruptCount;
+	watch->Time = time;
+	return watch;
+}
+
+char isStopWatchComplete(stopwatch_struct* watch)
+{
+	if((StopWatch.InterruptCount - watch->Start) > watch->Time)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+void StopStopWatch(stopwatch_struct* watch)
+{
+	free(watch);
 }
 
 // INT1.7
 __interrupt void  TINT0_ISR(void)      // CPU-Timer 0
 {
-	StopWatch.InterruptCount = 1;
+	StopWatch.InterruptCount++;
    // Acknowledge this interrupt to receive more interrupts from group 1
    PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
 }

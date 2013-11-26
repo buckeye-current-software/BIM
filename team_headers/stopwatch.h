@@ -8,9 +8,18 @@
 #ifndef STOPWATCH_H_
 #define STOPWATCH_H_
 
+typedef struct StopWatch
+{
+	Uint32 Start;
+	unsigned int Time;
+}stopwatch_struct;
 
-void ConfigStopWatch(float time);
-void StartStopWatch();
-char isStopWatchComplete();
+void StopWatchSetUp(float time);
+stopwatch_struct* StartStopWatch(unsigned int time);
+char isStopWatchComplete(stopwatch_struct*);
+void StopStopWatch(stopwatch_struct* watch);
+
+
+#define SENDCAN_STOPWATCH 	1 //10 uS
 
 #endif /* STOPWATCH_H_ */

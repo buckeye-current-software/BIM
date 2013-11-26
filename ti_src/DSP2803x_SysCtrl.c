@@ -60,8 +60,9 @@ void InitSysCtrl(void)
 
    //External CRYSTAL oscillator and turns off all other clock
    // sources to minimize power consumption.
-   XtalOscSel();
-
+   //XtalOscSel();
+   //todo Nathan: switch to external
+        IntOsc1Sel();
    // Initialize the PLL control: PLLCR and CLKINDIV
    // DSP28_PLLCR and DSP28_CLKINDIV are defined in DSP2803x_Examples.h
    InitPll(DSP28_PLLCR,DSP28_DIVSEL);
@@ -83,6 +84,16 @@ void InitFlash(void)
    EALLOW;
    //Enable Flash Pipeline mode to improve performance
    //of code executed from Flash.
+
+   //Set the Random Waitstate for the Flash
+   FlashRegs.FBANKWAIT.bit.RANDWAIT = 2;
+
+   //Set the Paged Waitstate for the Flash
+   FlashRegs.FBANKWAIT.bit.PAGEWAIT = 2;
+
+   //Set the Waitstate for the OTP
+   FlashRegs.FOTPWAIT.bit.OTPWAIT = 3;
+
    FlashRegs.FOPT.bit.ENPIPE = 1;
 
    //                CAUTION
@@ -90,14 +101,6 @@ void InitFlash(void)
    //at a given CPU rate must be characterized by TI.
    //Refer to the datasheet for the latest information.
 
-   //Set the Paged Waitstate for the Flash
-   FlashRegs.FBANKWAIT.bit.PAGEWAIT = 2;
-
-   //Set the Random Waitstate for the Flash
-   FlashRegs.FBANKWAIT.bit.RANDWAIT = 2;
-
-   //Set the Waitstate for the OTP
-   FlashRegs.FOTPWAIT.bit.OTPWAIT = 3;
 
    //                CAUTION
    //ONLY THE DEFAULT VALUE FOR THESE 2 REGISTERS SHOULD BE USED

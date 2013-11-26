@@ -75,7 +75,7 @@ void StartUp()
 		InitPieVectTable();
 
 		//Initialize Flash
-		InitFlash();
+		//InitFlash();
 
 		EINT;   // Enable Global interrupt INTM
 		ERTM;   // Enable Global realtime interrupt DBGM

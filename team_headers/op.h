@@ -20,15 +20,25 @@
 
 typedef struct CHANGE_OPS
 {
-	int State;
-	int StopWatchError;
+	char State;
+	char StopWatchError;
 }change_struct;
 
+//todo User: stopwatch errors
+typedef struct STOPWATCHERROR
+{
+	char cov_error;
+	char can_error;
+}stopwatch_error_struct;
 
 typedef struct OPERATIONS
 {
   unsigned long State;
-  unsigned long StopWatchError;
+  union StopWatchError
+  {
+	  char						all;
+	  stopwatch_error_struct 	bit;
+  }								Stopwatch;
   union CHANGE
   {
   	long 			all;

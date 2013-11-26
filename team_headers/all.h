@@ -9,6 +9,7 @@
 #define ALL_H_
 
 #include "DSP28x_Project.h"     // Device Headerfile and Examples Include File
+#include "stopwatch.h"
 #include "op.h"
 #include "data.h"
 #include "Init.h"
@@ -17,9 +18,9 @@
 #include "PowerDown.h"
 #include "common.h"
 #include "main.h"
-#include "stopwatch.h"
 #include "clock.h"
 #include "can.h"
+#include <stdlib.h>
 
 extern ops_struct ops;
 extern data_struct data;

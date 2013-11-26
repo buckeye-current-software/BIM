@@ -15,6 +15,7 @@ void Initilize()
 {
 	OperationsSetup();
 	DataSetup();
+	StopWatchSetUp(10);
 	CANSetup();
 	ClockSetup();
 	ops.State = STATE_SENSOR_COV;

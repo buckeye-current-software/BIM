@@ -8,7 +8,7 @@
 
 
 struct CPUTIMER_VARS Clock;
-clock_struct Clock_Ticks;
+clock_struct Clock_Ticks = CLOCK_TICKS_CLEAR;
 
 void ClockSetup()
 {
@@ -38,18 +38,28 @@ void ClockSetup()
 // ISR can be used by the user.
 __interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
 {
+	 //***********************************WARNING!!********************************************\\
+	//BE CAREFUL YOU NEED TO ALLOW NESTING FOR ANY INTERRUPT THAT MIGHT HAPPEN IN THIS INTERRUPT\\
+
+	//stopwatch needs nested
+
+	//enable all interrupts?
+
+	 EINT;
+
+
 	//todo USER: Define Clock ISR
 	Clock_Ticks.DataOut1++;
 	Clock_Ticks.HeartBeat++;
 
-	if (Clock_Ticks.DataOut1 == DATAOUT1_TICKS)
+	if (Clock_Ticks.DataOut1 >= DATAOUT1_TICKS)
 	{
 		//send data or fill data
 		//use SendFillCAN()
 		Clock_Ticks.DataOut1 = 0;
 	}
 
-	if (Clock_Ticks.HeartBeat == HEARTBEAT_TICKS)
+	if (Clock_Ticks.HeartBeat >= HEARTBEAT_TICKS)
 	{
 		HeartBeat();
 		Clock_Ticks.HeartBeat = 0;
@@ -57,6 +67,8 @@ __interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
 
 	ReloadCpuTimer1();
 	StartCpuTimer1();
+
+	DINT;
 }
 
 void HeartBeat()
