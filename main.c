@@ -9,17 +9,19 @@ extern ops_struct ops;
 
 int main(void)
 {
+	Uint16 MesgID;
+
 	StartUp();
 	BootISRSetup();
 	PowerDownISRSetup();
 	ops.State = STATE_INIT;
 	while(1)
 	{
-		NextState();
+		NextState(MesgID);
 	}
 }
 
-void NextState()
+void NextState(Uint16 MesgID)
 {
 	switch (ops.State)
 	{
@@ -30,7 +32,7 @@ void NextState()
 		SensorCov();
 		break;
 	case STATE_BOOT:
-		Boot();
+		Boot(MesgID);
 		break;
 	case STATE_POWER_DOWN:
 		PowerDown();

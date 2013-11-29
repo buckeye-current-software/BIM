@@ -10,7 +10,7 @@
 
 
 void BootISRSetup();
-void NextState();
+void NextState(Uint16);
 void StartUp();
 
 
