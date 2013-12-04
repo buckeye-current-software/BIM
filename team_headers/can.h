@@ -27,13 +27,21 @@ char FillCAN(unsigned int Mbox);
 void SendCAN(unsigned int Mbox);
 void FillCANData();
 void SendCANBatch(struct TRS_REG *TRS);
-void FillSendCAN(unsigned Mbox);
+void FillSendCAN(unsigned int Mbox);
 
 //todo USER: DEFINE IDs and mailboxes for output
-#define COMMAND_ID 0x01
-#define COMMAND_BOX 0
+#define COMMAND_ID 		0x01
+#define COMMAND_BOX 	0
 
-#define HEARTBEAT_ID 0x00
-#define HEARTBEAT_BOX 1
+#define HEARTBEAT_ID 	0x00
+#define HEARTBEAT_BOX 	1
+
+#define ADC_ID 			0x02
+#define ADC_BOX 		2
+#define ADC_TRS			TRS2
+
+#define GP_BUTTON_ID 	0x03
+#define GP_BUTTON_BOX 	3
+#define GP_BUTTON_TRS	TRS3
 
 #endif /* CAN_H_ */

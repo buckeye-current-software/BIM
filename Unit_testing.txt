@@ -1,0 +1,85 @@
+Code Coverage Approach
+
+"CAUSE EACH FUNCTION TO HAPPEN!"
+
+main:
+	(1)void BootISRSetup()
+	(1)void NextState()
+	(1)void StartUp()
+	(2)__interrupt void  XINT1_ISR(void)
+
+Init:
+	(1)void Initilize()
+	(1)void OperationsSetup()
+	(1)void DataSetup()
+	
+clock:
+	(1)void ClockSetup()
+	(1)void HeartBeat()
+	(1)__interrupt void INT13_ISR(void)  
+	
+SensorCov:
+	(1)void SensorCov()
+	(1)void SensorCovInit()
+	(1)void LatchStruct()
+	(1)void SensorCovMeasure()
+	(1)void UpdateStruct()
+	(3)void SensorCovDeInit()
+	
+stopwatch:
+	(1)void StopWatchSetUp(float time)
+	(4)stopwatch_struct* StartStopWatch(unsigned int time)
+	(4)char isStopWatchComplete(stopwatch_struct*)
+	(4)void StopStopWatch(stopwatch_struct* watch)
+	(1)__interrupt void  TINT0_ISR(void)
+
+can:
+	(1)void CANSetup()
+	(1)char FillCAN(unsigned int Mbox)
+	(1)void SendCAN(unsigned int Mbox)
+	(1)void FillCANData()
+	(4)void SendCANBatch(struct TRS_REG *TRS)
+	(4)void FillSendCAN(unsigned Mbox)
+	(3)__interrupt void ECAN1INTA_ISR(void)
+	
+PowerDown:
+	(1)void PowerDownISRSetup()
+	(3)void PowerDown()
+	(3)void UserPowerDown()
+	(3)void NodePowerDown()
+	(3)char isPowerOn()
+	(5)__interrupt void EPWM1_TZINT_ISR(void)   
+
+	
+common:
+	(2)void Restart()
+
+
+General purpose things:
+	(4)12V control
+	(4)led0
+	(4)led1
+	(4)general purpose push button
+	(4)ADC read
+	(3)ops change
+	(4)StopWatch Error
+	
+We want general code to run that clicking push buttons etc will cause 
+full code coverage 
+
+First: Name and number tests to match with functions:
+	(1) Power on
+	(2) push boot reset button 
+			cause Restart()
+	(3)	Send Command to move to PowerDown()
+			cause Restart()
+	(4) Read push button and adc in SensorCov()
+			Two CAN address
+			StopWatch around
+				push button causes Stopwatch
+			led0 with push button
+			led1 with threshold on adc
+			12V control on Stopwatch
+	(5) Cause PowerDown
+			Cause and wait
+			turn back to cause Restart()

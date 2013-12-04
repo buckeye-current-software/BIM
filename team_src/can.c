@@ -45,7 +45,23 @@ void CANSetup()
 	ECanaMboxes.MBOX1.MSGCTRL.bit.DLC = 8;
 	ECanaMboxes.MBOX1.MSGID.bit.STDMSGID = HEARTBEAT_ID;
 
+	//adc TRANSMIT
+	ECanaMboxes.MBOX2.MSGID.bit.IDE = 0; 	//standard id
+	ECanaMboxes.MBOX2.MSGID.bit.AME = 0; 	// all bit must match
+	ECanaMboxes.MBOX2.MSGID.bit.AAM = 1; 	//RTR AUTO TRANSMIT
+	ECanaRegs.CANMD.bit.MD2 = 0; 			//transmit
+	ECanaRegs.CANME.bit.ME2 = 1;			//enable
+	ECanaMboxes.MBOX2.MSGCTRL.bit.DLC = 8;
+	ECanaMboxes.MBOX2.MSGID.bit.STDMSGID = ADC_ID;
 
+	//gp_button TRANSMIT
+	ECanaMboxes.MBOX3.MSGID.bit.IDE = 0; 	//standard id
+	ECanaMboxes.MBOX3.MSGID.bit.AME = 0; 	// all bit must match
+	ECanaMboxes.MBOX3.MSGID.bit.AAM = 1; 	//RTR AUTO TRANSMIT
+	ECanaRegs.CANMD.bit.MD1 = 0; 			//transmit
+	ECanaRegs.CANME.bit.ME1 = 1;			//enable
+	ECanaMboxes.MBOX3.MSGCTRL.bit.DLC = 8;
+	ECanaMboxes.MBOX3.MSGID.bit.STDMSGID = GP_BUTTON_ID;
 
 	EALLOW;
 	ECanaRegs.CANGAM.all = ECanaShadow.CANGAM.all;
@@ -71,11 +87,15 @@ char FillCAN(unsigned int Mbox)
 	{
 	case HEARTBEAT_BOX:
 		//todo Nathan define heartbeat
-//		ECanaMboxes.MBOX1.MSGCTRL = 0;	//set control
-//		ECanaMboxes.MBOX1.MDH = 0;			//set high
-//		ECanaMboxes.MBOX1.MDL = 0;			//set low
+		ECanaMboxes.MBOX1.MDH.all = ops.Stopwatch.all;			//set high
+		ECanaMboxes.MBOX1.MDL.all = ops.State;			//set low
 		return 1;
-		break;
+	case ADC_BOX:
+		ECanaMboxes.MBOX1.MDL.all = data.adc;
+		return 1;
+	case GP_BUTTON_BOX:
+		ECanaMboxes.MBOX1.MDL.all = data.gp_button;
+		return 1;
 	}
 	return 0;
 }
@@ -132,6 +152,8 @@ void SendCANBatch(struct TRS_REG *TRS)
 void FillCANData()
 {
 	//todo USER: use FillCAN to put data into correct mailboxes
+	FillCAN(ADC_BOX);
+	FillCAN(GP_BUTTON_BOX);
 }
 
 // INT9.6
@@ -146,6 +168,8 @@ __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
   	{
   		//todo Nathan: Define Command frame
   		//proposed:
+  		//HIGH 4 BYTES = Uint32 ID
+  		//LOW 4 BYTES = Uint32 change to
   		ops_id = ECanaMboxes.MBOX0.MDH.all;
   		dummy = ECanaMboxes.MBOX0.MDL.all;
 		switch (ops_id)

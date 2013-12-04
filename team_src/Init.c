@@ -35,6 +35,7 @@ void DataSetup()
 {
 	//todo USER: DataSetup()
 	//add here and data.h
-	data.data1 = 0;
+	data.adc = 0;
+	data.gp_button = 0;
 }
 

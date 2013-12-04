@@ -27,6 +27,19 @@ void SensorCov()
 void SensorCovInit()
 {
 	//todo USER: SensorCovInit()
+	//CONFIG ADC
+	adcinit();
+
+	//CONFIG GP_BUTTON
+	ConfigGPButton();
+
+	//CONFIG LEDS
+	//led 0
+	ConfigLED0();
+	//led 1
+	ConfigLED1();
+	//CONFIG 12V SWITCH
+	Config12V();
 }
 
 
@@ -46,23 +59,56 @@ void SensorCovMeasure()
 	//use stopwatch to catch timeouts
 	//waiting should poll isStopWatchComplete() to catch timeout and throw StopWatchError
 
-	//test code for timer, causes stopwatch error
-	int i = 0;
-	while (i < 100)
+	readADC();
+	data_temp.adc = A0RESULT;
+
+	data_temp.gp_button = READGPBUTTON();
+
+	if (data_temp.gp_button == 0) 			//if pushed cause stopwatch
 	{
-		i++;
+		SETLED0();
+		int i = 0;
+		while (i < 100)
+		{
+			i++;
+		}
 	}
+	else
+	{
+		CLEARLED0();
+	}
+
+	if (data_temp.adc > 500)
+	{
+		SETLED1();
+	}
+	else
+	{
+		CLEARLED0();
+	}
+
 	//exit and stopwatch error if timeout
 	if (isStopWatchComplete(watch) == 1)
 	{
 		ops_temp.Stopwatch.bit.cov_error = 1;
-		StopStopWatch(watch);
-		return;
+	}
+	else
+	{
+		ops_temp.Stopwatch.bit.cov_error = 0;
 	}
 
-	//no stopwatch error
 	StopStopWatch(watch);
-	ops_temp.Stopwatch.bit.cov_error = 0;
+
+	if (ops_temp.Stopwatch.all != 0)
+	{
+		SET12V();
+	}
+	else
+	{
+		CLEAR12V();
+	}
+
+
 }
 
 void UpdateStruct()
@@ -80,7 +126,7 @@ void UpdateStruct()
 		ops.State = ops_temp.State;
 	}
 
-	if (ops.Change.bit.State == 0)
+	if (ops.Change.bit.StopWatchError == 0)
 	{
 		//only cov error happens inside of conversion so all other changes are considered correct.
 		//update accordingly to correct cov_errors
@@ -92,4 +138,7 @@ void UpdateStruct()
 void SensorCovDeInit()
 {
 	//todo USER: SensorCovDeInit()
+	CLEARLED0();
+	CLEARLED1();
+	CLEAR12V();
 }

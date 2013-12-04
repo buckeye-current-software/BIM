@@ -21,6 +21,8 @@
 #include "clock.h"
 #include "can.h"
 #include <stdlib.h>
+#include "adc.h"
+#include "gpio.h"
 
 extern ops_struct ops;
 extern data_struct data;

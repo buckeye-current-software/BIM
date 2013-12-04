@@ -94,15 +94,15 @@ void BootISRSetup()
 	   GpioCtrlRegs.GPAQSEL2.bit.GPIO28 = 0;        // XINT1 Synch to SYSCLKOUT only
 	   EDIS;
 
-	// GPIO0 is XINT1, GPIO1 is XINT2
+	// GPIO28 is XINT1, GPIO1 is XINT2
 	   EALLOW;
-	   GpioIntRegs.GPIOXINT1SEL.bit.GPIOSEL = 28;   // XINT1 is GPIO0
+	   GpioIntRegs.GPIOXINT1SEL.bit.GPIOSEL = 28;   // XINT1 is GPIO28
 	   EDIS;
 
 	// Configure XINT1
 	   XIntruptRegs.XINT1CR.bit.POLARITY = 0;      // Falling edge interrupt
 
-	// Enable XINT1 and XINT2
+	// Enable XINT1
 	   XIntruptRegs.XINT1CR.bit.ENABLE = 1;        // Enable XINT1
 }
 
@@ -111,7 +111,7 @@ void BootISRSetup()
 __interrupt void  XINT1_ISR(void)
 {
   // Insert ISR Code here
-
+	Restart();
   // To receive more interrupts from this PIE group, acknowledge this interrupt
    PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
 }
