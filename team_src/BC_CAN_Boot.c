@@ -23,7 +23,6 @@ Uint16 BC_CAN_GetWordData(void);
 
 // All are external functions
 extern void CopyData(void);
-extern Uint32 GetLongData(void);
 extern void ReadReservedFn(void);
 
 
@@ -34,9 +33,8 @@ extern void ReadReservedFn(void);
 // with the host.
 //----------------------------------------------
 
-Uint32 BC_CAN_Boot(Uint16 Node_ID)
+void BC_CAN_Boot(Uint16 Node_ID)
 {
-	  Uint32 EntryAddr;
 
 	   // If the missing clock detect bit is set, just
 	   // loop here.
@@ -56,13 +54,11 @@ Uint32 BC_CAN_Boot(Uint16 Node_ID)
 	   // and return the flash entry point.
 	  // if (BC_CAN_GetWordData() != 0x08AA) return FLASH_ENTRY_POINT;
 
-	   ReadReservedFn();
+//	   ReadReservedFn();
 
-	   EntryAddr = GetLongData();
+//	   EntryAddr = GetLongData();
 
 //	   CopyData(); Moved to after calling confirm()
-
-	   return EntryAddr;
 
 
 }
