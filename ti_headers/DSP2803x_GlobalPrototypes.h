@@ -127,7 +127,7 @@ void MemCopy(Uint16 *SourceAddr, Uint16* SourceEndAddr, Uint16* DestAddr);
 // in Flash to a different RUN location in internal
 // RAM
 extern Uint16 RamfuncsLoadStart;
-extern Uint16 RamfuncsLoadEnd;
+extern Uint16 RamfuncsLoadSize;
 extern Uint16 RamfuncsRunStart;
 
 #ifdef __cplusplus

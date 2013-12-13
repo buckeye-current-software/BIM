@@ -83,3 +83,5 @@ First: Name and number tests to match with functions:
 	(5) Cause PowerDown
 			Cause and wait
 			turn back to cause Restart()
+	(6) RTR
+		

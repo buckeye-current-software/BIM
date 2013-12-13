@@ -52,7 +52,7 @@ void LatchStruct()
 
 void SensorCovMeasure()
 {
-	stopwatch_struct* watch = StartStopWatch(1);
+	stopwatch_struct* watch = StartStopWatch(4);
 
 	//todo USER: Sensor Conversion
 	//update data_temp and ops_temp
@@ -84,7 +84,7 @@ void SensorCovMeasure()
 	}
 	else
 	{
-		CLEARLED0();
+		CLEARLED1();
 	}
 
 	//exit and stopwatch error if timeout

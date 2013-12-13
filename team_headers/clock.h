@@ -15,7 +15,7 @@ void HeartBeat();
 #define CLOCK_PERIOD 2500 //uS
 
 #define HEARTBEAT_TICKS		10
-#define DATAOUT1_TICKS		1
+#define DATAOUT_TICKS		1
 
 //todo USER: CLOCK_TICKS_CLEAR should have the same number of zeros as clock_struct has elements (as seen below)
 #define CLOCK_TICKS_CLEAR	{0,0}
@@ -23,7 +23,7 @@ void HeartBeat();
 typedef struct CLOCK_TICKS
 {
 	int HeartBeat;
-	int DataOut1;
+	int DataOut;
 }clock_struct;
 
 

@@ -113,12 +113,25 @@ struct ECAN_REGS ECanaShadow;
     ECanaShadow.CANBTC.all = 0;
     /* The following block is only for 60 MHz SYSCLKOUT. (30 MHz CAN module clock Bit rate = 1 Mbps
        See Note at end of file. */
-    //todo NATHAN: CAN freq
-    ECanaShadow.CANBTC.bit.BRPREG = 2;
-    ECanaShadow.CANBTC.bit.TSEG2REG = 1;
-    ECanaShadow.CANBTC.bit.TSEG1REG = 6;
+//    ECanaShadow.CANBTC.bit.BRPREG = 2;
+//    ECanaShadow.CANBTC.bit.TSEG2REG = 1;
+//    ECanaShadow.CANBTC.bit.TSEG1REG = 6;
 
-    ECanaShadow.CANBTC.bit.SAM = 1;
+    //Use table 33 in eCAN manual to determine values
+    //BT = 15
+    //TSEG1 = 10
+    //TSEG2 = 2
+    //JW  = 2;
+    //Sampling point = 80%
+    //bus speed 250kbps
+    //BRP_reg = 3
+    ECanaShadow.CANBTC.bit.BRPREG = 3;
+    ECanaShadow.CANBTC.bit.TSEG1REG = 9;
+    ECanaShadow.CANBTC.bit.TSEG2REG = 1;
+    ECanaShadow.CANBTC.bit.SJWREG = 1;
+
+
+    ECanaShadow.CANBTC.bit.SAM = 0;
     ECanaRegs.CANBTC.all = ECanaShadow.CANBTC.all;
 
     ECanaShadow.CANMC.all = ECanaRegs.CANMC.all;

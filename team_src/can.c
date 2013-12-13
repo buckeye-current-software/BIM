@@ -87,8 +87,8 @@ char FillCAN(unsigned int Mbox)
 	{
 	case HEARTBEAT_BOX:
 		//todo Nathan define heartbeat
-		ECanaMboxes.MBOX1.MDH.all = ops.Stopwatch.all;			//set high
-		ECanaMboxes.MBOX1.MDL.all = ops.State;			//set low
+		ECanaMboxes.MBOX1.MDH.all = ops.Stopwatch.all;
+		ECanaMboxes.MBOX1.MDL.all = ops.State;
 		return 1;
 	case ADC_BOX:
 		ECanaMboxes.MBOX1.MDL.all = data.adc;
@@ -164,7 +164,7 @@ __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
   	unsigned int mailbox_nr;
   	mailbox_nr = ECanaRegs.CANGIF1.bit.MIV1;
   	//todo USER: Setup ops command
-  	if(mailbox_nr == 0)
+  	if(mailbox_nr == COMMAND_BOX)
   	{
   		//todo Nathan: Define Command frame
   		//proposed:
