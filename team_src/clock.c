@@ -41,26 +41,21 @@ __interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
 	 //***********************************WARNING!!********************************************\\
 	//BE CAREFUL YOU NEED TO ALLOW NESTING FOR ANY INTERRUPT THAT MIGHT HAPPEN IN THIS INTERRUPT\\
 
-	//stopwatch needs nested
-
-	//enable all interrupts?
-
-	 EINT;
-
+	 EINT;		//enable all interrupts
 
 	//todo USER: Define Clock ISR
-	Clock_Ticks.DataOut1++;
+	Clock_Ticks.DataOut++;
 	Clock_Ticks.HeartBeat++;
 
-	if (Clock_Ticks.DataOut1 >= DATAOUT1_TICKS)
+	if (Clock_Ticks.DataOut >= DATAOUT_TICKS)
 	{
 		//send data or fill data
 		struct TRS_REG TRS;
-		TRS.TRS.bit.GP_BUTTON_TRS;
-		TRS.TRS.bit.ADC_TRS;
+		TRS.TRS.bit.GP_BUTTON_TRS = 1;
+		TRS.TRS.bit.ADC_TRS = 1;
 
 		SendCANBatch(&TRS);
-		Clock_Ticks.DataOut1 = 0;
+		Clock_Ticks.DataOut = 0;
 	}
 
 	if (Clock_Ticks.HeartBeat >= HEARTBEAT_TICKS)

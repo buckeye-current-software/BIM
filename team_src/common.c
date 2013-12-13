@@ -15,3 +15,19 @@ void Restart()
 	SysCtrlRegs.WDKEY = 0x00;
 	EDIS;
 }
+
+void* myMalloc(int size)
+{
+	//malloc is not reentrant so interrupts must be disabled to use it
+	DINT;
+	malloc(size);
+	EINT;
+}
+
+void myFree(void* p)
+{
+	//free is not reentrant so interrupts must be disabled to use it
+	DINT;
+	free(p);
+	EINT;
+}

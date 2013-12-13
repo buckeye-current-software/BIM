@@ -21,24 +21,24 @@
 typedef struct CHANGE_OPS
 {
 	char State;
-	char StopWatchError;
+	char Flags;
 }change_struct;
 
 //todo User: stopwatch errors
-typedef struct STOPWATCHERROR
+typedef struct FLAGS
 {
 	char cov_error;
 	char can_error;
-}stopwatch_error_struct;
+}flags_struct;
 
 typedef struct OPERATIONS
 {
   unsigned long State;
-  union StopWatchError
+  union Flag
   {
-	  char						all;
-	  stopwatch_error_struct 	bit;
-  }								Stopwatch;
+	  long						all;
+	  flags_struct 				bit;
+  }								Flags;
   union CHANGE
   {
   	long 			all;

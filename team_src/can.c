@@ -87,8 +87,7 @@ char FillCAN(unsigned int Mbox)
 	{
 	case HEARTBEAT_BOX:
 		//todo Nathan define heartbeat
-		ECanaMboxes.MBOX1.MDH.all = ops.Stopwatch.all;			//set high
-		ECanaMboxes.MBOX1.MDL.all = ops.State;			//set low
+		ECanaMboxes.MBOX1.MDL.word.LOW_WORD = ops.Flags.all;
 		return 1;
 	case ADC_BOX:
 		ECanaMboxes.MBOX1.MDL.all = data.adc;
@@ -121,11 +120,11 @@ void SendCAN(unsigned int Mbox)
 	ECanaRegs.CANTA.all = mask;						//clear flag
 	if (isStopWatchComplete(watch) == 1)					//if stopwatch flag
 	{
-		ops.Stopwatch.bit.can_error = 1;
+		ops.Flags.bit.can_error = 1;
 	}
-	else if (ops.Stopwatch.bit.can_error == 1)		//if no stopwatch and flagged reset
+	else if (ops.Flags.bit.can_error == 1)		//if no stopwatch and flagged reset
 	{
-		ops.Stopwatch.bit.can_error = 0;
+		ops.Flags.bit.can_error = 0;
 	}
 
 }
@@ -141,11 +140,11 @@ void SendCANBatch(struct TRS_REG *TRS)
 
 	if (isStopWatchComplete(watch) == 1)					//if stopwatch flag
 	{
-		ops.Stopwatch.bit.can_error = 1;
+		ops.Flags.bit.can_error = 1;
 	}
-	else if (ops.Stopwatch.bit.can_error == 1)		//if no stopwatch and flagged reset
+	else if (ops.Flags.bit.can_error == 1)		//if no stopwatch and flagged reset
 	{
-		ops.Stopwatch.bit.can_error = 0;
+		ops.Flags.bit.can_error = 0;
 	}
 }
 
@@ -164,7 +163,7 @@ __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
   	unsigned int mailbox_nr;
   	mailbox_nr = ECanaRegs.CANGIF1.bit.MIV1;
   	//todo USER: Setup ops command
-  	if(mailbox_nr == 0)
+  	if(mailbox_nr == COMMAND_BOX)
   	{
   		//todo Nathan: Define Command frame
   		//proposed:
@@ -179,8 +178,8 @@ __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
 			ops.Change.bit.State = 1;
 			break;
 		case OPS_ID_STOPWATCHERROR:
-			memcpy(&ops.Stopwatch.all,&dummy,sizeof ops.Stopwatch.all);
-			ops.Change.bit.StopWatchError = 1;
+			memcpy(&ops.Flags.all,&dummy,sizeof ops.Flags.all);
+			ops.Change.bit.Flags = 1;
 			break;
 		}
   	}

@@ -52,7 +52,7 @@ void LatchStruct()
 
 void SensorCovMeasure()
 {
-	stopwatch_struct* watch = StartStopWatch(1);
+	stopwatch_struct* watch = StartStopWatch(4);
 
 	//todo USER: Sensor Conversion
 	//update data_temp and ops_temp
@@ -78,28 +78,28 @@ void SensorCovMeasure()
 		CLEARLED0();
 	}
 
-	if (data_temp.adc > 500)
+	if (data_temp.adc > 2000)
 	{
 		SETLED1();
 	}
 	else
 	{
-		CLEARLED0();
+		CLEARLED1();
 	}
 
 	//exit and stopwatch error if timeout
 	if (isStopWatchComplete(watch) == 1)
 	{
-		ops_temp.Stopwatch.bit.cov_error = 1;
+		ops_temp.Flags.bit.cov_error = 1;
 	}
 	else
 	{
-		ops_temp.Stopwatch.bit.cov_error = 0;
+		ops_temp.Flags.bit.cov_error = 0;
 	}
 
 	StopStopWatch(watch);
 
-	if (ops_temp.Stopwatch.all != 0)
+	if (ops_temp.Flags.all != 0)
 	{
 		SET12V();
 	}
@@ -126,11 +126,11 @@ void UpdateStruct()
 		ops.State = ops_temp.State;
 	}
 
-	if (ops.Change.bit.StopWatchError == 0)
+	if (ops.Change.bit.Flags == 0)
 	{
 		//only cov error happens inside of conversion so all other changes are considered correct.
 		//update accordingly to correct cov_errors
-		ops.Stopwatch.bit.cov_error = ops_temp.Stopwatch.bit.cov_error;
+		ops.Flags.bit.cov_error = ops_temp.Flags.bit.cov_error;
 	}
 	ops.Change.all = 0;	//clear change states
 }
