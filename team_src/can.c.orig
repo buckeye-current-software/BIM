@@ -87,7 +87,12 @@ char FillCAN(unsigned int Mbox)
 	{
 	case HEARTBEAT_BOX:
 		//todo Nathan define heartbeat
+<<<<<<< HEAD
 		ECanaMboxes.MBOX1.MDL.word.LOW_WORD = ops.Flags.all;
+=======
+		ECanaMboxes.MBOX1.MDH.all = ops.Stopwatch.all;
+		ECanaMboxes.MBOX1.MDL.all = ops.State;
+>>>>>>> e2898a158e577318ed411d28cb3df692e9d573ba
 		return 1;
 	case ADC_BOX:
 		ECanaMboxes.MBOX1.MDL.all = data.adc;
@@ -188,28 +193,4 @@ __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
   	//To receive more interrupts from this PIE group, acknowledge this interrupt
   	PieCtrlRegs.PIEACK.all = PIEACK_GROUP9;
 }
-<<<<<<< HEAD
-=======
 
-void SendFillCAN(struct CANmsg *msg, char issend)
-{
-	//todo USER: setup for all transmit MBOXs
-	switch (msg->MBox)								//choose mailbox
-	{
-	case 1:
-		ECanaMboxes.MBOX1.MSGCTRL = msg->MSGCTRL;	//set control
-		ECanaMboxes.MBOX1.MDH = msg->MDH;			//set high
-		ECanaMboxes.MBOX1.MDL = msg->MDL;			//set low
-		if (issend == 1)
-		{
-			ECanaRegs.CANTRS.bit.TRS1 = 1; 				//send if flagged
-			//todo Nathan: Stopwatch?
-			while(ECanaRegs.CANTA.bit.TA1 != 1) {}		//wait to send
-			ECanaRegs.CANTA.bit.TA1 = 1;				//clear flog
-		}
-		break;
-	default:
-	}
-}
-
->>>>>>> juli
