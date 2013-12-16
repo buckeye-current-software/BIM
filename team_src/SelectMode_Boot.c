@@ -27,7 +27,7 @@
 //extern Uint32 Parallel_Boot(void);
 //extern Uint32 I2C_Boot(void);
 
-extern Uint32 CAN_Boot(void);
+extern Uint32 BC_CAN_Boot(void);
 extern void EnableDog(void);
 extern void DisableDog(void);
 
@@ -149,7 +149,7 @@ Uint32 SelectBootMode()
 //  else if(BootMode == SPI_BOOT) EntryAddr = SPI_Boot();
 //  else if(BootMode == I2C_BOOT) EntryAddr = I2C_Boot();
 //  else if(BootMode == PARALLEL_BOOT) EntryAddr = Parallel_Boot();
-  else if(BootMode == CAN_BOOT) EntryAddr = CAN_Boot();
+  else if(BootMode == BC_CAN_BOOT) EntryAddr = BC_CAN_Boot();
   else if(DevEmuRegs.DEVICECNF.bit.TRSTn == 0)
   {
      EntryAddr = FLASH_ENTRY_POINT;

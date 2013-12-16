@@ -7,11 +7,10 @@
 
 extern ops_struct ops;
 extern void c_int00(void);
-Uint16 MesgID = 1;
 
 int main(void)
 {
-
+	Uint16 MesgID;
 	void (*x)(void) = c_int00;
 	
 
@@ -105,9 +104,8 @@ void BootISRSetup()
 // INT1.4
 __interrupt void  XINT1_ISR(void)
 {
-	// Insert ISR Code here
+  // Insert ISR Code here
 	Restart();
-	//Boot(MesgID);
-	// To receive more interrupts from this PIE group, acknowledge this interrupt
-	PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
+  // To receive more interrupts from this PIE group, acknowledge this interrupt
+   PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
 }

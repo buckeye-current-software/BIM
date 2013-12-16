@@ -31,6 +31,7 @@
 #define OTP_BMODE 			0x3D7BFF     
 #define KEY_VAL          	0x55AA   
 
+//TODO: This says it's the ROM map, but I think these lines below (35-45) are RAM
 #define PARALLEL_BOOT       0x0000                                   
 #define SCI_BOOT			0x0001
 #define WAIT_BOOT           0x0002
@@ -39,7 +40,7 @@
 #define SPI_BOOT			0x0004
 #define I2C_BOOT			0x0005
 #define OTP_BOOT			0x0006
-#define CAN_BOOT            0x0007
+#define BC_CAN_BOOT         0x0007
 #define RAM_BOOT			0x000A
 #define FLASH_BOOT          0x000B
 
@@ -74,8 +75,8 @@ extern  Uint16 EmuBMode;
 #define Device_cal (void   (*)(void))0x3D7C80
 #define Get_mode   (Uint16 (*)(void))0x3D7CC0
 
-void Boot();
-void BootInit();
+void Boot(Uint16);
+void BootInit(Uint16);
 void Confirm();
 void Flash();
 

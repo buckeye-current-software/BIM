@@ -1,14 +1,11 @@
-// TI File $Revision: /main/1 $
-// Checkin $Date: January 22, 2009   16:48:12 $
-//###########################################################################
+// Buckeye Current Version 11/23/13
+// Updated Nov. 29, Julia
 //
-// FILE:    CAN_Boot.c
-//
-// TITLE:   2803x CAN Boot mode routines
+// TITLE: Our Special 2803x CAN Boot mode routines
 //
 // Functions:
 //
-//     Uint32 CAN_Boot(void)
+//   X Uint32 CAN_Boot(void) <--Omitted
 //     void CAN_Init(void)
 //     Uint32 CAN_GetWordData(void)
 //
@@ -17,62 +14,16 @@
 // default PLL setting:
 // OSCCLK = 10 MHz  SYSCLKOUT = 10 MHz  CAN module clock = 5 MHz Bit rate = 100kbps
 
-//###########################################################################
-// $TI Release: TMS320x2803x Boot ROM V1.0 $
-// $Release Date: January 22, 2009 $
-//###########################################################################
 
 #include "Boot.h"
 
-// Private functions
-void CAN_Init(void);
-Uint16 CAN_GetWordData(void);
+// All are internal functions
+void BC_CAN_Init(Uint16);
+Uint16 BC_CAN_GetWordData(void);
 
-// External functions
+// All are external functions
 extern void CopyData(void);
-extern Uint32 GetLongData(void);
 extern void ReadReservedFn(void);
-
-//#################################################
-// Uint32 CAN_Boot(void)
-//--------------------------------------------
-// This module is the main CAN boot routine.
-// It will load code via the CAN-A port.
-//
-// It will return a entry point address back
-// to the InitBoot routine which in turn calls
-// the ExitBoot routine.
-//--------------------------------------------
-
-Uint32 CAN_Boot()
-{
-   Uint32 EntryAddr;
-
-   // If the missing clock detect bit is set, just
-   // loop here.
-   if(SysCtrlRegs.PLLSTS.bit.MCLKSTS == 1)
-   {
-      for(;;);
-   }
-
-   // Asign GetWordData to the CAN-A version of the
-   // function.  GetWordData is a pointer to a function.
-   GetWordData = CAN_GetWordData;
-
-   CAN_Init();
-
-   // If the KeyValue was invalid, abort the load
-   // and return the flash entry point.
-   if (CAN_GetWordData() != 0x08AA) return FLASH_ENTRY_POINT;
-
-   ReadReservedFn();
-
-   EntryAddr = GetLongData();
-
-   CopyData();
-
-   return EntryAddr;
-}
 
 
 //#################################################
@@ -82,7 +33,37 @@ Uint32 CAN_Boot()
 // with the host.
 //----------------------------------------------
 
-void CAN_Init()
+void BC_CAN_Boot(Uint16 Node_ID)
+{
+
+	   // If the missing clock detect bit is set, just
+	   // loop here.
+	   if(SysCtrlRegs.PLLSTS.bit.MCLKSTS == 1)
+	   {
+	      for(;;);
+	   }
+
+	   // Asign GetWordData to the CAN-A version of the
+	   // function.  GetWordData is a pointer to a function.
+	   GetWordData = BC_CAN_GetWordData;
+
+	   BC_CAN_Init(Node_ID);
+
+	   // TODO: Adjust the returning of entry point?
+	   // If the KeyValue was invalid, abort the load
+	   // and return the flash entry point.
+	  // if (BC_CAN_GetWordData() != 0x08AA) return FLASH_ENTRY_POINT;
+
+//	   ReadReservedFn();
+
+//	   EntryAddr = GetLongData();
+
+//	   CopyData(); Moved to after calling confirm()
+
+
+}
+
+void BC_CAN_Init(Uint16 Node_ID)
 {
 
 /* Create a shadow register structure for the CAN control registers. This is
@@ -90,6 +71,8 @@ void CAN_Init()
  to these registers could potentially corrupt the register contents or return
  false data. This is especially true while writing to/reading from a bit
  (or group of bits) among bits 16 - 31 */
+
+// Passed param (Node_ID) is used in line 137 ///
 
    struct ECAN_REGS ECanaShadow;
 
@@ -125,11 +108,12 @@ void CAN_Init()
     ECanaShadow.CANRIOC.bit.RXFUNC = 1;
     ECanaRegs.CANRIOC.all = ECanaShadow.CANRIOC.all;
 
+
 /* Initialize all bits of 'Message Control Register' to zero */
 // Some bits of MSGCTRL register come up in an unknown state. For proper operation,
 // all bits (including reserved bits) of MSGCTRL must be initialized to zero
 
-    ECanaMboxes.MBOX1.MSGCTRL.all = 0x00000000;
+    ECanaMboxes.MBOX1.MSGCTRL.all = 0x0000000;
 
 /* Clear all RMPn, GIFn bits */
 // RMPn, GIFn bits are zero upon reset and are cleared again as a precaution.
@@ -179,13 +163,21 @@ void CAN_Init()
 
 /* Assign MSGID to MBOX1 */
 
-   ECanaMboxes.MBOX1.MSGID.all = 0x00040000;	// Standard ID of 1, Acceptance mask disabled
+//   ECanaMboxes.MBOX1.MSGID.all = 0x00040000;	// Standard ID of 1, Acceptance mask disabled
+   ECanaMboxes.MBOX1.MSGID.bit.STDMSGID = Node_ID;	// Team's first test-node address (not for specific node)
+   ECanaMboxes.MBOX1.MSGID.bit.AME = 0; //Acceptance mask disabled (See p. 33 of CAN Manual)
+   	   /* AME (bit 31) = 0 means the identifier extension bit stored in the mailbox
+   	    * determines which messages shall be received.
+   	    * The IDE bit of the receive mailbox determines the number of bits to be
+   	    * compared. Filtering is not applicable. The MSGIDs must match bit-for-bit
+   	    * in order to receive a message
+   	    */
 
 /* Configure MBOX1 to be a receive MBOX */
 
    ECanaRegs.CANMD.all = 0x0002;
 
-/* Enable MBOX1 */
+/* Enable MBOX1 - this will receive data (including confirmation handshake)*/
 
    ECanaRegs.CANME.all = 0x0002;
 
@@ -205,7 +197,7 @@ void CAN_Init()
 //-----------------------------------------------
 
 
-Uint16 CAN_GetWordData()
+Uint16 BC_CAN_GetWordData()
 {
    Uint16 wordData;
    Uint16 byteData;
@@ -231,55 +223,3 @@ Uint16 CAN_GetWordData()
    return wordData;
 }
 
-/*
-Data frames with a Standard MSGID of 0x1 should be transmitted to the ECAN-A bootloader.
-This data will be received in Mailbox1, whose MSGID is 0x1. No message filtering is employed.
-
-Transmit only 2 bytes at a time, LSB first and MSB next. For example, to transmit
-the word 0x08AA to the 28x device, transmit AA first, followed by 08. Following is the
-order in which data should be transmitted:
-AA 08   -   Keyvalue
-00 00   -   Part of 8 reserved words stream
-00 00   -   Part of 8 reserved words stream
-00 00   -   Part of 8 reserved words stream
-00 00   -   Part of 8 reserved words stream
-00 00   -   Part of 8 reserved words stream
-00 00   -   Part of 8 reserved words stream
-00 00   -   Part of 8 reserved words stream
-00 00   -   Part of 8 reserved words stream
-bb aa   -   MS part of 32-bit address (aabb)
-dd cc   -   LS part of 32-bit address (ccdd) - Final Entry-point address = 0xaabbccdd
-nn mm   -   Length of first section (mm nn)
-ff ee   -   MS part of 32-bit address (eeff)
-hh gg   -   LS part of 32-bit address (gghh) - Entry-point address of first section = 0xeeffgghh
-xx xx   -   First word of first section
-xx xx   -   Second word......
-...
-...
-...
-xxx     -   Last word of first section
-nn mm   -   Length of second section (mm nn)
-ff ee   -   MS part of 32-bit address (eeff)
-hh gg   -   LS part of 32-bit address (gghh) - Entry-point address of second section = 0xeeffgghh
-xx xx   -   First word of second section
-xx xx   -   Second word......
-...
-...
-...
-xxx     -   Last word of second section
-(more sections, if need be)
-00 00   -   Section length of zero for next section indicates end of data.
-*/
-
-/*
-Notes:
-------
-
-
-Rev history:
------------
-Changes from rev 0 to Rev A:-
-1. SAM is left at its default value of 0.
-
-*/
-// EOF-------
