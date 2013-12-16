@@ -22,7 +22,6 @@ void Retstart(void);
 void SendConfirmationMsg(Uint16);
 
 
-Uint16 MesgID = 0x00040004;
 Uint16 ConfNbr = 0x00CC;
 
 void Boot(Uint16 MesgID) {
