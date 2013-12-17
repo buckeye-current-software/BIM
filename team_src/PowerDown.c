@@ -52,9 +52,11 @@ void PowerDownISRSetup()
 
 	Comp3Regs.COMPCTL.bit.COMPDACEN = 1;
 
+
 	EPwm1Regs.TZCLR.all = 0xFFFF;
 	IER |= M_INT2;
 	PieCtrlRegs.PIEIER2.bit.INTx1 = 1;
+
 
 	EDIS;
 }

@@ -179,7 +179,7 @@ SECTIONS
    /* When using the boot ROM this section and the CPU vector */
    /* table is not needed.  Thus the default type is set here to  */
    /* DSECT  */
-   .reset              : > RESET,      PAGE = 0, TYPE = DSECT
+   .reset              : > RESET,      PAGE = 0
    vectors             : > VECTORS     PAGE = 0, TYPE = DSECT
 
 }

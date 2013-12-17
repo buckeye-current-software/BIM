@@ -11,10 +11,6 @@ Uint16 MesgID = 1;
 
 int main(void)
 {
-
-	void (*x)(void) = c_int00;
-	
-
 	StartUp();
 	BootISRSetup();
 	PowerDownISRSetup();
