@@ -77,7 +77,9 @@ extern  Uint16 EmuBMode;
 
 void Boot(Uint16);
 void BootInit(Uint16);
-void Confirm();
-void Flash();
+void Confirm(Uint16);
+void Boot_Restart();
+Uint16 BC_CAN_GetWordData();
+void BC_CAN_Init(Uint16 Node_ID);
 
 #endif  // end of TMS320x2803x_BOOT_H definition

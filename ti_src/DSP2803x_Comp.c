@@ -124,16 +124,16 @@ void InitComp3Gpio()
 // Pull-ups can be enabled or disabled disabled by the user.
 // Comment out other unwanted lines.
 
-   GpioCtrlRegs.GPBPUD.bit.GPIO34 = 1;    // Disable pull-up for GPIO34 (CMP3OUT)
+   //GpioCtrlRegs.GPBPUD.bit.GPIO34 = 1;    // Disable pull-up for GPIO34 (CMP3OUT)
 
 /* Configure Comp pins using GPIO regs*/
 // This specifies which of the possible GPIO pins will be Comp functional pins.
 // Comment out other unwanted lines.
 
-   GpioCtrlRegs.GPBMUX1.bit.GPIO34 = 3;  // Configure GPIO34 for CMP3OUT operation
+// GpioCtrlRegs.GPBMUX1.bit.GPIO34 = 3;  // Configure GPIO34 for CMP3OUT operation
 
     GpioCtrlRegs.AIOMUX1.bit.AIO6 = 2;    // Configure AIO6 for CMP3A (analog input) operation
-    GpioCtrlRegs.AIOMUX1.bit.AIO14 = 2;   // Configure AIO14 for CMP3B (analog input) operation
+    //GpioCtrlRegs.AIOMUX1.bit.AIO14 = 2;   // Configure AIO14 for CMP3B (analog input) operation
 
     EDIS;
 }

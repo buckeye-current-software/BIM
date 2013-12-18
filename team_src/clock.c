@@ -50,11 +50,8 @@ __interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
 	if (Clock_Ticks.DataOut >= DATAOUT_TICKS)
 	{
 		//send data or fill data
-		struct TRS_REG TRS;
-		TRS.TRS.bit.GP_BUTTON_TRS = 1;
-		TRS.TRS.bit.ADC_TRS = 1;
-
-		SendCANBatch(&TRS);
+		SendCAN(ADC_BOX);
+		SendCAN(GP_BUTTON_BOX);
 		Clock_Ticks.DataOut = 0;
 	}
 

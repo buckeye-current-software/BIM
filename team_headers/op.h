@@ -20,15 +20,15 @@
 
 typedef struct CHANGE_OPS
 {
-	char State;
-	char Flags;
+	char State : 1;
+	char Flags : 1;
 }change_struct;
 
 //todo User: stopwatch errors
 typedef struct FLAGS
 {
-	char cov_error;
-	char can_error;
+	char cov_error : 1;
+	char can_error : 1;
 }flags_struct;
 
 typedef struct OPERATIONS

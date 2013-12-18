@@ -20,6 +20,6 @@ char isStopWatchComplete(stopwatch_struct*);
 void StopStopWatch(stopwatch_struct* watch);
 
 
-#define SENDCAN_STOPWATCH 	1 //10 uS
+#define SENDCAN_STOPWATCH 	50 //100 uS
 
 #endif /* STOPWATCH_H_ */

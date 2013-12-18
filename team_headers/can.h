@@ -33,7 +33,7 @@ void FillSendCAN(unsigned int Mbox);
 #define COMMAND_ID 		0x01
 #define COMMAND_BOX 	0
 
-#define HEARTBEAT_ID 	0x00
+#define HEARTBEAT_ID 	0x0
 #define HEARTBEAT_BOX 	1
 
 #define ADC_ID 			0x02

@@ -19,6 +19,7 @@
 
 
 #include "Boot.h"
+#include "Flash2803x_API_Library.h"
 
 /*
 	COMMENTED OUT FOR TEMPLATE CHECK IF THIS WORKS
@@ -31,6 +32,8 @@
 // GetWordData is a pointer to the function that interfaces to the peripheral.
 // Each loader assigns this pointer to it's particular GetWordData function.
 uint16fptr GetWordData;
+
+FLASH_ST FlashStatus;
 
 // Function prototypes
 Uint32 GetLongData();
@@ -54,6 +57,7 @@ void ReadReservedFn(void);
 void CopyData()
 {
 
+
    struct HEADER {
      Uint16 BlockSize;
      Uint32 DestAddr;
@@ -61,6 +65,8 @@ void CopyData()
 
    Uint16 wordData;
    Uint16 i;
+   Uint16  Status;
+
 
    // Get the size in words of the first block
    BlockHeader.BlockSize = (*GetWordData)();
@@ -76,7 +82,10 @@ void CopyData()
       for(i = 1; i <= BlockHeader.BlockSize; i++)
       {
           wordData = (*GetWordData)();
-          *(Uint16 *)BlockHeader.DestAddr++ = wordData;
+          //*(Uint16 *)BlockHeader.DestAddr++ = wordData;
+          //memcpy((void *)BlockHeader.DestAddr, &wordData, 2);
+          Status = Flash_Program((Uint16*)BlockHeader.DestAddr,&wordData,1,&FlashStatus);
+          BlockHeader.DestAddr++;
       }
 
       // Get the size of the next block

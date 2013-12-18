@@ -14,6 +14,7 @@ void UserPowerDown();
 void NodePowerDown();
 char isPowerOn();
 void PowerDownISRSetup();
+void StartPowerDownInt();
 
 #define COMPVOLTAGE 	1
 #define VDDA			3

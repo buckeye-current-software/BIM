@@ -19,6 +19,7 @@ void Initilize()
 	CANSetup();
 	ClockSetup();
 	ops.State = STATE_SENSOR_COV;
+	StartPowerDownInt();			//start power down interrupt, this will change state to PowerDown if necessary
 }
 
 
@@ -28,6 +29,7 @@ void OperationsSetup()
 	//todo USER: OperationsSetup()
 	//add here and ops.h
 	ops.Change.all = 0;
+	ops.Flags.all = 0;
 	ops.State = STATE_SENSOR_COV;
 }
 

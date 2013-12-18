@@ -73,7 +73,7 @@ PAGE 0:    /* Program Memory */
    RAML0       : origin = 0x008000, length = 0x000800     /* on-chip RAM block L0 */
    RAML1       : origin = 0x008800, length = 0x000400     /* on-chip RAM block L1 */
    OTP         : origin = 0x3D7800, length = 0x000400     /* on-chip OTP */
-   FLASHH      : origin = 0x3E8000, length = 0x002000     /* on-chip FLASH */
+   BOOTLOADER  : origin = 0x3E8000, length = 0x002000     /* on-chip FLASH */
    FLASHG      : origin = 0x3EA000, length = 0x002000     /* on-chip FLASH */
    FLASHF      : origin = 0x3EC000, length = 0x002000     /* on-chip FLASH */
    FLASHE      : origin = 0x3EE000, length = 0x002000     /* on-chip FLASH */
@@ -118,6 +118,10 @@ SECTIONS
    .cinit              : > FLASHA      PAGE = 0
    .pinit              : > FLASHA,     PAGE = 0
    .text               : > FLASHA      PAGE = 0
+   .bootloader : {
+   Boot.obj(.text)}        > BOOTLOADER	   PAGE = 0
+   .bootloader : {
+   Shared_Boot.obj(.text)} > BOOTLOADER	   PAGE = 0
    codestart           : > BEGIN       PAGE = 0
    ramfuncs            : LOAD = FLASHD,
                          RUN = RAML0,

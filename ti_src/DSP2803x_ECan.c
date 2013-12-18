@@ -123,11 +123,11 @@ struct ECAN_REGS ECanaShadow;
     //TSEG2 = 2
     //JW  = 2;
     //Sampling point = 80%
-    //bus speed 250kbps
+    //bus speed 500kbps
     //BRP_reg = 3
     ECanaShadow.CANBTC.bit.BRPREG = 3;
-    ECanaShadow.CANBTC.bit.TSEG1REG = 9;
-    ECanaShadow.CANBTC.bit.TSEG2REG = 1;
+    ECanaShadow.CANBTC.bit.TSEG1REG = 10;
+    ECanaShadow.CANBTC.bit.TSEG2REG = 2;
     ECanaShadow.CANBTC.bit.SJWREG = 1;
 
 
