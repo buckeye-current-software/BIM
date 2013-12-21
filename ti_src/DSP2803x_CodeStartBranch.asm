@@ -62,7 +62,7 @@ code_start:
 ***********************************************************************
     .if WD_DISABLE == 1
 
-    .text
+	.text
 wd_disable:
     SETC OBJMODE        ;Set OBJMODE for 28x object code
     EALLOW              ;Enable EALLOW protected register access

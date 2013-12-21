@@ -10,6 +10,7 @@
 
 
 #include "Boot.h"
+#include "Shared_Boot.h"
 #include "main.h"
 #include "Flash2803x_API_Library.h"
 
@@ -22,7 +23,8 @@ extern Uint32 GetLongData(void);
 // Internal Functions
 
 
-Uint16 ConfNbr = 0x00CC;
+Uint16 ConfNbr1 = 0x00CC;
+Uint16 ConfNbr2 = 0x00AA;
 
 
 
@@ -41,7 +43,9 @@ void BootInit(Uint16 MesgID) {
 	Flash_CallbackPtr = 0;
 	EDIS;
 
-	Confirm(MesgID);
+	BC_CAN_Boot(MesgID);
+
+	Confirm(MesgID,ConfNbr1);
 
 	if (((*GetWordData)()) != 0x08AA)
 	{
@@ -50,9 +54,9 @@ void BootInit(Uint16 MesgID) {
 
 	Flash_Erase((SECTORB|SECTORC|SECTORD|SECTORE|SECTORF|SECTORG|SECTORH),&FlashStatus);
 
-	BC_CAN_Boot(MesgID);
 
-	Confirm(MesgID);
+
+	Confirm(MesgID,ConfNbr2);
 
 	if (((*GetWordData)()) != 0x08AA)
 	{
@@ -64,7 +68,7 @@ void BootInit(Uint16 MesgID) {
 }
 
 // Handshake com protocol with CANcorder through bus
-void Confirm(Uint16 MesgID) {
+void Confirm(Uint16 MesgID, Uint16 conf) {
 	//struct MBOX MboxS; Having issues typematching MBOXs to mbox signals/messageIDs, etc.
 	//struct MBOX MboxR;
 
@@ -84,7 +88,7 @@ void Confirm(Uint16 MesgID) {
 
 	EDIS;
 
-	ECanaMboxes.MBOX2.MDH.all = ConfNbr;			//set high
+	ECanaMboxes.MBOX2.MDH.all = conf;			//set high
 	ECanaMboxes.MBOX2.MDL.all = 0;					//set low
 
 	ECanaRegs.CANTRS.bit.TRS2 = 1; 				//send if flagged

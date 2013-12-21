@@ -1,15 +1,18 @@
 /*
  * main.h
  *
- *  Created on: Dec 21, 2013
+ *  Created on: Nov 10, 2013
  *      Author: Nathan
  */
 
 #ifndef MAIN_H_
 #define MAIN_H_
 
-
+void node();
+void BootISRSetup();
+void NextState(Uint16);
 void Restart();
-void StartUp();
+
+
 
 #endif /* MAIN_H_ */

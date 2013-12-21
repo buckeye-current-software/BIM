@@ -30,7 +30,7 @@ void SendCANBatch(struct TRS_REG *TRS);
 void FillSendCAN(unsigned int Mbox);
 
 //todo USER: DEFINE IDs and mailboxes for output
-#define COMMAND_ID 		0x01
+#define COMMAND_ID 		0x11
 #define COMMAND_BOX 	0
 
 #define HEARTBEAT_ID 	0x0

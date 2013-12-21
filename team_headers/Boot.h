@@ -65,7 +65,7 @@
 
 
 #define BOOTSTART	0x3F6000
-#define BOOTEND 	0x3E8000
+#define BOOTEND 	0x3F7F80
 //---------------------------------------------------------------------------
 //
 typedef Uint16 (* uint16fptr)();
@@ -80,7 +80,7 @@ extern  Uint16 EmuBMode;
 
 void Boot(Uint16);
 void BootInit(Uint16);
-void Confirm(Uint16);
+void Confirm(Uint16, Uint16);
 void Boot_Restart();
 Uint16 BC_CAN_GetWordData();
 void BC_CAN_Init(Uint16 Node_ID);

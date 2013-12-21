@@ -19,6 +19,7 @@
 
 
 #include "Boot.h"
+#include "Shared_Boot.h"
 #include "Flash2803x_API_Library.h"
 
 /*
@@ -36,9 +37,7 @@ uint16fptr GetWordData;
 FLASH_ST FlashStatus;
 
 // Function prototypes
-Uint32 GetLongData();
-void   CopyData(void);
-void ReadReservedFn(void);
+
 
 //#################################################
 // void CopyData(void)

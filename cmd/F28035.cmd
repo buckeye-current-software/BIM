@@ -118,12 +118,8 @@ SECTIONS
    .cinit              : > FLASHC      PAGE = 0
    .pinit              : > FLASHC,     PAGE = 0
    .text               : > FLASHC      PAGE = 0
-   .bootloader : {
-   Boot.obj(.text)}        > BOOTLOADER	   PAGE = 0
-   .bootloader : {
-   Shared_Boot.obj(.text)} > BOOTLOADER	   PAGE = 0
-   .bootloader : {
-   common.obj(.text)}        > BOOTLOADER	   PAGE = 0
+
+
    codestart           : > BEGIN       PAGE = 0
    ramfuncs            : LOAD = FLASHD,
                          RUN = RAML0,
@@ -138,8 +134,34 @@ SECTIONS
    /* Allocate uninitalized data sections: */
    .stack              : > RAMM0       PAGE = 1
    .ebss               : > RAML2       PAGE = 1
-   .esysmem            : > RAML2       PAGE = 1
+   .bss                : > RAML2       PAGE = 1
+   .sysmem             : > RAML3       PAGE = 1
 
+
+   .bootloader_boot : {
+   Boot.obj(.text)}                         > BOOTLOADER	   PAGE = 0
+   .bootloader_shared : {
+   Shared_Boot.obj(.text)}                  > BOOTLOADER	   PAGE = 0
+   .bootloader_main : {
+   main.obj(.text)}                         > BOOTLOADER	   PAGE = 0
+   .bootloader_sysctrl : {
+   DSP2803x_SysCtrl.obj(.text)}             > BOOTLOADER	   PAGE = 0
+   .bootloader_gpio : {
+   DSP2803x_Gpio.obj(.text)}                > BOOTLOADER	   PAGE = 0
+   .bootloader_piectrl : {
+   DSP2803x_PieCtrl.obj(.text)}             > BOOTLOADER	   PAGE = 0
+   .bootloader_pievect : {
+   DSP2803x_PieVect.obj(.text)}             > BOOTLOADER	   PAGE = 0
+
+	boot > 0x3F6000
+	{
+    	rts2800_ml.lib<boot.obj>(.text)
+	}
+
+	node > 0x3F2000
+	{
+    	node.obj(.text)
+	}
    /* Initalized sections go in Flash */
    /* For SDFlash to program these, they must be allocated to page 0 */
    .econst             : > FLASHC      PAGE = 0
@@ -185,7 +207,7 @@ SECTIONS
    /* When using the boot ROM this section and the CPU vector */
    /* table is not needed.  Thus the default type is set here to  */
    /* DSECT  */
-   .reset              : > RESET,      PAGE = 0
+   .reset              : > RESET,      PAGE = 0, TYPE = DSECT
    vectors             : > VECTORS     PAGE = 0, TYPE = DSECT
 
 }
