@@ -9,8 +9,8 @@
 #define COMMON_H_
 
 
-void Restart();
 void* myMalloc(int size);
 void myFree(void*);
+
 
 #endif /* COMMON_H_ */

@@ -101,6 +101,7 @@ struct ECAN_REGS ECanaShadow;
 /* Configure bit timing parameters for eCANA*/
 
     ECanaShadow.CANMC.all = ECanaRegs.CANMC.all;
+    ECanaShadow.CANMC.bit.DBO = 1 ;
     ECanaShadow.CANMC.bit.CCR = 1 ;            // Set CCR = 1
     ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
 

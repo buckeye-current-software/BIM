@@ -82,9 +82,10 @@ void CopyData()
       for(i = 1; i <= BlockHeader.BlockSize; i++)
       {
           wordData = (*GetWordData)();
-          //*(Uint16 *)BlockHeader.DestAddr++ = wordData;
-          //memcpy((void *)BlockHeader.DestAddr, &wordData, 2);
-          Status = Flash_Program((Uint16*)BlockHeader.DestAddr,&wordData,1,&FlashStatus);
+          if (BlockHeader.DestAddr < BOOTSTART || BlockHeader.DestAddr >= BOOTEND) //DON'T PROGRAM IN BOOT FLASH!
+          {
+        	  Status = Flash_Program((Uint16*)BlockHeader.DestAddr,&wordData,1,&FlashStatus);
+          }
           BlockHeader.DestAddr++;
       }
 

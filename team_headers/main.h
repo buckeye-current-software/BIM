@@ -12,6 +12,7 @@
 void BootISRSetup();
 void NextState(Uint16);
 void StartUp();
+void Restart();
 
 
 

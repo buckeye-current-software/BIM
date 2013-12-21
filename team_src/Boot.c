@@ -7,7 +7,10 @@
  *
  */
 
+
+
 #include "Boot.h"
+#include "main.h"
 #include "Flash2803x_API_Library.h"
 
 // External Function
@@ -24,8 +27,9 @@ Uint16 ConfNbr = 0x00CC;
 
 
 void Boot(Uint16 MesgID) {
+	DINT;
 	BootInit(MesgID);
-	Boot_Restart();
+	Restart();
 }
 
 void BootInit(Uint16 MesgID) {
@@ -37,7 +41,14 @@ void BootInit(Uint16 MesgID) {
 	Flash_CallbackPtr = 0;
 	EDIS;
 
-	Flash_Erase((SECTORA|SECTORB|SECTORC|SECTORD|SECTORE|SECTORF|SECTORG),&FlashStatus);
+	Confirm(MesgID);
+
+	if (((*GetWordData)()) != 0x08AA)
+	{
+		Restart();
+	}
+
+	Flash_Erase((SECTORB|SECTORC|SECTORD|SECTORE|SECTORF|SECTORG|SECTORH),&FlashStatus);
 
 	BC_CAN_Boot(MesgID);
 
@@ -45,7 +56,7 @@ void BootInit(Uint16 MesgID) {
 
 	if (((*GetWordData)()) != 0x08AA)
 	{
-		Boot_Restart();
+		Restart();
 	}
 	ReadReservedFn();
 	EntryAddr = GetLongData();
@@ -81,15 +92,6 @@ void Confirm(Uint16 MesgID) {
 	ECanaRegs.CANTA.bit.TA2 = 1;				//clear flog (riblet! riblet!)e
 }
 
-
-void Boot_Restart()
-{
-	EALLOW;
-	SysCtrlRegs.WDCR = 0x0028;               // Enable watchdog module
-	SysCtrlRegs.WDKEY = 0x00;                // wrong key should restart
-	SysCtrlRegs.WDKEY = 0x00;
-	EDIS;
-}
 
 //#################################################
 // void CAN_Init(void)
@@ -192,7 +194,7 @@ void BC_CAN_Init(Uint16 Node_ID)
 
 /* Configure bit timing parameters for eCANA*/
 
-	ECanaShadow.CANMC.all = ECanaRegs.CANMC.all;
+	ECanaShadow.CANMC.all = 0;
 	ECanaShadow.CANMC.bit.CCR = 1 ;            // Set CCR = 1
     ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
 

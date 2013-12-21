@@ -103,7 +103,7 @@ char FillCAN(unsigned int Mbox)
 		ECanaMboxes.MBOX1.MDH.all = 0;
 		ECanaMboxes.MBOX1.MDL.all = 0;
 		ECanaMboxes.MBOX1.MDL.word.LOW_WORD = ops.Flags.all;
-		ECanaShadow.CANMC.all = 0;
+		ECanaShadow.CANMC.bit.CDR = 0;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
 		EDIS;
 		return 1;
@@ -115,7 +115,7 @@ char FillCAN(unsigned int Mbox)
 		ECanaMboxes.MBOX2.MDH.all = 0;
 		ECanaMboxes.MBOX2.MDL.all = 0;
 		ECanaMboxes.MBOX2.MDL.all = data.adc;
-		ECanaShadow.CANMC.all = 0;
+		ECanaShadow.CANMC.bit.CDR = 0;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
 		EDIS;
 		return 1;
@@ -127,7 +127,7 @@ char FillCAN(unsigned int Mbox)
 		ECanaMboxes.MBOX3.MDH.all = 0;
 		ECanaMboxes.MBOX3.MDL.all = 0;
 		ECanaMboxes.MBOX3.MDL.all = data.gp_button;
-		ECanaShadow.CANMC.all = 0;
+		ECanaShadow.CANMC.bit.CDR = 0;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
 		EDIS;
 		return 1;

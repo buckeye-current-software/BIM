@@ -6,8 +6,9 @@
 #include "all.h"
 
 extern ops_struct ops;
-extern void c_int00(void);
 Uint16 MesgID = 5;
+
+const char FlashCheck = 1;
 
 int main(void)
 {
@@ -42,35 +43,6 @@ void NextState(Uint16 MesgID)
 	}
 }
 
-void StartUp()
-{
-	memcpy(&RamfuncsRunStart, &RamfuncsLoadStart,  (unsigned long)&RamfuncsLoadSize);
-
-	InitSysCtrl();
-
-	InitGpio();
-	DINT;
-
-	InitPieCtrl();
-
-	// Disable CPU interrupts and clear all CPU interrupt flags:
-	IER = 0x0000;
-	IFR = 0x0000;
-
-	// Initialize the PIE vector table with pointers to the shell Interrupt
-	// Service Routines (ISR).
-	// This will populate the entire table, even if the interrupt
-	// is not used in this example.  This is useful for debug purposes.
-	// The shell ISR routines are found in DSP2803x_DefaultIsr.c.
-	// This function is found in DSP2803x_PieVect.c.
-	InitPieVectTable();
-
-	//Initialize Flash
-	//InitFlash();
-
-	EINT;   // Enable Global interrupt INTM
-	ERTM;   // Enable Global realtime interrupt DBGM
-}
 
 void BootISRSetup()
 {
@@ -101,6 +73,49 @@ void BootISRSetup()
 	   IER |= M_INT1;
 }
 
+void StartUp()
+{
+	if (FlashCheck != 1) //if this const is not one flash must have been erased but not flashed over
+	{
+		Boot(1);
+	}
+
+	memcpy(&RamfuncsRunStart, &RamfuncsLoadStart,  (unsigned long)&RamfuncsLoadSize);
+
+	InitSysCtrl();
+
+	InitGpio();
+	DINT;
+
+	InitPieCtrl();
+
+	// Disable CPU interrupts and clear all CPU interrupt flags:
+	IER = 0x0000;
+	IFR = 0x0000;
+
+	// Initialize the PIE vector table with pointers to the shell Interrupt
+	// Service Routines (ISR).
+	// This will populate the entire table, even if the interrupt
+	// is not used in this example.  This is useful for debug purposes.
+	// The shell ISR routines are found in DSP2803x_DefaultIsr.c.
+	// This function is found in DSP2803x_PieVect.c.
+	InitPieVectTable();
+
+	//Initialize Flash
+	//InitFlash();
+
+	EINT;   // Enable Global interrupt INTM
+	ERTM;   // Enable Global realtime interrupt DBGM
+}
+
+void Restart()
+{
+	EALLOW;
+	SysCtrlRegs.WDCR = 0x0028;               // Enable watchdog module
+	SysCtrlRegs.WDKEY = 0x00;                // wrong key should restart
+	SysCtrlRegs.WDKEY = 0x00;
+	EDIS;
+}
 
 // INT1.4
 __interrupt void  XINT1_ISR(void)
