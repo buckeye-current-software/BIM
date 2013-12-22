@@ -13,8 +13,9 @@ void* myMalloc(int size)
 {
 	//malloc is not reentrant so interrupts must be disabled to use it
 	DINT;
-	malloc(size);
+	void* ret = malloc(size);
 	EINT;
+	return ret;
 }
 
 void myFree(void* p)

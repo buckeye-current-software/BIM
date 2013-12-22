@@ -15,11 +15,11 @@ void Initilize()
 {
 	OperationsSetup();
 	DataSetup();
-	StopWatchSetUp(10);
 	CANSetup();
 	ClockSetup();
 	ops.State = STATE_SENSOR_COV;
 	StartPowerDownInt();			//start power down interrupt, this will change state to PowerDown if necessary
+	StopWatchSetUp(10);
 }
 
 

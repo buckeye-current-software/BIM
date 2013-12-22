@@ -34,10 +34,10 @@ void CANSetup()
 	ECanaMboxes.MBOX0.MSGID.bit.AAM = 0; 	// no RTR AUTO TRANSMIT
 	ECanaMboxes.MBOX0.MSGCTRL.bit.DLC = 8;
 	ECanaMboxes.MBOX0.MSGID.bit.STDMSGID = COMMAND_ID;
-	ECanaRegs.CANMD.bit.MD0 = 1;			//receive
-	ECanaRegs.CANME.bit.ME0 = 1;			//enable
+	ECanaShadow.CANMD.bit.MD0 = 1;			//receive
+	ECanaShadow.CANME.bit.ME0 = 1;			//enable
 	ECanaShadow.CANMIM.bit.MIM0  = 1; 		//int enable
-	ECanaShadow.CANMIL.bit.MIL0  = 1;  		// Int.-Level MB#1  -> I1EN
+	ECanaShadow.CANMIL.bit.MIL0  = 1;  		// Int.-Level MB#0  -> I1EN
 
 	//Heart TRANSMIT
 	ECanaMboxes.MBOX1.MSGID.bit.IDE = 0; 	//standard id
@@ -45,8 +45,8 @@ void CANSetup()
 	ECanaMboxes.MBOX1.MSGID.bit.AAM = 1; 	//RTR AUTO TRANSMIT
 	ECanaMboxes.MBOX1.MSGCTRL.bit.DLC = 8;
 	ECanaMboxes.MBOX1.MSGID.bit.STDMSGID = HEARTBEAT_ID;
-	ECanaRegs.CANMD.bit.MD1 = 0; 			//transmit
-	ECanaRegs.CANME.bit.ME1 = 1;			//enable
+	ECanaShadow.CANMD.bit.MD1 = 0; 			//transmit
+	ECanaShadow.CANME.bit.ME1 = 1;			//enable
 
 
 	//SOMETHING ODD ABOUT ORDER HERE AND RTR BIT...
@@ -57,8 +57,8 @@ void CANSetup()
 	ECanaMboxes.MBOX2.MSGID.bit.AAM = 1; 	//RTR AUTO TRANSMIT
 	ECanaMboxes.MBOX2.MSGCTRL.bit.DLC = 8;
 	ECanaMboxes.MBOX2.MSGID.bit.STDMSGID = ADC_ID;
-	ECanaRegs.CANMD.bit.MD2 = 0; 			//transmit
-	ECanaRegs.CANME.bit.ME2 = 1;			//enable
+	ECanaShadow.CANMD.bit.MD2 = 0; 			//transmit
+	ECanaShadow.CANME.bit.ME2 = 1;			//enable
 
 	//gp_button TRANSMIT
 	ECanaMboxes.MBOX3.MSGID.bit.IDE = 0; 	//standard id
@@ -66,14 +66,16 @@ void CANSetup()
 	ECanaMboxes.MBOX3.MSGID.bit.AAM = 1; 	//RTR AUTO TRANSMIT
 	ECanaMboxes.MBOX3.MSGCTRL.bit.DLC = 8;
 	ECanaMboxes.MBOX3.MSGID.bit.STDMSGID = GP_BUTTON_ID;
-	ECanaRegs.CANMD.bit.MD3 = 0; 			//transmit
-	ECanaRegs.CANME.bit.ME3 = 1;			//enable
+	ECanaShadow.CANMD.bit.MD3 = 0; 			//transmit
+	ECanaShadow.CANME.bit.ME3 = 1;			//enable
 
 
 	ECanaRegs.CANGAM.all = ECanaShadow.CANGAM.all;
 	ECanaRegs.CANGIM.all = ECanaShadow.CANGIM.all;
 	ECanaRegs.CANMIM.all = ECanaShadow.CANMIM.all;
 	ECanaRegs.CANMIL.all = ECanaShadow.CANMIL.all;
+	ECanaRegs.CANMD.all = ECanaShadow.CANMD.all;
+	ECanaRegs.CANME.all = ECanaShadow.CANME.all;
     ECanaShadow.CANMC.all = ECanaRegs.CANMC.all;
     ECanaShadow.CANMC.bit.STM = 0;    // No self-test mode
     ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
@@ -91,7 +93,6 @@ char FillCAN(unsigned int Mbox)
 	//todo USER: setup for all transmit MBOXs
 	struct ECAN_REGS ECanaShadow;
 	ECanaShadow.CANMC.all = ECanaRegs.CANMC.all;
-	//Make sure
 	switch (Mbox)								//choose mailbox
 	{
 	case HEARTBEAT_BOX:
@@ -103,6 +104,7 @@ char FillCAN(unsigned int Mbox)
 		ECanaMboxes.MBOX1.MDH.all = 0;
 		ECanaMboxes.MBOX1.MDL.all = 0;
 		ECanaMboxes.MBOX1.MDL.word.LOW_WORD = ops.Flags.all;
+		ECanaShadow.CANMC.bit.MBNR = 0;
 		ECanaShadow.CANMC.bit.CDR = 0;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
 		EDIS;
@@ -116,6 +118,7 @@ char FillCAN(unsigned int Mbox)
 		ECanaMboxes.MBOX2.MDL.all = 0;
 		ECanaMboxes.MBOX2.MDL.all = data.adc;
 		ECanaShadow.CANMC.bit.CDR = 0;
+		ECanaShadow.CANMC.bit.MBNR = 0;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
 		EDIS;
 		return 1;
@@ -128,6 +131,7 @@ char FillCAN(unsigned int Mbox)
 		ECanaMboxes.MBOX3.MDL.all = 0;
 		ECanaMboxes.MBOX3.MDL.all = data.gp_button;
 		ECanaShadow.CANMC.bit.CDR = 0;
+		ECanaShadow.CANMC.bit.MBNR = 0;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
 		EDIS;
 		return 1;
