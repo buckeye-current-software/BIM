@@ -11,5 +11,8 @@
 
 void Restart();
 void StartUp();
+void BootISRSetup();
+void NextState(Uint16);
+
 
 #endif /* MAIN_H_ */

@@ -11,7 +11,6 @@
 
 #include "Boot.h"
 #include "Shared_Boot.h"
-#include "main.h"
 #include "Flash2803x_API_Library.h"
 
 // External Function
@@ -31,7 +30,7 @@ Uint16 ConfNbr2 = 0x00AA;
 void Boot(Uint16 MesgID) {
 	DINT;
 	BootInit(MesgID);
-	Restart();
+	Boot_Restart();
 }
 
 void BootInit(Uint16 MesgID) {
@@ -49,18 +48,16 @@ void BootInit(Uint16 MesgID) {
 
 	if (((*GetWordData)()) != 0x08AA)
 	{
-		Restart();
+		Boot_Restart();
 	}
 
-	Flash_Erase((SECTORB|SECTORC|SECTORD|SECTORE|SECTORF|SECTORG|SECTORH),&FlashStatus);
-
-
+	Flash_Erase((SECTORA|SECTORB|SECTORC|SECTORD|SECTORE|SECTORF|SECTORG),&FlashStatus);
 
 	Confirm(MesgID,ConfNbr2);
 
 	if (((*GetWordData)()) != 0x08AA)
 	{
-		Restart();
+		Boot_Restart();
 	}
 	ReadReservedFn();
 	EntryAddr = GetLongData();
@@ -293,5 +290,16 @@ Uint16 BC_CAN_GetWordData()
     ECanaRegs.CANRMP.all = 0xFFFFFFFF;
 
    return wordData;
+}
+
+void Boot_Restart()
+{
+	EALLOW;
+	SysCtrlRegs.WDCR = 0x0028;               // Enable watchdog module
+	SysCtrlRegs.WDKEY = 0x00;                // wrong key should restart
+	SysCtrlRegs.WDKEY = 0x00;
+	EDIS;
+
+	while(1){}
 }
 

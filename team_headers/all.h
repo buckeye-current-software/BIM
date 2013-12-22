@@ -17,7 +17,6 @@
 #include "Boot.h"
 #include "PowerDown.h"
 #include "common.h"
-#include "node.h"
 #include "main.h"
 #include "clock.h"
 #include "can.h"
