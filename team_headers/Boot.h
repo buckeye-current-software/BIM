@@ -64,8 +64,8 @@
 #define SIXTEEN_BIT_HEADER 0x10AA
 
 
-#define BOOTSTART	0x3F6000
-#define BOOTEND 	0x3F7F80
+#define BOOTSTART	0x3E8000
+#define BOOTEND 	0x3EA000
 //---------------------------------------------------------------------------
 //
 typedef Uint16 (* uint16fptr)();
