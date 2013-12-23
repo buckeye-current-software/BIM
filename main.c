@@ -46,11 +46,11 @@ void NextState(Uint16 MesgID)
 
 void BootISRSetup()
 {
-	// GPIO0 and GPIO1 are inputs
 	   EALLOW;
 	   GpioCtrlRegs.GPAMUX2.bit.GPIO28 = 0;         // GPIO
 	   GpioCtrlRegs.GPADIR.bit.GPIO28 = 0;          // input
 	   GpioCtrlRegs.GPAQSEL2.bit.GPIO28 = 2;        // XINT1 Synch to SYSCLKOUT only
+	   GpioCtrlRegs.GPAPUD.bit.GPIO28 = 0; 			//enable pull up
 	   EDIS;
 
 	// GPIO28 is XINT1, GPIO1 is XINT2
