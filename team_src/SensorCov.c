@@ -10,6 +10,7 @@
 
 ops_struct ops_temp;
 data_struct data_temp;
+stopwatch_struct* conv_watch;
 
 void SensorCov()
 {
@@ -40,6 +41,7 @@ void SensorCovInit()
 	ConfigLED1();
 	//CONFIG 12V SWITCH
 	Config12V();
+	conv_watch = StartStopWatch(4);
 }
 
 
@@ -52,7 +54,7 @@ void LatchStruct()
 
 void SensorCovMeasure()
 {
-	stopwatch_struct* watch = StartStopWatch(4);
+	StopWatchRestart(conv_watch);
 
 	//todo USER: Sensor Conversion
 	//update data_temp and ops_temp
@@ -88,7 +90,7 @@ void SensorCovMeasure()
 	}
 
 	//exit and stopwatch error if timeout
-	if (isStopWatchComplete(watch) == 1)
+	if (isStopWatchComplete(conv_watch) == 1)
 	{
 		ops_temp.Flags.bit.cov_error = 1;
 	}
@@ -97,7 +99,6 @@ void SensorCovMeasure()
 		ops_temp.Flags.bit.cov_error = 0;
 	}
 
-	StopStopWatch(watch);
 
 	if (ops_temp.Flags.all != 0)
 	{
@@ -138,6 +139,7 @@ void UpdateStruct()
 void SensorCovDeInit()
 {
 	//todo USER: SensorCovDeInit()
+	StopStopWatch(conv_watch);
 	CLEARLED0();
 	CLEARLED1();
 	CLEAR12V();

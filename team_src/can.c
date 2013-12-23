@@ -7,6 +7,7 @@
 #include "all.h"
 
 unsigned int mask;
+stopwatch_struct* can_watch;
 
 void CANSetup()
 {
@@ -84,6 +85,8 @@ void CANSetup()
     //ENABLE PIE INTERRUPTS
     IER |= M_INT9;
     PieCtrlRegs.PIEIER9.bit.INTx6= 1;
+
+    can_watch = StartStopWatch(SENDCAN_STOPWATCH);
 }
 
 
@@ -153,12 +156,12 @@ void SendCAN(unsigned int Mbox)
 	ECanaRegs.CANTRS.all = mask;
 
 	//todo Nathan: calibrate sendcan stopwatch
-	stopwatch_struct* watch = StartStopWatch(SENDCAN_STOPWATCH);
+	StopWatchRestart(can_watch);
 
-	while(((ECanaRegs.CANTA.all & mask) != mask) && (isStopWatchComplete(watch) == 0)); //wait to send or hit stop watch
+	while(((ECanaRegs.CANTA.all & mask) != mask) && (isStopWatchComplete(can_watch) == 0)); //wait to send or hit stop watch
 
 	ECanaRegs.CANTA.all = mask;						//clear flag
-	if (isStopWatchComplete(watch) == 1)					//if stopwatch flag
+	if (isStopWatchComplete(can_watch) == 1)					//if stopwatch flag
 	{
 		ops.Flags.bit.can_error = 1;
 	}
@@ -166,19 +169,18 @@ void SendCAN(unsigned int Mbox)
 	{
 		ops.Flags.bit.can_error = 0;
 	}
-	StopStopWatch(watch);
 }
 
 
 void SendCANBatch(struct TRS_REG *TRS)
 {
-	stopwatch_struct* watch = StartStopWatch(SENDCAN_STOPWATCH);
+	StopWatchRestart(can_watch);
 
 	ECanaRegs.CANTRS.all = TRS->TRS.all;
-	while(((ECanaRegs.CANTA.all & TRS->TRS.all) != TRS->TRS.all) && (isStopWatchComplete(watch) == 0));		//wait to send or stopwatch
+	while(((ECanaRegs.CANTA.all & TRS->TRS.all) != TRS->TRS.all) && (isStopWatchComplete(can_watch) == 0));		//wait to send or stopwatch
 	ECanaRegs.CANTA.all = TRS->TRS.all;
 
-	if (isStopWatchComplete(watch) == 1)					//if stopwatch flag
+	if (isStopWatchComplete(can_watch) == 1)					//if stopwatch flag
 	{
 		ECanaRegs.CANTRR.all = TRS->TRS.all;				//cancel requests
 		ops.Flags.bit.can_error = 1;
@@ -187,7 +189,7 @@ void SendCANBatch(struct TRS_REG *TRS)
 	{
 		ops.Flags.bit.can_error = 0;
 	}
-	StopStopWatch(watch);
+
 }
 
 void FillCANData()

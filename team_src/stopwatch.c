@@ -39,12 +39,15 @@ void StopWatchSetUp(float time)
 
 stopwatch_struct* StartStopWatch(unsigned int time)
 {
-
-
 	stopwatch_struct* watch = (stopwatch_struct*)myMalloc(sizeof(stopwatch_struct));
 	watch->Start = StopWatch.InterruptCount;
 	watch->Time = time;
 	return watch;
+}
+
+void StopWatchRestart(stopwatch_struct* watch)
+{
+	watch->Start = StopWatch.InterruptCount;
 }
 
 char isStopWatchComplete(stopwatch_struct* watch)
