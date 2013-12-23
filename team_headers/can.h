@@ -26,7 +26,6 @@ void CANSetup();
 char FillCAN(unsigned int Mbox);
 void SendCAN(unsigned int Mbox);
 void FillCANData();
-void SendCANBatch(struct TRS_REG *TRS);
 void FillSendCAN(unsigned int Mbox);
 
 //todo USER: DEFINE IDs and mailboxes for output
