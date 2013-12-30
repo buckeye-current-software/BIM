@@ -40,7 +40,7 @@ void PowerDownISRSetup()
 	EALLOW;
 	AdcRegs.ADCCTL1.bit.ADCBGPWD = 1;
 
-	Comp3Regs.DACVAL.bit.DACVAL = (COMPVOLTAGE*1023)/(VDDA-VSSA);
+	Comp3Regs.DACVAL.bit.DACVAL = (Uint16)(COMPVOLTAGE*1023.0)/(VDDA-VSSA);
 	Comp3Regs.COMPCTL.bit.CMPINV = 1; //invert comp signal
 	Comp3Regs.COMPCTL.bit.COMPDACEN = 1;
 

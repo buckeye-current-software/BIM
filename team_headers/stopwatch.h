@@ -19,6 +19,7 @@ stopwatch_struct* StartStopWatch(unsigned int time);
 char isStopWatchComplete(stopwatch_struct*);
 void StopStopWatch(stopwatch_struct* watch);
 void StopWatchRestart(stopwatch_struct* watch);
+void StopWatchRestartTime(stopwatch_struct* watch, unsigned int time);
 
 
 #define SENDCAN_STOPWATCH 	50 //100 uS

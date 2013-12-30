@@ -9,6 +9,11 @@
 #define ALL_H_
 
 #include "DSP28x_Project.h"     // Device Headerfile and Examples Include File
+#include "spi.h"
+#include "bq_data_flash.h"
+#include "bq_pack.h"
+#include "spi_bq.h"
+#include "BQ.h"
 #include "stopwatch.h"
 #include "op.h"
 #include "data.h"
@@ -21,6 +26,7 @@
 #include "clock.h"
 #include "can.h"
 #include <stdlib.h>
+#include <math.h>
 #include "adc.h"
 #include "gpio.h"
 #include "DSP2803x_GlobalPrototypes.h"

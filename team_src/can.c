@@ -112,32 +112,7 @@ char FillCAN(unsigned int Mbox)
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
 		EDIS;
 		return 1;
-	case ADC_BOX:
-		EALLOW;
-		ECanaShadow.CANMC.bit.MBNR = Mbox;
-		ECanaShadow.CANMC.bit.CDR = 1;
-		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
-		ECanaMboxes.MBOX2.MDH.all = 0;
-		ECanaMboxes.MBOX2.MDL.all = 0;
-		ECanaMboxes.MBOX2.MDL.all = data.adc;
-		ECanaShadow.CANMC.bit.CDR = 0;
-		ECanaShadow.CANMC.bit.MBNR = 0;
-		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
-		EDIS;
-		return 1;
-	case GP_BUTTON_BOX:
-		EALLOW;
-		ECanaShadow.CANMC.bit.MBNR = Mbox;
-		ECanaShadow.CANMC.bit.CDR = 1;
-		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
-		ECanaMboxes.MBOX3.MDH.all = 0;
-		ECanaMboxes.MBOX3.MDL.all = 0;
-		ECanaMboxes.MBOX3.MDL.all = data.gp_button;
-		ECanaShadow.CANMC.bit.CDR = 0;
-		ECanaShadow.CANMC.bit.MBNR = 0;
-		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
-		EDIS;
-		return 1;
+
 	}
 	return 0;
 }

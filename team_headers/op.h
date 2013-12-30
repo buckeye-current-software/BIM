@@ -22,12 +22,14 @@ typedef struct CHANGE_OPS
 {
 	char State : 1;
 	char Flags : 1;
+	char BIM_State : 1;
+	char Balance : 1;
 }change_struct;
 
 //todo User: stopwatch errors
 typedef struct FLAGS
 {
-	char cov_error : 1;
+	char BIM_error : 1;
 	char can_error : 1;
 }flags_struct;
 
@@ -41,9 +43,11 @@ typedef struct OPERATIONS
   }								Flags;
   union CHANGE
   {
-  	long 			all;
-  	change_struct 	bit;
-  }					Change;
+  	long 						all;
+  	change_struct 				bit;
+  }								Change;
+  unsigned long BIM_State;
+  unsigned long Balance;
 } ops_struct;
 
 

@@ -11,8 +11,8 @@
 
 typedef struct DATA
 {
-  unsigned long adc;
-  char gp_button;
+  char update;
+  bq_pack_t bq_pack;
 } data_struct;
 
 #endif /* DATA_H_ */

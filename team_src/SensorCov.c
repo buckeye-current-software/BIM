@@ -10,7 +10,7 @@
 
 ops_struct ops_temp;
 data_struct data_temp;
-stopwatch_struct* conv_watch;
+stopwatch_struct* BIM_watch;
 
 void SensorCov()
 {
@@ -20,7 +20,11 @@ void SensorCov()
 		LatchStruct();
 		SensorCovMeasure();
 		UpdateStruct();
-		FillCANData();
+		if(data.update == 1)
+		{
+			FillCANData();
+			data.update = 0;
+		}
 	}
 	SensorCovDeInit();
 }
@@ -28,93 +32,77 @@ void SensorCov()
 void SensorCovInit()
 {
 	//todo USER: SensorCovInit()
-	//CONFIG ADC
-	adcinit();
-
-	//CONFIG GP_BUTTON
-	ConfigGPButton();
-
-	//CONFIG LEDS
-	//led 0
-	ConfigLED0();
-	//led 1
-	ConfigLED1();
-	//CONFIG 12V SWITCH
-	Config12V();
-	conv_watch = StartStopWatch(4);
+	ops.BIM_State = INIT;
+	BQ_Setup();
 }
 
 
 void LatchStruct()
 {
 	memcpy(&ops_temp, &ops, sizeof(struct OPERATIONS));
-	memcpy(&data_temp, &data, sizeof(struct DATA));
+	//memcpy(&data_temp, &data, sizeof(struct DATA));		//data is only changed in sensor measure
 	ops.Change.all = 0;	//clear change states
 }
 
 void SensorCovMeasure()
 {
-	StopWatchRestart(conv_watch);
-
-	//todo USER: Sensor Conversion
-	//update data_temp and ops_temp
-	//use stopwatch to catch timeouts
-	//waiting should poll isStopWatchComplete() to catch timeout and throw StopWatchError
-
-	readADC();
-	data_temp.adc = A0RESULT;
-
-	data_temp.gp_button = READGPBUTTON();
-
-	if (data_temp.gp_button == 0) 			//if pushed cause stopwatch
+	switch (ops_temp.BIM_State == INIT)
 	{
-		SETLED0();
-		int i = 0;
-		while (i < 100)
+	case INIT:
+		if(NUMBER_OF_BQ_DEVICES != bq_pack_address_discovery())
 		{
-			i++;
+			ops_temp.BIM_State = INIT_DELAY;
 		}
+		else
+		{
+			bq_pack_init();
+			ops_temp.BIM_State = MEASURE;
+		}
+		BIM_watch = StartStopWatch(50000);	// half second delay
+		break;
+	case INIT_DELAY:
+		if (isStopWatchComplete(BIM_watch) == 1) 	// if delayed enough
+		{
+			if(NUMBER_OF_BQ_DEVICES != bq_pack_address_discovery()) //try to init again
+			{
+				ops_temp.BIM_State = INIT_DELAY;					//if didn't work try again
+				StopWatchRestart(BIM_watch);
+			}
+			else
+			{
+				ops_temp.BIM_State = COV;							//if worked conversion
+				StopWatchRestart(BIM_watch);
+			}
+		}
+		break;
+	case COV:
+		if (isStopWatchComplete(BIM_watch) == 1)					// if delayed conversion
+		{
+			BMM_Wake();
+			bq_pack_start_conv();
+			ops_temp.BIM_State = MEASURE;
+		}
+		break;
+	case MEASURE:
+		if (READBQDRDY() == 1)										//wait until data is ready
+		{
+			update_bq_pack_data();									//update data
+			CellBalancing();										//balance if ops says so
+			BMM_Sleep();
+			data_temp.update = 1;									//actually latch data
+		}
+		break;
+	default:
+		ops_temp.BIM_State = INIT;
 	}
-	else
-	{
-		CLEARLED0();
-	}
-
-	if (data_temp.adc > 2000)
-	{
-		SETLED1();
-	}
-	else
-	{
-		CLEARLED1();
-	}
-
-	//exit and stopwatch error if timeout
-	if (isStopWatchComplete(conv_watch) == 1)
-	{
-		ops_temp.Flags.bit.cov_error = 1;
-	}
-	else
-	{
-		ops_temp.Flags.bit.cov_error = 0;
-	}
-
-
-	if (ops_temp.Flags.all != 0)
-	{
-		SET12V();
-	}
-	else
-	{
-		CLEAR12V();
-	}
-
-
 }
 
 void UpdateStruct()
 {
-	memcpy(&data, &data_temp, sizeof(struct DATA));
+	if (data_temp.update == 1)
+	{
+		memcpy(&data, &data_temp, sizeof(struct DATA));
+	}
 
 	//todo USER: UpdateStruct
 	//update with node specific op changes
@@ -127,11 +115,21 @@ void UpdateStruct()
 		ops.State = ops_temp.State;
 	}
 
+	if (ops.Change.bit.Balance == 0)
+	{
+		ops.State = ops_temp.Balance;
+	}
+
+	if (ops.Change.bit.BIM_State == 0)
+	{
+		ops.State = ops_temp.BIM_State;
+	}
+
 	if (ops.Change.bit.Flags == 0)
 	{
 		//only cov error happens inside of conversion so all other changes are considered correct.
 		//update accordingly to correct cov_errors
-		ops.Flags.bit.cov_error = ops_temp.Flags.bit.cov_error;
+
 	}
 	ops.Change.all = 0;	//clear change states
 }
@@ -139,8 +137,6 @@ void UpdateStruct()
 void SensorCovDeInit()
 {
 	//todo USER: SensorCovDeInit()
-	StopStopWatch(conv_watch);
-	CLEARLED0();
-	CLEARLED1();
-	CLEAR12V();
+	StopStopWatch(BIM_watch);
+
 }
