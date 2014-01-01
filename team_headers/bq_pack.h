@@ -169,12 +169,6 @@ typedef struct BQ_DEV
 
 
 
-//defines the bit position for the error status
-#define STATUS_ERROR_POT         	  BIT1
-#define STATUS_ERROR_CUV              BIT2 
-#define STATUS_ERROR_COV			  BIT3
-#define STATUS_ERROR_TIMEOUT				BIT4
-// definition of the structure that stores the battery pack information 
 typedef struct BQ_PACK
 {
   bq_dev_t bq_devs[NUMBER_OF_BQ_DEVICES];
@@ -251,6 +245,8 @@ short bq_dev_read_gpai(bq_dev_t* this);
 unsigned char bq_dev_set_gpio(bq_dev_t* this);
 unsigned char bq_dev_clear_gpio(bq_dev_t* this);
 unsigned char bq_dev_toggle_gpio(bq_dev_t* this);
+unsigned char bq_dev_sleep(bq_dev_t* this);
+unsigned char bq_dev_wake(bq_dev_t* this);
 
 
 

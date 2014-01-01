@@ -1,5 +1,5 @@
 
-Variable measurement freq:
+Variable measurement freq	DONE
 
 
 Flags:
@@ -12,6 +12,8 @@ UpdateStruct()				DONE.
 BQ Flash:					CHECK LATER
 
 can messages: 
+Cell_send()					UPDATE ACCORDINGLY
+Correct send freq.			DONE
 
 BIM functions to check:
 bq_pack_address_discovery() CHECK DELAY
@@ -33,19 +35,28 @@ bq_dev_read_errors			DONE
 bq_pack_init				DONE
 conf_bq_dev					DONE
 init_bq_dev_data_structure	DONE
-bq_dev_clear_alerts			don't clear OT1/2?
-bq_dev_clear_faults			check this
+bq_dev_clear_alerts			DONE
+bq_dev_clear_faults			DONE
 
-
-Send_SPI					DONE
 calculate_crc				DONE
 
 SPI_Setup					DONE
 BQ_Setup					DONE
-BQ_Disable					Disable ISO? Need PINS
-spi_fifo_init()				BAUDRATE? 
-SpiaGpio()					Need PINS
-InitBQ76PL536ports()		enable ISO? Need PINS
-READBQDRDY()
+
+spi_fifo_init()				BAUDRATE?
+
+PIN STUFF: 
+SpiGpio()					DONE
+InitBQ76PL536ports()		DONE
+READBQDRDY()				DONE
+spi_reg						DONE
+
+
+BALANCING ALGORTHIM
+
+BAL LED/SWITCH
+
+
+
 
 

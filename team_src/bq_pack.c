@@ -11,12 +11,20 @@ extern ops_struct ops_temp;
 
 void BMM_Sleep()
 {
-	bq_dev_write_reg(BROADCAST_ADDR, IO_CONTROL_REG, 0);
+	int i;
+	 for (i=NUMBER_OF_BQ_DEVICES-1; i>=0; i--)			//put devices to sleep backwards
+	 {
+		 bq_dev_sleep(&data_temp.bq_pack.bq_devs[i]);
+	 }
 }
 
 void BMM_Wake()
 {
-	bq_dev_write_reg(BROADCAST_ADDR, IO_CONTROL_REG, IO_CONTROL_VAL);
+	int i;
+	for (i=0; i<NUMBER_OF_BQ_DEVICES; i++)				//wake them up fowards
+	{
+		bq_dev_wake(&data_temp.bq_pack.bq_devs[i]);
+	}
 }
 
 
@@ -527,7 +535,18 @@ short bq_dev_read_cell_voltage(bq_dev_t* this)
   return VALID;
 }
 
+unsigned char bq_dev_wake(bq_dev_t* this)
+{
+	bq_dev_write_reg(this->device_address, IO_CONTROL_REG, IO_CONTROL_VAL);
+	return VALID;
+}
 
+unsigned char bq_dev_sleep(bq_dev_t* this)
+{
+	bq_dev_write_reg(this->device_address, IO_CONTROL_REG, 0x04);	//put to sleep
+	bq_dev_clear_alerts(this);
+	return VALID;
+}
 
 /**
 * @brief Function Name: bq_dev_clear_alerts .                                                 
@@ -553,37 +572,11 @@ unsigned char bq_dev_clear_alerts(bq_dev_t* this)
   //clear alert bit
   bq_dev_write_reg(this->device_address, DEVICE_STATUS_REG, Value);
 
-  
-  //Read ALERT_STATUS_REG register
-  bq_dev_read_reg(this->device_address, ALERT_STATUS_REG, 1, DISCARD_CRC,
-                 (unsigned char*) &Value);
-
-  Value &= ~BIT0; //don't clear OT1
-  Value &= ~BIT1; //don't clear OT2
-
-  //Write 1's to ALERT_STATUS_REG register
-  if(bq_dev_write_reg(this->device_address, ALERT_STATUS_REG, Value) == INVALID)
-  {
-	  return INVALID;
-  }
-  
-  Value = 0x00;
-  // Write 0's ALERT_STATUS_REG register
-  if(bq_dev_write_reg(this->device_address, ALERT_STATUS_REG, Value) == INVALID)
-  {
-	  return INVALID;
-  }
   return VALID;
  
 }
 
 
-/**
-* @brief Function Name: bq_dev_clear_faults.                                                 
-* @brief Description  : Clears the fault flags on the BQ device.
-* @param parameters   : Device ID                                                     
-* @return Value       : none                                                    
-*/     
 unsigned char bq_dev_clear_faults(bq_dev_t* this)
 {
 	unsigned char Value;
@@ -594,33 +587,13 @@ unsigned char bq_dev_clear_faults(bq_dev_t* this)
 	{
 		return INVALID;
 	}
-	Value |= BIT6;
-	//set fault bit as 1
-	//  if(bq_dev_write_reg(this->device_address, DEVICE_STATUS_REG, Value) == 0)
-	//  {
-	//	  return 1;
-	//  }
-	bq_dev_write_reg(this->device_address, DEVICE_STATUS_REG, Value);
-	Value &= ~BIT6;
-	//clear fault bit
-	//  if(bq_dev_write_reg(this->device_address, DEVICE_STATUS_REG, Value) == 0)
-	//  {
-	//	  return 1;
-	//  }
+
+	Value |= BIT6; //set fault bit as 1
 	bq_dev_write_reg(this->device_address, DEVICE_STATUS_REG, Value);
 
-	//Read FAULT_STATUS register
-	bq_dev_read_reg(this->device_address, FAULT_STATUS_REG, 1, DISCARD_CRC,
-			(unsigned char*) &Value);
-	//Write 1's to FAULT_STATUS register
-	Value &= ~BIT0; //don't clear cov
-	Value &= ~BIT1; //don't clear cuv
-	bq_dev_write_reg(this->device_address, FAULT_STATUS_REG, Value);
 
-	Value = 0x00;
-	// Write 0's FAULT_STATUS register
-	bq_dev_write_reg(this->device_address, FAULT_STATUS_REG, Value);
-
+	Value &= ~BIT6; //clear fault bit
+	bq_dev_write_reg(this->device_address, DEVICE_STATUS_REG, Value);
 
 	return VALID;
 }

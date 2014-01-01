@@ -50,8 +50,8 @@ __interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
 	if (Clock_Ticks.DataOut >= DATAOUT_TICKS)
 	{
 		//send data or fill data
-		SendCAN(ADC_BOX);
-		SendCAN(GP_BUTTON_BOX);
+		SendCAN(Stats1_box);
+		SendCAN(Stats2_box);
 		Clock_Ticks.DataOut = 0;
 	}
 

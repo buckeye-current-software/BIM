@@ -69,32 +69,32 @@ short spi_write_reg(unsigned char dev_addr,
                     unsigned char reg_addr, 
                     unsigned char data)
 {
-  unsigned char package[4];
-  char ret = VALID;
-  short i=0;
-  if (spi_regs_rw_mask[reg_addr] & WRITE_ACCESS)
-  {
-    package[0] = (dev_addr<<1) | 0x01/*Write*/;
-    package[1] = reg_addr;
-    package[2] = data;
-    package[3] = calculate_crc(package, 3,0);
-    
-    //Write 1 byte into the selected register
-   GpioDataRegs.GPACLEAR.bit.GPIO4 = 1;
-//   Task_sleep(1);
-   for (i=0; i<4; i++)
-   {
-	   if(Send_SPI(&package[i]) == INVALID) //send data
-	   {
-		   ret = INVALID;
-		   i = 5;
-	   }
+	unsigned char package[4];
+	char ret = VALID;
+	short i=0;
+	if (spi_regs_rw_mask[reg_addr] & WRITE_ACCESS)
+	{
+		package[0] = (dev_addr<<1) | 0x01/*Write*/;
+		package[1] = reg_addr;
+		package[2] = data;
+		package[3] = calculate_crc(package, 3,0);
 
-   }
-   GpioDataRegs.GPASET.bit.GPIO4 = 1;
-  }
+		//Write 1 byte into the selected register
+		SLAVEENCLEAR();
+		//   Task_sleep(1);
+		for (i=0; i<4; i++)
+		{
+			if(Send_SPI(&package[i]) == INVALID) //send data
+			{
+				ret = INVALID;
+				i = 5;
+			}
 
-  return ret;
+		}
+		SLAVEENSET();
+	}
+
+	return ret;
 
 }
 
@@ -113,86 +113,85 @@ short spi_read_reg(unsigned char dev_addr,
                    unsigned char discard_crc,//*True, False*/
                    unsigned char* pData)
 {
-  unsigned char package[3];
-  unsigned char crc;
-  char ret = VALID;
-  short i=0;
-  if (spi_regs_rw_mask[reg_addr] & READ_ACCESS)
-  {
-    package[0] = (dev_addr<<1)/*Read*/;
-    package[1] = reg_addr;
-    package[2] = elem_num;
-    crc = calculate_crc(package, 3,0);
-    
-
-    //Write 1 byte into the selected register
-   GpioDataRegs.GPACLEAR.bit.GPIO4 = 1;
+	unsigned char package[3];
+	unsigned char crc;
+	char ret = VALID;
+	short i=0;
+	if (spi_regs_rw_mask[reg_addr] & READ_ACCESS)
+	{
+		package[0] = (dev_addr<<1)/*Read*/;
+		package[1] = reg_addr;
+		package[2] = elem_num;
+		crc = calculate_crc(package, 3,0);
 
 
-   for (i=0; i<3; i++)
-   {
-	   if(Send_SPI(&package[i]) == INVALID) //send data
-	   {
-		   ret = INVALID;
-		   i = 4;
-	   }
-   }
+		//Write 1 byte into the selected register
+		SLAVEENCLEAR();
 
-   if (i == 3)
-   {
-	   for (i=0; i<elem_num+1/*+1 to count CRC*/; i++)
-	   {
-		   if(Send_SPI(&package[i]) == INVALID) //send data
-		   {
-			   ret = INVALID;
-			   i = elem_num+2;
-		   }
+		for (i=0; i<3; i++)
+		{
+			if(Send_SPI(&package[i]) == INVALID) //send data
+			{
+				ret = INVALID;
+				i = 4;
+			}
+		}
 
-		   if (i==elem_num)
-		   {
-			   /*Read CRC*/
-			   if (discard_crc)
-				   package[0] = package[i];           // Read and discard CRC
-			   else
-				   *pData++ = package[i];             // R15 = 00|MSB
-		   }
-		   else
-		   {
-			   /*Read data*/
-			   *pData++ = package[i];               // R15 = 00|MSB
-		   }
-	   }
-   }
+		if (i == 3)
+		{
+			for (i=0; i<elem_num+1/*+1 to count CRC*/; i++)
+			{
+				if(Send_SPI(&package[i]) == INVALID) //send data
+				{
+					ret = INVALID;
+					i = elem_num+2;
+				}
 
-   GpioDataRegs.GPASET.bit.GPIO4 = 1;
+				if (i==elem_num)
+				{
+					/*Read CRC*/
+					if (discard_crc)
+						package[0] = package[i];           // Read and discard CRC
+					else
+						*pData++ = package[i];             // R15 = 00|MSB
+				}
+				else
+				{
+					/*Read data*/
+					*pData++ = package[i];               // R15 = 00|MSB
+				}
+			}
+		}
 
-   if(discard_crc)
-   {
-	   unsigned char* data = (unsigned char*)(pData - (elem_num));
-	   if(calculate_crc(data,elem_num,crc) == package[0])
-	   {
-		   if(dev_addr > 0 && dev_addr <= NUMBER_OF_BQ_DEVICES)
-		   {
-			   data_temp.bq_pack.bq_devs[dev_addr-1].crc_error_count = 0;
-			   ops_temp.Flags.bit.BQ_error[dev_addr-1].bit =  0;
-		   }
+		SLAVEENSET();
 
-	   }
-	   else
-	   {
-		   if(dev_addr > 0 && dev_addr <= NUMBER_OF_BQ_DEVICES)
-		   {
-			   data_temp.bq_pack.bq_devs[dev_addr-1].crc_error_count++;
-			   ops_temp.Flags.bit.BQ_error[dev_addr-1].bit = 1;
-			   ret = INVALID;
-		   }
-	   }
-   }
+		if(discard_crc)
+		{
+			unsigned char* data = (unsigned char*)(pData - (elem_num));
+			if(calculate_crc(data,elem_num,crc) == package[0])
+			{
+				if(dev_addr > 0 && dev_addr <= NUMBER_OF_BQ_DEVICES)
+				{
+					data_temp.bq_pack.bq_devs[dev_addr-1].crc_error_count = 0;
+					ops_temp.Flags.bit.BQ_error[dev_addr-1].bit =  0;
+				}
+
+			}
+			else
+			{
+				if(dev_addr > 0 && dev_addr <= NUMBER_OF_BQ_DEVICES)
+				{
+					data_temp.bq_pack.bq_devs[dev_addr-1].crc_error_count++;
+					ops_temp.Flags.bit.BQ_error[dev_addr-1].bit = 1;
+					ret = INVALID;
+				}
+			}
+		}
 
 
-  }
+	}
 
-  return ret;
+	return ret;
 }
 
 /**

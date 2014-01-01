@@ -35,6 +35,9 @@ void SensorCovInit()
 	ops.BIM_State = INIT;
 	ops.Flags.bit.BIM_init = 0;
 	BQ_Setup();
+
+	BIM_watch = StartStopWatch(100);
+	while(isStopWatchComplete(BIM_watch) != 1);		//delay for microsecond for voltage regulator to start up
 }
 
 
@@ -62,7 +65,7 @@ void SensorCovMeasure()
 			StopWatchRestart(BIM_watch);
 			ops_temp.Flags.bit.BIM_init = 1;
 		}
-		BIM_watch = StartStopWatch(50000);	// half second delay
+		StopWatchRestartTime(BIM_watch,50000);	// half second delay
 		break;
 	case INIT_DELAY:
 		if (isStopWatchComplete(BIM_watch) == 1) 	// if delayed enough

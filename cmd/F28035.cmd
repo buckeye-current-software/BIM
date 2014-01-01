@@ -79,6 +79,7 @@ PAGE 0:    /* Program Memory */
    FLASHE      : origin = 0x3EE000, length = 0x002000     /* on-chip FLASH */
    FLASHD      : origin = 0x3F0000, length = 0x002000     /* on-chip FLASH */
    FLASHC      : origin = 0x3F2000, length = 0x002000     /* on-chip FLASH */
+   FLASHB      : origin = 0x3F4000, length = 0x002000     /* on-chip FLASH */
    FLASHA      : origin = 0x3F6000, length = 0x001F80     /* on-chip FLASH */
    CSM_RSVD    : origin = 0x3F7F80, length = 0x000076     /* Part of FLASHA.  Program with all 0x0000 when CSM is in use. */
    BEGIN       : origin = 0x3F7FF6, length = 0x000002     /* Part of FLASHA.  Used for "boot to Flash" bootloader mode. */
@@ -100,7 +101,6 @@ PAGE 1 :   /* Data Memory */
    RAMM1       : origin = 0x000400, length = 0x000400     /* on-chip RAM block M1 */
    RAML2       : origin = 0x008C00, length = 0x000400     /* on-chip RAM block L2 */
    RAML3       : origin = 0x009000, length = 0x001000     /* on-chip RAM block L3 */
-   FLASHB      : origin = 0x3F4000, length = 0x002000     /* on-chip FLASH */
 
 }
 
@@ -117,7 +117,7 @@ SECTIONS
    /* Allocate program areas: */
    .cinit              : > FLASHC      PAGE = 0
    .pinit              : > FLASHC,     PAGE = 0
-   .text               : > FLASHC      PAGE = 0
+   .text               : > FLASHB | FLASHC      PAGE = 0
 
 
    codestart           : > BEGIN       PAGE = 0
