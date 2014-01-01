@@ -31,6 +31,7 @@ void OperationsSetup()
 	ops.Change.all = 0;
 	ops.Flags.all = 0;
 	ops.State = STATE_SENSOR_COV;
+	ops.Update_period = 50000;
 }
 
 void DataSetup()

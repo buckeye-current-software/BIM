@@ -11,15 +11,15 @@
 typedef struct StopWatch
 {
 	Uint32 Start;
-	unsigned int Time;
+	unsigned long Time;
 }stopwatch_struct;
 
 void StopWatchSetUp(float time);
-stopwatch_struct* StartStopWatch(unsigned int time);
+stopwatch_struct* StartStopWatch(unsigned long time);
 char isStopWatchComplete(stopwatch_struct*);
 void StopStopWatch(stopwatch_struct* watch);
 void StopWatchRestart(stopwatch_struct* watch);
-void StopWatchRestartTime(stopwatch_struct* watch, unsigned int time);
+void StopWatchRestartTime(stopwatch_struct* watch, unsigned long time);
 
 
 #define SENDCAN_STOPWATCH 	50 //100 uS

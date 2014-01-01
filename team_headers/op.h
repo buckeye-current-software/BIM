@@ -30,6 +30,7 @@ typedef struct CHANGE_OPS
 	char Flags : 1;
 	char BIM_State : 1;
 	char Balance : 1;
+	char Update_Period : 1;
 }change_struct;
 
 //todo User: stopwatch errors
@@ -56,6 +57,7 @@ typedef struct OPERATIONS
   }								Change;
   unsigned long BIM_State;
   unsigned long Balance;
+  unsigned long Update_period;   //10 microsecond
 } ops_struct;
 
 

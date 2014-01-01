@@ -76,7 +76,7 @@ void SensorCovMeasure()
 			{
 				bq_pack_init();
 				ops_temp.BIM_State = COV;
-				StopWatchRestart(BIM_watch);
+				StopWatchRestartTime(BIM_watch,ops_temp.Update_period);
 				ops_temp.Flags.bit.BIM_init = 1;
 			}
 		}
@@ -97,7 +97,7 @@ void SensorCovMeasure()
 			BMM_Sleep();
 			data_temp.update = 1;									//actually latch data
 			ops_temp.BIM_State = COV;
-			StopWatchRestart(BIM_watch);
+			StopWatchRestartTime(BIM_watch,ops_temp.Update_period);
 		}
 		break;
 	default:
@@ -126,6 +126,11 @@ void UpdateStruct()
 	if (ops.Change.bit.Balance == 0)
 	{
 		ops.State = ops_temp.Balance;
+	}
+
+	if (ops.Change.bit.Update_Period == 0)
+	{
+		ops.Update_period = ops_temp.Update_period;
 	}
 
 	//don't change BIM State or Flags through CAN
