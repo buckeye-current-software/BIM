@@ -33,6 +33,7 @@ void SensorCovInit()
 {
 	//todo USER: SensorCovInit()
 	ops.BIM_State = INIT;
+	ops.Flags.bit.BIM_init = 0;
 	BQ_Setup();
 }
 
@@ -46,9 +47,10 @@ void LatchStruct()
 
 void SensorCovMeasure()
 {
-	switch (ops_temp.BIM_State == INIT)
+	switch (ops_temp.BIM_State)
 	{
 	case INIT:
+		ops_temp.Flags.bit.BIM_init = 0;
 		if(NUMBER_OF_BQ_DEVICES != bq_pack_address_discovery())
 		{
 			ops_temp.BIM_State = INIT_DELAY;
@@ -56,7 +58,9 @@ void SensorCovMeasure()
 		else
 		{
 			bq_pack_init();
-			ops_temp.BIM_State = MEASURE;
+			ops_temp.BIM_State = COV;
+			StopWatchRestart(BIM_watch);
+			ops_temp.Flags.bit.BIM_init = 1;
 		}
 		BIM_watch = StartStopWatch(50000);	// half second delay
 		break;
@@ -70,8 +74,10 @@ void SensorCovMeasure()
 			}
 			else
 			{
-				ops_temp.BIM_State = COV;							//if worked conversion
+				bq_pack_init();
+				ops_temp.BIM_State = COV;
 				StopWatchRestart(BIM_watch);
+				ops_temp.Flags.bit.BIM_init = 1;
 			}
 		}
 		break;
@@ -90,6 +96,8 @@ void SensorCovMeasure()
 			CellBalancing();										//balance if ops says so
 			BMM_Sleep();
 			data_temp.update = 1;									//actually latch data
+			ops_temp.BIM_State = COV;
+			StopWatchRestart(BIM_watch);
 		}
 		break;
 	default:
@@ -120,17 +128,11 @@ void UpdateStruct()
 		ops.State = ops_temp.Balance;
 	}
 
-	if (ops.Change.bit.BIM_State == 0)
-	{
-		ops.State = ops_temp.BIM_State;
-	}
+	//don't change BIM State or Flags through CAN
 
-	if (ops.Change.bit.Flags == 0)
-	{
-		//only cov error happens inside of conversion so all other changes are considered correct.
-		//update accordingly to correct cov_errors
+	ops.BIM_State = ops_temp.BIM_State;
+	ops.Flags.all = ops_temp.Flags.all;
 
-	}
 	ops.Change.all = 0;	//clear change states
 }
 

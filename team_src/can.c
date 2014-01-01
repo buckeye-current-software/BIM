@@ -176,10 +176,6 @@ __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
 			memcpy(&ops.State,&dummy,sizeof ops.State);
 			ops.Change.bit.State = 1;
 			break;
-		case OPS_ID_STOPWATCHERROR:
-			memcpy(&ops.Flags.all,&dummy,sizeof ops.Flags.all);
-			ops.Change.bit.Flags = 1;
-			break;
 		}
   	}
   	//todo USER: Setup other reads

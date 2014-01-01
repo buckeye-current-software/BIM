@@ -7,6 +7,7 @@
 
 #include "all.h"
 
+extern ops_struct ops_temp;
 stopwatch_struct* SPI_watch;
 
 unsigned int Send_SPI(unsigned char* a)
@@ -18,10 +19,12 @@ unsigned int Send_SPI(unsigned char* a)
 
 	if(isStopWatchComplete(SPI_watch) == 1)
 	{
+		ops_temp.Flags.bit.SPI_error = 1;
 		return INVALID;
 	}
 
 	*a = SpiaRegs.SPIRXBUF;
 	SpiaRegs.SPIRXBUF = 0;
+	ops_temp.Flags.bit.SPI_error = 0;
 	return VALID;
 }

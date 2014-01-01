@@ -18,6 +18,12 @@
 #define OPS_ID_STATE 			0
 #define OPS_ID_STOPWATCHERROR 	1
 
+typedef struct BIT
+{
+    char bit :1;
+}bit;
+
+
 typedef struct CHANGE_OPS
 {
 	char State : 1;
@@ -29,7 +35,9 @@ typedef struct CHANGE_OPS
 //todo User: stopwatch errors
 typedef struct FLAGS
 {
-	char BIM_error : 1;
+	char BIM_init  : 1;
+	bit BQ_error[6];
+	char SPI_error: 1;
 	char can_error : 1;
 }flags_struct;
 

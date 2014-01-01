@@ -32,10 +32,10 @@ void BQ_Setup()
 
 void BQ_Disable()
 {
-    GpioCtrlRegs.GPAMUX2.bit.GPIO16 = 0; // Configure GPIO16 as SPISIMOA
-    GpioCtrlRegs.GPAMUX2.bit.GPIO17 = 0; // Configure GPIO17 as SPISOMIA
-    GpioCtrlRegs.GPAMUX2.bit.GPIO18 = 0; // Configure GPIO18 as SPICLKA
-    GpioCtrlRegs.GPAMUX2.bit.GPIO19 = 0; // Configure GPIO19 as SPISTEA
+    GpioCtrlRegs.GPAMUX2.bit.GPIO16 = 0; // Configure GPIO16 as GPIO
+    GpioCtrlRegs.GPAMUX2.bit.GPIO17 = 0; // Configure GPIO17 as GPIO
+    GpioCtrlRegs.GPAMUX2.bit.GPIO18 = 0; // Configure GPIO18 as GPIO
+    GpioCtrlRegs.GPAMUX2.bit.GPIO19 = 0; // Configure GPIO19 as GPIO
 }
 
 

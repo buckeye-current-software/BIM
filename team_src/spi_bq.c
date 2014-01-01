@@ -3,6 +3,7 @@
 #include "all.h"
 
 extern data_struct data_temp;
+extern ops_struct ops_temp;
 
 
 
@@ -173,6 +174,7 @@ short spi_read_reg(unsigned char dev_addr,
 		   if(dev_addr > 0 && dev_addr <= NUMBER_OF_BQ_DEVICES)
 		   {
 			   data_temp.bq_pack.bq_devs[dev_addr-1].crc_error_count = 0;
+			   ops_temp.Flags.bit.BQ_error[dev_addr-1].bit =  0;
 		   }
 
 	   }
@@ -181,6 +183,7 @@ short spi_read_reg(unsigned char dev_addr,
 		   if(dev_addr > 0 && dev_addr <= NUMBER_OF_BQ_DEVICES)
 		   {
 			   data_temp.bq_pack.bq_devs[dev_addr-1].crc_error_count++;
+			   ops_temp.Flags.bit.BQ_error[dev_addr-1].bit = 1;
 			   ret = INVALID;
 		   }
 	   }

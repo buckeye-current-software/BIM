@@ -1,8 +1,17 @@
 
-Variable measurement freq.
-Flags
-BQ Flash					CHECK LATER
-can messages 
+Variable measurement freq:
+
+
+Flags:
+BIM_int						DONE
+BQ_error					DONE	
+SPI_error					DONE
+UpdateStruct()				DONE. 
+
+
+BQ Flash:					CHECK LATER
+
+can messages: 
 
 BIM functions to check:
 bq_pack_address_discovery() CHECK DELAY
@@ -38,4 +47,4 @@ spi_fifo_init()				BAUDRATE?
 SpiaGpio()					Need PINS
 InitBQ76PL536ports()		enable ISO? Need PINS
 
-UpdateStruct()
+
