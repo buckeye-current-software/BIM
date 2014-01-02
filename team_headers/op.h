@@ -69,8 +69,9 @@ typedef struct OPERATIONS
   }								Change;
   unsigned long BIM_State;
   unsigned long Balance;
-  unsigned long Update_period;   //10 microsecond
+  unsigned long Update_period;   //10 microseconds
   bim_struct BIM[EX_BIM];
+  char Bal_Button;
 } ops_struct;
 
 

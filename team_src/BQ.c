@@ -7,6 +7,8 @@
 char fualt;
 char first_bq = 0;
 
+extern ops_struct ops_temp;
+extern data_struct data_temp;
 
 void BQ_Setup()
 {
@@ -34,8 +36,13 @@ void InitBQ76PL536ports()
 
 
 	//Inputs
+	//DRDY
 	GpioCtrlRegs.GPBPUD.bit.GPIO34 = 0;
 	GpioCtrlRegs.GPBDIR.bit.GPIO34 = 0;
+
+	//BAL BUTTON
+	GpioCtrlRegs.GPAPUD.bit.GPIO27 = 0;
+	GpioCtrlRegs.GPADIR.bit.GPIO27 = 0;
 
 	//Outputs
 	//I/O port control pad
@@ -51,6 +58,11 @@ void InitBQ76PL536ports()
 	GpioCtrlRegs.GPADIR.bit.GPIO20 = 1;	// output
 	GpioDataRegs.GPASET.bit.GPIO20 = 1;
 
+	//BAL LED
+	GpioDataRegs.GPACLEAR.bit.GPIO4 = 1;
+	GpioCtrlRegs.GPAPUD.bit.GPIO4 = 0;
+	GpioCtrlRegs.GPADIR.bit.GPIO4 = 1;	// output
+	GpioDataRegs.GPACLEAR.bit.GPIO4 = 1;
 
 	EDIS;
 
@@ -166,3 +178,31 @@ char BIM_lowest_cell(ops_struct* op_func,unsigned short* volts)
 	return VALID;
 }
 
+void Check_Bal_Button()
+{
+	if(ops_temp.Bal_Button == 0 && READBALBUTTON() == 1)
+	{
+		if(ops_temp.Balance == 0)
+		{
+			ops_temp.Balance = 1;
+		}
+		else
+		{
+			ops_temp.Balance = 0;
+		}
+	}
+	ops_temp.Bal_Button = READBALBUTTON();
+}
+
+void Flash_Bal_LED()
+{
+	if(ops_temp.Balance == 1)
+	{
+		if(data_temp.bq_pack.bal_num == 0)
+		{
+			BALLEDSET();
+		}
+		BALLEDTOGGLE();
+	}
+	BALLEDCLEAR();
+}

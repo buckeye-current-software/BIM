@@ -59,7 +59,10 @@ find lowest cell			DONE
 
 
 BAL LED/SWITCH
-
+Button setup				DONE
+Button check				DONE
+Led setup					DONE
+Led flash					DONE
 
 
 

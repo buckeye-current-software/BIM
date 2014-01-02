@@ -50,9 +50,13 @@ void LatchStruct()
 
 void SensorCovMeasure()
 {
+
+	Check_Bal_Button(); //do correct operation considering balance button
+
 	switch (ops_temp.BIM_State)
 	{
 	case INIT:
+		BALLEDCLEAR();
 		ops_temp.Flags.bit.BIM_init = 0;
 		if(NUMBER_OF_BQ_DEVICES != bq_pack_address_discovery())
 		{
@@ -68,6 +72,7 @@ void SensorCovMeasure()
 		StopWatchRestartTime(BIM_watch,50000);	// half second delay
 		break;
 	case INIT_DELAY:
+		BALLEDCLEAR();
 		if (isStopWatchComplete(BIM_watch) == 1) 	// if delayed enough
 		{
 			if(NUMBER_OF_BQ_DEVICES != bq_pack_address_discovery()) //try to init again
@@ -96,7 +101,8 @@ void SensorCovMeasure()
 		if (READBQDRDY() == 1)										//wait until data is ready
 		{
 			update_bq_pack_data();									//update data
-			CellBalancing();										//balance if ops says so
+			CellBalancing();	//balance if ops says so
+			Flash_Bal_LED();	//flash led according to balance
 			BMM_Sleep();
 			data_temp.update = 1;									//actually latch data
 			ops_temp.BIM_State = COV;
