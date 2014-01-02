@@ -143,5 +143,26 @@ void BQ_SpiGpio()
 	EDIS;
 }
 
+char BIM_lowest_cell(ops_struct* op_func,unsigned short* volts)
+{
+	int i;
 
+	for(i=0;i<EX_BIM;i++)	//check if all BIMs have been updated recently
+	{
+		if(isStopWatchComplete(op_func->BIM[i].Reset_stopwatch)==1)
+		{
+			return INVALID;
+		}
+	}
+
+	*volts = op_func->BIM[0].lowest_cell_volts;		//find lowest cell if all updated
+	for(i=1;i<EX_BIM;i++)
+	{
+		if(op_func->BIM[i].lowest_cell_volts < *volts)
+		{
+			*volts = op_func->BIM[i].lowest_cell_volts;
+		}
+	}
+	return VALID;
+}
 

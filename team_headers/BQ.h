@@ -8,12 +8,14 @@
 #ifndef BQ_H_
 #define BQ_H_
 
+#include "op.h"
 
 void BQ_Setup();
 void InitBQ76PL536ports();
 void bq_spi_fifo_init();
 void BQ_Disable();
 void BQ_SpiGpio();
+char BIM_lowest_cell(ops_struct* op_func,unsigned short* volts);
 
 //pin stuff
 #define		READBQDRDY()			GpioDataRegs.GPBDAT.bit.GPIO34

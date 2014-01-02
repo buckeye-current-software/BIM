@@ -69,5 +69,10 @@ signed int Cell_Send(int cell_num);
 #define Cell_29_32_ID		0x317
 #define Cell_29_32_box		11
 
+#define BIM2_ID				0x302
+#define BIM2_box			12
+
+#define BIM3_ID				0x304
+#define BIM3_box			13
 
 #endif /* CAN_H_ */

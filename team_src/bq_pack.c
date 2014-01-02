@@ -250,20 +250,27 @@ void CellBalancing(void)
 {
 
 	unsigned short dev_id;
+	unsigned short low_cell;
 
 	//cell balancing enabled by event?
 	if (ops_temp.Balance == 1)
 	{
 		//cell balancing enabled by event? ->YES
 		//cell balancing achieved?
-		if ((data_temp.bq_pack.highest_cell_volts - data_temp.bq_pack.lowest_cell_volts) >= get_u32_value(BALANCE_VOLTS_THRESHOLD) )
+		if (BIM_lowest_cell(&ops_temp,&low_cell) == INVALID)
+		{
+			ops_temp.Balance = 0;		//BIM not updated recently than stop Balancing
+			return;
+		}
+
+		if ((data_temp.bq_pack.highest_cell_volts - low_cell) >= get_u32_value(BALANCE_VOLTS_THRESHOLD) )
 		{
 			//cell balancing achieved? ->No,
 			//then reset balancing timer & continue balancing
 			for (dev_id=0; dev_id<NUMBER_OF_BQ_DEVICES; dev_id++)
 			{
 				//*Enable bypass resistor for all balanced cells*/
-				enable_bypass_resistor(dev_id, (~find_imbalanced_cell(dev_id)));
+				enable_bypass_resistor(dev_id, (~find_imbalanced_cell(dev_id,low_cell)));
 			}
 
 		}
@@ -807,7 +814,7 @@ unsigned char bq_dev_read_status(bq_dev_t* this)
 * @return Value       : Returns 0 if cells are balanced and other if there are 
 * any imbalanced cells                                                     .
 */     
-unsigned short find_imbalanced_cell(unsigned short in_dev_id)
+unsigned short find_imbalanced_cell(unsigned short in_dev_id,unsigned short low_cell)
 {
   unsigned short cell_id, imb_cells_mask, cnt, cell_cnt;
   
@@ -820,7 +827,7 @@ unsigned short find_imbalanced_cell(unsigned short in_dev_id)
   {
     imb_cells_mask &= ~(1<<cnt);
     //changed to use lowest
-    if ((data_temp.bq_pack.bq_devs[in_dev_id].cell_voltage[cell_id]) - data_temp.bq_pack.lowest_cell_volts < get_u32_value(BALANCE_VOLTS_THRESHOLD) && (data_temp.bq_pack.bq_devs[in_dev_id].cell_voltage[cell_id] > BALANCE_CELL_MIN) )
+    if ((data_temp.bq_pack.bq_devs[in_dev_id].cell_voltage[cell_id]) - low_cell < get_u32_value(BALANCE_VOLTS_THRESHOLD) && (data_temp.bq_pack.bq_devs[in_dev_id].cell_voltage[cell_id] > BALANCE_CELL_MIN) )
     {
       imb_cells_mask |= (1<<cnt);
       cell_cnt++;

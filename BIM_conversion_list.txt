@@ -53,6 +53,10 @@ spi_reg						DONE
 
 
 BALANCING ALGORTHIM
+data						DONE
+CAN messages 				DONE
+find lowest cell			DONE
+
 
 BAL LED/SWITCH
 

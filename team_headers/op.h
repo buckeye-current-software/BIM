@@ -8,6 +8,8 @@
 #ifndef OP_H_
 #define OP_H_
 
+#include "stopwatch.h"
+
 //todo USER: define operation struct
 //State defines
 #define STATE_INIT 			0
@@ -17,6 +19,16 @@
 
 #define OPS_ID_STATE 			0
 #define OPS_ID_STOPWATCHERROR 	1
+
+#define EX_BIM	2  	//NUMBER OF EXTERNAL BIMs
+#define BIM2 	0	//index of BIM2
+#define BIM3	1	//index of BIM3
+
+typedef struct BIM
+{
+	stopwatch_struct* Reset_stopwatch;
+	unsigned short lowest_cell_volts;
+}bim_struct;
 
 typedef struct BIT
 {
@@ -58,6 +70,7 @@ typedef struct OPERATIONS
   unsigned long BIM_State;
   unsigned long Balance;
   unsigned long Update_period;   //10 microsecond
+  bim_struct BIM[EX_BIM];
 } ops_struct;
 
 

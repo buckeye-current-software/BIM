@@ -212,7 +212,7 @@ extern unsigned short get_bq_pack_voltage(void);
 extern unsigned short get_bq_pack_timer(void);
 extern void update_bq_pack_timer(void);
 extern void CheckFaultConditions(void);
-extern unsigned short find_imbalanced_cell(unsigned short bq_pack_id);
+extern unsigned short find_imbalanced_cell(unsigned short in_dev_id,unsigned short low_cell);
 
 
 

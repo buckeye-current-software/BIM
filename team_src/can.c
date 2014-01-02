@@ -140,6 +140,29 @@ void CANSetup()
 	ECanaShadow.CANMD.bit.MD11 = 0; 			//transmit
 	ECanaShadow.CANME.bit.ME11 = 1;			//enable
 
+
+	//BIM2 RECEIVE
+	ECanaMboxes.MBOX12.MSGID.bit.IDE = 0; 	//standard id
+	ECanaMboxes.MBOX12.MSGID.bit.AME = 0;	// all bit must match
+	ECanaMboxes.MBOX12.MSGID.bit.AAM = 0; 	// no RTR AUTO TRANSMIT
+	ECanaMboxes.MBOX12.MSGCTRL.bit.DLC = 8;
+	ECanaMboxes.MBOX12.MSGID.bit.STDMSGID = BIM2_ID;
+	ECanaShadow.CANMD.bit.MD12 = 1;			//receive
+	ECanaShadow.CANME.bit.ME12 = 1;			//enable
+	ECanaShadow.CANMIM.bit.MIM12  = 1; 		//int enable
+	ECanaShadow.CANMIL.bit.MIL12  = 1;  	// Int.-Level MB#0  -> I1EN
+
+	//BIM3 RECEIVE
+	ECanaMboxes.MBOX13.MSGID.bit.IDE = 0; 	//standard id
+	ECanaMboxes.MBOX13.MSGID.bit.AME = 0;	// all bit must match
+	ECanaMboxes.MBOX13.MSGID.bit.AAM = 0; 	// no RTR AUTO TRANSMIT
+	ECanaMboxes.MBOX13.MSGCTRL.bit.DLC = 8;
+	ECanaMboxes.MBOX13.MSGID.bit.STDMSGID = BIM3_ID;
+	ECanaShadow.CANMD.bit.MD13 = 1;			//receive
+	ECanaShadow.CANME.bit.ME13 = 1;			//enable
+	ECanaShadow.CANMIM.bit.MIM13  = 1; 		//int enable
+	ECanaShadow.CANMIL.bit.MIL13  = 1;  	// Int.-Level MB#0  -> I1EN
+
 	ECanaRegs.CANGAM.all = ECanaShadow.CANGAM.all;
 	ECanaRegs.CANGIM.all = ECanaShadow.CANGIM.all;
 	ECanaRegs.CANMIM.all = ECanaShadow.CANMIM.all;
@@ -377,21 +400,27 @@ __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
   	unsigned int mailbox_nr;
   	mailbox_nr = ECanaRegs.CANGIF1.bit.MIV1;
   	//todo USER: Setup ops command
-  	if(mailbox_nr == COMMAND_BOX)
+  	switch (mailbox_nr)
   	{
-  		//todo Nathan: Define Command frame
-  		//proposed:
-  		//HIGH 4 BYTES = Uint32 ID
-  		//LOW 4 BYTES = Uint32 change to
+  	case COMMAND_BOX:
   		ops_id = ECanaMboxes.MBOX0.MDH.all;
   		dummy = ECanaMboxes.MBOX0.MDL.all;
-		switch (ops_id)
-		{
-		case OPS_ID_STATE:
-			memcpy(&ops.State,&dummy,sizeof ops.State);
-			ops.Change.bit.State = 1;
-			break;
-		}
+  		switch (ops_id)
+  		{
+  		case OPS_ID_STATE:
+  			memcpy(&ops.State,&dummy,sizeof ops.State);
+  			ops.Change.bit.State = 1;
+  			break;
+  		}
+  	case BIM2_box:
+  		StopWatchRestart(ops.BIM[BIM2].Reset_stopwatch);
+  		ops.BIM[BIM2].lowest_cell_volts = ECanaMboxes.MBOX12.MDH.word.LOW_WORD;
+  		break;
+  	case BIM3_box:
+  		StopWatchRestart(ops.BIM[BIM3].Reset_stopwatch);
+  		ops.BIM[BIM3].lowest_cell_volts = ECanaMboxes.MBOX13.MDH.word.LOW_WORD;
+  		break;
+
   	}
   	//todo USER: Setup other reads
 
