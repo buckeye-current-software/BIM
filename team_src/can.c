@@ -9,10 +9,11 @@
 extern data_struct data;
 unsigned int mask;
 stopwatch_struct* can_watch;
+struct ECAN_REGS ECanaShadow;
 
 void CANSetup()
 {
-	struct ECAN_REGS ECanaShadow;
+
 	InitECanaGpio();
 	InitECana();
 
@@ -362,7 +363,8 @@ void SendCAN(unsigned int Mbox)
 	//todo Nathan: calibrate sendcan stopwatch
 	StopWatchRestart(can_watch);
 
-	while(((ECanaRegs.CANTA.all & mask) != mask) && (isStopWatchComplete(can_watch) == 0)); //wait to send or hit stop watch
+	do{ECanaShadow.CANTA.all = ECanaRegs.CANTA.all;}
+	while(((ECanaShadow.CANTA.all & mask) != mask) && (isStopWatchComplete(can_watch) == 0)); //wait to send or hit stop watch
 
 	ECanaRegs.CANTA.all = mask;						//clear flag
 	if (isStopWatchComplete(can_watch) == 1)					//if stopwatch flag
@@ -398,7 +400,8 @@ __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
 	Uint32 ops_id;
 	Uint32 dummy;
   	unsigned int mailbox_nr;
-  	mailbox_nr = ECanaRegs.CANGIF1.bit.MIV1;
+  	ECanaShadow.CANGIF1.bit.MIV1 =  ECanaRegs.CANGIF1.bit.MIV1;
+  	mailbox_nr = ECanaShadow.CANGIF1.bit.MIV1;
   	//todo USER: Setup ops command
   	switch (mailbox_nr)
   	{
