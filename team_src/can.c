@@ -146,7 +146,7 @@ void CANSetup()
 	ECanaMboxes.MBOX12.MSGID.bit.IDE = 0; 	//standard id
 	ECanaMboxes.MBOX12.MSGID.bit.AME = 0;	// all bit must match
 	ECanaMboxes.MBOX12.MSGID.bit.AAM = 0; 	// no RTR AUTO TRANSMIT
-	ECanaMboxes.MBOX12.MSGCTRL.bit.DLC = 8;
+	ECanaMboxes.MBOX12.MSGCTRL.bit.DLC = 6;
 	ECanaMboxes.MBOX12.MSGID.bit.STDMSGID = BIM2_ID;
 	ECanaShadow.CANMD.bit.MD12 = 1;			//receive
 	ECanaShadow.CANME.bit.ME12 = 1;			//enable
@@ -157,7 +157,7 @@ void CANSetup()
 	ECanaMboxes.MBOX13.MSGID.bit.IDE = 0; 	//standard id
 	ECanaMboxes.MBOX13.MSGID.bit.AME = 0;	// all bit must match
 	ECanaMboxes.MBOX13.MSGID.bit.AAM = 0; 	// no RTR AUTO TRANSMIT
-	ECanaMboxes.MBOX13.MSGCTRL.bit.DLC = 8;
+	ECanaMboxes.MBOX13.MSGCTRL.bit.DLC = 6;
 	ECanaMboxes.MBOX13.MSGID.bit.STDMSGID = BIM3_ID;
 	ECanaShadow.CANMD.bit.MD13 = 1;			//receive
 	ECanaShadow.CANME.bit.ME13 = 1;			//enable
@@ -414,14 +414,22 @@ __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
   			memcpy(&ops.State,&dummy,sizeof ops.State);
   			ops.Change.bit.State = 1;
   			break;
+  		case OPS_ID_UPDATE_PERIOD:
+  			memcpy(&ops.Update_period,&dummy,sizeof ops.Update_period);
+  			ops.Change.bit.State = 1;
+  			break;
   		}
+  		ECanaRegs.CANRMP.bit.RMP0 = 1;
+  		break;
   	case BIM2_box:
   		StopWatchRestart(ops.BIM[BIM2].Reset_stopwatch);
   		ops.BIM[BIM2].lowest_cell_volts = ECanaMboxes.MBOX12.MDH.word.LOW_WORD;
+  		ECanaRegs.CANRMP.bit.RMP12 = 1;
   		break;
   	case BIM3_box:
   		StopWatchRestart(ops.BIM[BIM3].Reset_stopwatch);
   		ops.BIM[BIM3].lowest_cell_volts = ECanaMboxes.MBOX13.MDH.word.LOW_WORD;
+  		ECanaRegs.CANRMP.bit.RMP13 = 1;
   		break;
 
   	}

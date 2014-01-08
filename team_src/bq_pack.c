@@ -21,7 +21,7 @@ void BMM_Sleep()
 void BMM_Wake()
 {
 	int i;
-	for (i=0; i<NUMBER_OF_BQ_DEVICES; i++)				//wake them up fowards
+	for (i=0; i<NUMBER_OF_BQ_DEVICES; i++)				//wake them up forwards
 	{
 		bq_dev_wake(&data_temp.bq_pack.bq_devs[i]);
 	}
@@ -267,10 +267,12 @@ void CellBalancing(void)
 		{
 			//cell balancing achieved? ->No,
 			//then reset balancing timer & continue balancing
+			data_temp.bq_pack.bal_num = 0;
 			for (dev_id=0; dev_id<NUMBER_OF_BQ_DEVICES; dev_id++)
 			{
 				//*Enable bypass resistor for all balanced cells*/
 				enable_bypass_resistor(dev_id, (~find_imbalanced_cell(dev_id,low_cell)));
+				data_temp.bq_pack.bal_num =+ data_temp.bq_pack.bq_devs[dev_id].num_cell_bal;
 			}
 
 		}
@@ -563,23 +565,34 @@ unsigned char bq_dev_sleep(bq_dev_t* this)
 */     
 unsigned char bq_dev_clear_alerts(bq_dev_t* this)
 {
-  unsigned char Value;
+	unsigned char Value;
 
-  //clear alert bit in device status register
-  if(bq_dev_read_reg(this->device_address, DEVICE_STATUS_REG, 1, DISCARD_CRC,
-                 (unsigned char*) &Value) == INVALID)
-  {
-	  return INVALID;
-  }
-  Value |= BIT5; 
-  //set alert bit as 1
-  bq_dev_write_reg(this->device_address, DEVICE_STATUS_REG, Value);
+	//clear alert bit in device status register
+	if(bq_dev_read_reg(this->device_address, DEVICE_STATUS_REG, 1, DISCARD_CRC,
+			(unsigned char*) &Value) == INVALID)
+	{
+		return INVALID;
+	}
+	Value |= BIT5;
+	//set alert bit as 1
+	bq_dev_write_reg(this->device_address, DEVICE_STATUS_REG, Value);
 
-  Value &= ~BIT5;
-  //clear alert bit
-  bq_dev_write_reg(this->device_address, DEVICE_STATUS_REG, Value);
+	Value &= ~BIT5;
+	//clear alert bit
+	bq_dev_write_reg(this->device_address, DEVICE_STATUS_REG, Value);
 
-  return VALID;
+	//read correct 1's from aleart status
+	bq_dev_read_reg(this->device_address, ALERT_STATUS_REG, 1, DISCARD_CRC,
+			(unsigned char*) &Value);
+
+	//Write correct 1's to ALERT_STATUS_REG register
+	bq_dev_write_reg(this->device_address, ALERT_STATUS_REG, Value);
+
+	Value = 0x00;
+	// Write 0's ALERT_STATUS_REG register
+	bq_dev_write_reg(this->device_address, ALERT_STATUS_REG, Value);
+
+	return VALID;
  
 }
 
@@ -601,6 +614,17 @@ unsigned char bq_dev_clear_faults(bq_dev_t* this)
 
 	Value &= ~BIT6; //clear fault bit
 	bq_dev_write_reg(this->device_address, DEVICE_STATUS_REG, Value);
+
+	//read correct 1's from fault status
+	bq_dev_read_reg(this->device_address, FAULT_STATUS_REG, 1, DISCARD_CRC,
+			(unsigned char*) &Value);
+
+	//Write correct 1's to FAULT_STATUS register
+	bq_dev_write_reg(this->device_address, FAULT_STATUS_REG, Value);
+
+	Value = 0x00;
+	// Write 0's FAULT_STATUS register
+	bq_dev_write_reg(this->device_address, FAULT_STATUS_REG, Value);
 
 	return VALID;
 }
@@ -906,8 +930,10 @@ unsigned char disable_all_bypass_resistors(void)
     {
     	return INVALID;
     }
+    data_temp.bq_pack.bq_devs[bq_dev_id].cell_bal = 0;
+    data_temp.bq_pack.bq_devs[bq_dev_id].num_cell_bal = 0;
   }
-  data_temp.bq_pack.bq_devs[bq_dev_id].num_cell_bal = 0;
+  data_temp.bq_pack.bal_num = 0;
   return VALID;
 }
 

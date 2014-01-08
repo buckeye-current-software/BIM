@@ -71,28 +71,28 @@ void InitBQ76PL536ports()
 void bq_spi_fifo_init()
 {
 // Initialize SPI FIFO registers
-   SpiaRegs.SPICCR.bit.SPISWRESET=0; 	// Reset SPI
+   SpibRegs.SPICCR.bit.SPISWRESET=0; 	// Reset SPI
 
-   SpiaRegs.SPICCR.all=0x0007; 			//8-bit no loopback
+   SpibRegs.SPICCR.all=0x0007; 			//8-bit no loopback
 
-   SpiaRegs.SPICTL.all=0x0006;       	//// Enable master mode, normal phase,enable talk, and SPI int disabled.
+   SpibRegs.SPICTL.all=0x0006;       	//// Enable master mode, normal phase,enable talk, and SPI int disabled.
 
-   SpiaRegs.SPISTS.all=0x0000;
-   SpiaRegs.SPIBRR = 127; 				//Baudrate is slow as possible
+   SpibRegs.SPISTS.all=0x0000;
+   SpibRegs.SPIBRR = 127; 				//Baudrate is slow as possible
   //SpiaRegs.SPIBRR=0x0063;           	// Baud rate
 
-   SpiaRegs.SPIFFTX.all=0xC021;      	// Enable FIFO's, set TX FIFO level to 1 CHOOSE LEVEL ACCORDING TO APPLICATION
+   SpibRegs.SPIFFTX.all=0xC021;      	// Enable FIFO's, set TX FIFO level to 1 CHOOSE LEVEL ACCORDING TO APPLICATION
 
-   SpiaRegs.SPIFFRX.all=0x0021;      	// Set RX FIFO level to 1
-   SpiaRegs.SPIFFCT.all=0x00;
+   SpibRegs.SPIFFRX.all=0x0021;      	// Set RX FIFO level to 1
+   SpibRegs.SPIFFCT.all=0x00;
 
-   SpiaRegs.SPIPRI.bit.FREE=1;
+   SpibRegs.SPIPRI.bit.FREE=1;
 
-   SpiaRegs.SPICCR.bit.SPISWRESET=1;  	// Enable SPI
+   SpibRegs.SPICCR.bit.SPISWRESET=1;  	// Enable SPI
 
-  SpiaRegs.SPIFFTX.bit.TXFIFO=1;
-  SpiaRegs.SPIFFTX.bit.SPIRST=1;
-  SpiaRegs.SPIFFRX.bit.RXFIFORESET=1;
+  SpibRegs.SPIFFTX.bit.TXFIFO=1;
+  SpibRegs.SPIFFTX.bit.SPIRST=1;
+  SpibRegs.SPIFFRX.bit.RXFIFORESET=1;
 
 }
 

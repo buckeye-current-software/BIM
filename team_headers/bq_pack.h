@@ -173,7 +173,6 @@ typedef struct BQ_PACK
 {
   bq_dev_t bq_devs[NUMBER_OF_BQ_DEVICES];
 
-  unsigned short error_status;
   long voltage;
   long std_dev;
   unsigned short average;
@@ -183,9 +182,7 @@ typedef struct BQ_PACK
   unsigned short highest_cell_num;
   unsigned short highest_crc;
   unsigned short highest_crc_num;
-  unsigned short num_balance_cells;
-  char bal_num;
-
+  unsigned short bal_num;
 } bq_pack_t;
 
 //redefines the SPI read/write functions

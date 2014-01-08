@@ -12,19 +12,12 @@ stopwatch_struct* SPI_watch;
 
 unsigned int Send_SPI(unsigned char* a)
 {
-	SpiaRegs.SPITXBUF=(*a)<<8;
-	StopWatchRestart(SPI_watch);
-	while((SpiaRegs.SPIFFRX.bit.RXFFST !=1) && (isStopWatchComplete(SPI_watch) == 0));
+	SpibRegs.SPITXBUF=(*a)<<8;
+	while((SpibRegs.SPIFFRX.bit.RXFFST !=1));
 	SpiaRegs.SPIFFRX.bit.RXFFOVFCLR=1;  // Clear Overflow flag
 
-	if(isStopWatchComplete(SPI_watch) == 1)
-	{
-		ops_temp.Flags.bit.SPI_error = 1;
-		return INVALID;
-	}
-
-	*a = SpiaRegs.SPIRXBUF;
-	SpiaRegs.SPIRXBUF = 0;
+	*a = SpibRegs.SPIRXBUF;
+	SpibRegs.SPIRXBUF = 0;
 	ops_temp.Flags.bit.SPI_error = 0;
 	return VALID;
 }

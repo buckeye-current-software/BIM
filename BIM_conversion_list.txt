@@ -1,6 +1,7 @@
 
-Variable measurement freq	DONE
-
+Variable measurement freq:
+update stopwatch 			DONE
+update Command				DONE
 
 Flags:
 BIM_int						DONE
@@ -54,7 +55,7 @@ spi_reg						DONE
 
 BALANCING ALGORTHIM
 data						DONE
-CAN messages 				DONE
+CAN messages 				UPDATE WITH CORRECT BIM stats
 find lowest cell			DONE
 
 
@@ -65,5 +66,11 @@ Led setup					DONE
 Led flash					DONE
 
 
-
-
+unit testing:
+Average is wrong			GOOD num of cells is wrong for test
+num_balance_cells clear		DONE
+error_status				DONE
+device cell_bal				DONE
+alert status				DONE
+fault status				DONE
+Flag problem				DONE	

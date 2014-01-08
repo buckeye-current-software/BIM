@@ -38,10 +38,10 @@ signed int Cell_Send(int cell_num);
 #define HEARTBEAT_ID 	0x3A
 #define HEARTBEAT_BOX 	1
 
-#define Stats1_ID		0x2
+#define Stats1_ID		0x300
 #define Stats1_box		2
 
-#define Stats2_ID		0x3
+#define Stats2_ID		0x301
 #define Stats2_box		3
 
 #define Cell_1_4_ID			0x310

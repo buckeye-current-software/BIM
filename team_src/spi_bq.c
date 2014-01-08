@@ -115,6 +115,7 @@ short spi_read_reg(unsigned char dev_addr,
 {
 	unsigned char package[3];
 	unsigned char crc;
+	unsigned char readchar;
 	char ret = VALID;
 	short i=0;
 	if (spi_regs_rw_mask[reg_addr] & READ_ACCESS)
@@ -141,7 +142,7 @@ short spi_read_reg(unsigned char dev_addr,
 		{
 			for (i=0; i<elem_num+1/*+1 to count CRC*/; i++)
 			{
-				if(Send_SPI(&package[i]) == INVALID) //send data
+				if(Send_SPI(&readchar) == INVALID) //send data
 				{
 					ret = INVALID;
 					i = elem_num+2;
@@ -151,14 +152,14 @@ short spi_read_reg(unsigned char dev_addr,
 				{
 					/*Read CRC*/
 					if (discard_crc)
-						package[0] = package[i];           // Read and discard CRC
+						package[0] = readchar;           // Read and discard CRC
 					else
-						*pData++ = package[i];             // R15 = 00|MSB
+						*pData++ = readchar;             // R15 = 00|MSB
 				}
 				else
 				{
 					/*Read data*/
-					*pData++ = package[i];               // R15 = 00|MSB
+					*pData++ = readchar;               // R15 = 00|MSB
 				}
 			}
 		}
@@ -167,13 +168,14 @@ short spi_read_reg(unsigned char dev_addr,
 
 		if(discard_crc)
 		{
+			i = dev_addr-1;
 			unsigned char* data = (unsigned char*)(pData - (elem_num));
 			if(calculate_crc(data,elem_num,crc) == package[0])
 			{
 				if(dev_addr > 0 && dev_addr <= NUMBER_OF_BQ_DEVICES)
 				{
-					data_temp.bq_pack.bq_devs[dev_addr-1].crc_error_count = 0;
-					ops_temp.Flags.bit.BQ_error[dev_addr-1].bit =  0;
+					data_temp.bq_pack.bq_devs[i].crc_error_count = 0;
+					ops_temp.Flags.bit.BQ_error &= ~(1 << i);
 				}
 
 			}
@@ -181,8 +183,8 @@ short spi_read_reg(unsigned char dev_addr,
 			{
 				if(dev_addr > 0 && dev_addr <= NUMBER_OF_BQ_DEVICES)
 				{
-					data_temp.bq_pack.bq_devs[dev_addr-1].crc_error_count++;
-					ops_temp.Flags.bit.BQ_error[dev_addr-1].bit = 1;
+					data_temp.bq_pack.bq_devs[i].crc_error_count++;
+					ops_temp.Flags.bit.BQ_error |= 1 << i;
 					ret = INVALID;
 				}
 			}

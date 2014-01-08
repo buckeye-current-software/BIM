@@ -19,6 +19,7 @@
 
 #define OPS_ID_STATE 			0
 #define OPS_ID_STOPWATCHERROR 	1
+#define OPS_ID_UPDATE_PERIOD	2
 
 #define EX_BIM	2  	//NUMBER OF EXTERNAL BIMs
 #define BIM2 	0	//index of BIM2
@@ -29,11 +30,6 @@ typedef struct BIM
 	stopwatch_struct* Reset_stopwatch;
 	unsigned short lowest_cell_volts;
 }bim_struct;
-
-typedef struct BIT
-{
-    char bit :1;
-}bit;
 
 
 typedef struct CHANGE_OPS
@@ -49,9 +45,9 @@ typedef struct CHANGE_OPS
 typedef struct FLAGS
 {
 	char BIM_init  : 1;
-	bit BQ_error[6];
 	char SPI_error: 1;
 	char can_error : 1;
+	char BQ_error : 6;
 }flags_struct;
 
 typedef struct OPERATIONS
@@ -59,7 +55,7 @@ typedef struct OPERATIONS
   unsigned long State;
   union Flag
   {
-	  long						all;
+	  Uint16					all;
 	  flags_struct 				bit;
   }								Flags;
   union CHANGE

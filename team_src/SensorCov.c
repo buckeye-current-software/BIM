@@ -134,7 +134,7 @@ void UpdateStruct()
 
 	if (ops.Change.bit.Balance == 0)
 	{
-		ops.State = ops_temp.Balance;
+		ops.Balance = ops_temp.Balance;
 	}
 
 	if (ops.Change.bit.Update_Period == 0)
