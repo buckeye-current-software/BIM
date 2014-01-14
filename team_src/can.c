@@ -416,7 +416,11 @@ __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
   			break;
   		case OPS_ID_UPDATE_PERIOD:
   			memcpy(&ops.Update_period,&dummy,sizeof ops.Update_period);
-  			ops.Change.bit.State = 1;
+  			ops.Change.bit.Update_Period = 1;
+  			break;
+  		case OPS_ID_BALANCE:
+  			memcpy(&ops.Balance,&dummy,sizeof ops.Balance);
+  			ops.Change.bit.Balance = 1;
   			break;
   		}
   		ECanaRegs.CANRMP.bit.RMP0 = 1;

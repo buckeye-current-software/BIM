@@ -38,6 +38,7 @@ void OperationsSetup()
 		ops.BIM[i].Reset_stopwatch = StartStopWatch(500000); //5 second
 		ops.BIM[i].lowest_cell_volts = 4000;
 	}
+	ops.Balance = 0;
 }
 
 void DataSetup()
