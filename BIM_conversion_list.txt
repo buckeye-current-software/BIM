@@ -74,3 +74,5 @@ device cell_bal				DONE
 alert status				DONE
 fault status				DONE
 Flag problem				DONE	
+SPI stopwatch
+BQ_error dection Init	

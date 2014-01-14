@@ -33,6 +33,7 @@ short bq_pack_address_discovery(void)
   unsigned short i, n;
   unsigned char reg_val[2];
 
+  ops_temp.Flags.bit.BQ_error = 0x3f; // all bqs are errors
   i=NUMBER_OF_BQ_DEVICES; //controls iteration loop
   while (i>0)
   {
@@ -79,6 +80,7 @@ short bq_pack_address_discovery(void)
         if ((reg_val[0]&0x3F) == n)
         {
           //address next device or finish device detection
+        	ops_temp.Flags.bit.BQ_error &= ~(1 << i); // correctly addressed clear error flag
           if (n==NUMBER_OF_BQ_DEVICES)
             return n;
         }

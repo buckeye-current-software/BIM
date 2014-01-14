@@ -175,7 +175,7 @@ short spi_read_reg(unsigned char dev_addr,
 				if(dev_addr > 0 && dev_addr <= NUMBER_OF_BQ_DEVICES)
 				{
 					data_temp.bq_pack.bq_devs[i].crc_error_count = 0;
-					ops_temp.Flags.bit.BQ_error &= ~(1 << i);
+					ops_temp.Flags.bit.BQ_error &= ~(1 << i); //clear error flag
 				}
 
 			}
@@ -184,7 +184,7 @@ short spi_read_reg(unsigned char dev_addr,
 				if(dev_addr > 0 && dev_addr <= NUMBER_OF_BQ_DEVICES)
 				{
 					data_temp.bq_pack.bq_devs[i].crc_error_count++;
-					ops_temp.Flags.bit.BQ_error |= 1 << i;
+					ops_temp.Flags.bit.BQ_error |= 1 << i; //set error flag
 					ret = INVALID;
 				}
 			}
