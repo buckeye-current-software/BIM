@@ -7,6 +7,7 @@
 char fualt;
 char first_bq = 0;
 
+extern stopwatch_struct* SPI_watch;
 extern ops_struct ops_temp;
 extern data_struct data_temp;
 
@@ -94,6 +95,7 @@ void bq_spi_fifo_init()
   SpibRegs.SPIFFTX.bit.SPIRST=1;
   SpibRegs.SPIFFRX.bit.RXFIFORESET=1;
 
+  SPI_watch = StartStopWatch(SPI_STOPWATCH_TIME);
 }
 
 void BQ_SpiGpio()
