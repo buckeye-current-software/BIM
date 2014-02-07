@@ -56,6 +56,7 @@ void SensorCovMeasure()
 	switch (ops_temp.BIM_State)
 	{
 	case INIT:
+		data_temp.update = 1; //cause an update to clear mailboxes
 		BALLEDCLEAR();
 		ops_temp.Flags.bit.BIM_init = 0;
 		if(NUMBER_OF_BQ_DEVICES != bq_pack_address_discovery())

@@ -27,7 +27,7 @@ char FillCAN(unsigned int Mbox);
 void SendCAN(unsigned int Mbox);
 void FillCANData();
 void FillSendCAN(unsigned int Mbox);
-
+void ClearMailBoxes();
 
 signed int Cell_Send(int cell_num);
 
@@ -74,5 +74,14 @@ signed int Cell_Send(int cell_num);
 
 #define BIM3_ID				0x304
 #define BIM3_box			13
+
+#define Temp1_ID			0x335
+#define Temp1_box			14
+
+#define Temp2_ID			0x336
+#define Temp2_box			15
+
+#define Temp3_ID			0x337
+#define Temp3_box			16
 
 #endif /* CAN_H_ */

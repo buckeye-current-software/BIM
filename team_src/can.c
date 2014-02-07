@@ -17,6 +17,8 @@ void CANSetup()
 	InitECanaGpio();
 	InitECana();
 
+	ClearMailBoxes();
+
 	ECanaShadow.CANMIM.all = 0;
 	ECanaShadow.CANMIL.all = 0;
 	ECanaShadow.CANGIM.all = 0;
@@ -164,6 +166,33 @@ void CANSetup()
 	ECanaShadow.CANMIM.bit.MIM13  = 1; 		//int enable
 	ECanaShadow.CANMIL.bit.MIL13  = 1;  	// Int.-Level MB#0  -> I1EN
 
+	//Temp1 TRANSMIT
+	ECanaMboxes.MBOX14.MSGID.bit.IDE = 0; 	//standard id
+	ECanaMboxes.MBOX14.MSGID.bit.AME = 0; 	// all bit must match
+	ECanaMboxes.MBOX14.MSGID.bit.AAM = 1; 	//RTR AUTO TRANSMIT
+	ECanaMboxes.MBOX14.MSGCTRL.bit.DLC = 8;
+	ECanaMboxes.MBOX14.MSGID.bit.STDMSGID = Temp1_ID;
+	ECanaShadow.CANMD.bit.MD14 = 0; 		//transmit
+	ECanaShadow.CANME.bit.ME14 = 1;			//enable
+
+	//Temp2 TRANSMIT
+	ECanaMboxes.MBOX15.MSGID.bit.IDE = 0; 	//standard id
+	ECanaMboxes.MBOX15.MSGID.bit.AME = 0; 	// all bit must match
+	ECanaMboxes.MBOX15.MSGID.bit.AAM = 1; 	//RTR AUTO TRANSMIT
+	ECanaMboxes.MBOX15.MSGCTRL.bit.DLC = 8;
+	ECanaMboxes.MBOX15.MSGID.bit.STDMSGID = Temp2_ID;
+	ECanaShadow.CANMD.bit.MD15 = 0; 			//transmit
+	ECanaShadow.CANME.bit.ME15 = 1;			//enable
+
+	//Temp3 TRANSMIT
+	ECanaMboxes.MBOX16.MSGID.bit.IDE = 0; 	//standard id
+	ECanaMboxes.MBOX16.MSGID.bit.AME = 0; 	// all bit must match
+	ECanaMboxes.MBOX16.MSGID.bit.AAM = 1; 	//RTR AUTO TRANSMIT
+	ECanaMboxes.MBOX16.MSGCTRL.bit.DLC = 8;
+	ECanaMboxes.MBOX16.MSGID.bit.STDMSGID = Temp3_ID;
+	ECanaShadow.CANMD.bit.MD16 = 0; 			//transmit
+	ECanaShadow.CANME.bit.ME16 = 1;			//enable
+
 	ECanaRegs.CANGAM.all = ECanaShadow.CANGAM.all;
 	ECanaRegs.CANGIM.all = ECanaShadow.CANGIM.all;
 	ECanaRegs.CANMIM.all = ECanaShadow.CANMIM.all;
@@ -182,7 +211,72 @@ void CANSetup()
     can_watch = StartStopWatch(SENDCAN_STOPWATCH);
 }
 
-
+void ClearMailBoxes()
+{
+    ECanaMboxes.MBOX0.MDH.all = 0;
+    ECanaMboxes.MBOX0.MDL.all = 0;
+    ECanaMboxes.MBOX1.MDH.all = 0;
+    ECanaMboxes.MBOX1.MDL.all = 0;
+    ECanaMboxes.MBOX2.MDH.all = 0;
+    ECanaMboxes.MBOX2.MDL.all = 0;
+    ECanaMboxes.MBOX3.MDH.all = 0;
+    ECanaMboxes.MBOX3.MDL.all = 0;
+    ECanaMboxes.MBOX4.MDH.all = 0;
+    ECanaMboxes.MBOX4.MDL.all = 0;
+    ECanaMboxes.MBOX5.MDH.all = 0;
+    ECanaMboxes.MBOX5.MDL.all = 0;
+    ECanaMboxes.MBOX6.MDH.all = 0;
+    ECanaMboxes.MBOX6.MDL.all = 0;
+    ECanaMboxes.MBOX7.MDH.all = 0;
+    ECanaMboxes.MBOX7.MDL.all = 0;
+    ECanaMboxes.MBOX8.MDH.all = 0;
+    ECanaMboxes.MBOX8.MDL.all = 0;
+    ECanaMboxes.MBOX9.MDH.all = 0;
+    ECanaMboxes.MBOX9.MDL.all = 0;
+    ECanaMboxes.MBOX10.MDH.all = 0;
+    ECanaMboxes.MBOX10.MDL.all = 0;
+    ECanaMboxes.MBOX11.MDH.all = 0;
+    ECanaMboxes.MBOX11.MDL.all = 0;
+    ECanaMboxes.MBOX12.MDH.all = 0;
+    ECanaMboxes.MBOX12.MDL.all = 0;
+    ECanaMboxes.MBOX13.MDH.all = 0;
+    ECanaMboxes.MBOX13.MDL.all = 0;
+    ECanaMboxes.MBOX14.MDH.all = 0;
+    ECanaMboxes.MBOX14.MDL.all = 0;
+    ECanaMboxes.MBOX15.MDH.all = 0;
+    ECanaMboxes.MBOX15.MDL.all = 0;
+    ECanaMboxes.MBOX16.MDH.all = 0;
+    ECanaMboxes.MBOX16.MDL.all = 0;
+    ECanaMboxes.MBOX17.MDH.all = 0;
+    ECanaMboxes.MBOX17.MDL.all = 0;
+    ECanaMboxes.MBOX18.MDH.all = 0;
+    ECanaMboxes.MBOX18.MDL.all = 0;
+    ECanaMboxes.MBOX19.MDH.all = 0;
+    ECanaMboxes.MBOX19.MDL.all = 0;
+    ECanaMboxes.MBOX20.MDH.all = 0;
+    ECanaMboxes.MBOX20.MDL.all = 0;
+    ECanaMboxes.MBOX21.MDH.all = 0;
+    ECanaMboxes.MBOX21.MDL.all = 0;
+    ECanaMboxes.MBOX22.MDH.all = 0;
+    ECanaMboxes.MBOX22.MDL.all = 0;
+    ECanaMboxes.MBOX23.MDH.all = 0;
+    ECanaMboxes.MBOX23.MDL.all = 0;
+    ECanaMboxes.MBOX24.MDH.all = 0;
+    ECanaMboxes.MBOX24.MDL.all = 0;
+    ECanaMboxes.MBOX25.MDH.all = 0;
+    ECanaMboxes.MBOX25.MDL.all = 0;
+    ECanaMboxes.MBOX26.MDH.all = 0;
+    ECanaMboxes.MBOX26.MDL.all = 0;
+    ECanaMboxes.MBOX27.MDH.all = 0;
+    ECanaMboxes.MBOX27.MDL.all = 0;
+    ECanaMboxes.MBOX28.MDH.all = 0;
+    ECanaMboxes.MBOX28.MDL.all = 0;
+    ECanaMboxes.MBOX29.MDH.all = 0;
+    ECanaMboxes.MBOX30.MDL.all = 0;
+    ECanaMboxes.MBOX30.MDH.all = 0;
+    ECanaMboxes.MBOX31.MDL.all = 0;
+    ECanaMboxes.MBOX31.MDH.all = 0;
+}
 
 char FillCAN(unsigned int Mbox)
 {
@@ -209,10 +303,18 @@ char FillCAN(unsigned int Mbox)
 		ECanaShadow.CANMC.bit.MBNR = Mbox;
 		ECanaShadow.CANMC.bit.CDR = 1;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
-		ECanaMboxes.MBOX2.MDL.word.LOW_WORD = data.bq_pack.highest_cell_volts;
-		ECanaMboxes.MBOX2.MDL.byte.BYTE2 = data.bq_pack.highest_cell_num;
-		ECanaMboxes.MBOX2.MDH.word.LOW_WORD = data.bq_pack.lowest_cell_volts;
-		ECanaMboxes.MBOX2.MDH.byte.BYTE6 = data.bq_pack.lowest_cell_num;
+		if (ops.Flags.bit.BIM_init == 1)//if init send data
+		{
+			ECanaMboxes.MBOX2.MDL.word.LOW_WORD = data.bq_pack.highest_cell_volts;
+			ECanaMboxes.MBOX2.MDL.byte.BYTE2 = data.bq_pack.highest_cell_num;
+			ECanaMboxes.MBOX2.MDH.word.LOW_WORD = data.bq_pack.lowest_cell_volts;
+			ECanaMboxes.MBOX2.MDH.byte.BYTE6 = data.bq_pack.lowest_cell_num;
+		}
+		else//if not init send zeros
+		{
+			ECanaMboxes.MBOX2.MDH.all = 0;
+			ECanaMboxes.MBOX2.MDH.all = 0;
+		}
 		ECanaShadow.CANMC.bit.MBNR = 0;
 		ECanaShadow.CANMC.bit.CDR = 0;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
@@ -223,9 +325,17 @@ char FillCAN(unsigned int Mbox)
 		ECanaShadow.CANMC.bit.MBNR = Mbox;
 		ECanaShadow.CANMC.bit.CDR = 1;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
-		ECanaMboxes.MBOX3.MDL.word.LOW_WORD = data.bq_pack.average;
-		ECanaMboxes.MBOX3.MDL.word.HI_WORD = data.bq_pack.std_dev;
-		ECanaMboxes.MBOX3.MDH.byte.BYTE4 = data.bq_pack.bal_num;
+		if (ops.Flags.bit.BIM_init == 1)//if init send data
+		{
+			ECanaMboxes.MBOX3.MDL.word.LOW_WORD = data.bq_pack.average;
+			ECanaMboxes.MBOX3.MDL.word.HI_WORD = data.bq_pack.std_dev;
+			ECanaMboxes.MBOX3.MDH.byte.BYTE4 = data.bq_pack.bal_num;
+		}
+		else//if not init send zeros
+		{
+			ECanaMboxes.MBOX3.MDH.all = 0;
+			ECanaMboxes.MBOX3.MDH.all = 0;
+		}
 		ECanaShadow.CANMC.bit.MBNR = 0;
 		ECanaShadow.CANMC.bit.CDR = 0;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
@@ -236,10 +346,18 @@ char FillCAN(unsigned int Mbox)
 		ECanaShadow.CANMC.bit.MBNR = Mbox;
 		ECanaShadow.CANMC.bit.CDR = 1;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
-		ECanaMboxes.MBOX4.MDL.word.LOW_WORD = Cell_Send(1);
-		ECanaMboxes.MBOX4.MDL.word.HI_WORD = Cell_Send(2);
-		ECanaMboxes.MBOX4.MDH.word.LOW_WORD = Cell_Send(3);
-		ECanaMboxes.MBOX4.MDH.word.HI_WORD = Cell_Send(4);
+		if (ops.Flags.bit.BIM_init == 1)//if init send data
+		{
+			ECanaMboxes.MBOX4.MDL.word.LOW_WORD = Cell_Send(1);
+			ECanaMboxes.MBOX4.MDL.word.HI_WORD = Cell_Send(2);
+			ECanaMboxes.MBOX4.MDH.word.LOW_WORD = Cell_Send(3);
+			ECanaMboxes.MBOX4.MDH.word.HI_WORD = Cell_Send(4);
+		}
+		else//if not init send zeros
+		{
+			ECanaMboxes.MBOX4.MDH.all = 0;
+			ECanaMboxes.MBOX4.MDH.all = 0;
+		}
 		ECanaShadow.CANMC.bit.MBNR = 0;
 		ECanaShadow.CANMC.bit.CDR = 0;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
@@ -250,10 +368,18 @@ char FillCAN(unsigned int Mbox)
 		ECanaShadow.CANMC.bit.MBNR = Mbox;
 		ECanaShadow.CANMC.bit.CDR = 1;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
-		ECanaMboxes.MBOX5.MDL.word.LOW_WORD = Cell_Send(5);
-		ECanaMboxes.MBOX5.MDL.word.HI_WORD = Cell_Send(6);
-		ECanaMboxes.MBOX5.MDH.word.LOW_WORD = Cell_Send(7);
-		ECanaMboxes.MBOX5.MDH.word.HI_WORD = Cell_Send(8);
+		if (ops.Flags.bit.BIM_init == 1)//if init send data
+		{
+			ECanaMboxes.MBOX5.MDL.word.LOW_WORD = Cell_Send(5);
+			ECanaMboxes.MBOX5.MDL.word.HI_WORD = Cell_Send(6);
+			ECanaMboxes.MBOX5.MDH.word.LOW_WORD = Cell_Send(7);
+			ECanaMboxes.MBOX5.MDH.word.HI_WORD = Cell_Send(8);
+		}
+		else//if not init send zeros
+		{
+			ECanaMboxes.MBOX5.MDH.all = 0;
+			ECanaMboxes.MBOX5.MDH.all = 0;
+		}
 		ECanaShadow.CANMC.bit.MBNR = 0;
 		ECanaShadow.CANMC.bit.CDR = 0;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
@@ -264,10 +390,18 @@ char FillCAN(unsigned int Mbox)
 		ECanaShadow.CANMC.bit.MBNR = Mbox;
 		ECanaShadow.CANMC.bit.CDR = 1;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
-		ECanaMboxes.MBOX6.MDL.word.LOW_WORD = Cell_Send(9);
-		ECanaMboxes.MBOX6.MDL.word.HI_WORD = Cell_Send(10);
-		ECanaMboxes.MBOX6.MDH.word.LOW_WORD = Cell_Send(11);
-		ECanaMboxes.MBOX6.MDH.word.HI_WORD = Cell_Send(12);
+		if (ops.Flags.bit.BIM_init == 1)//if init send data
+		{
+			ECanaMboxes.MBOX6.MDL.word.LOW_WORD = Cell_Send(9);
+			ECanaMboxes.MBOX6.MDL.word.HI_WORD = Cell_Send(10);
+			ECanaMboxes.MBOX6.MDH.word.LOW_WORD = Cell_Send(11);
+			ECanaMboxes.MBOX6.MDH.word.HI_WORD = Cell_Send(12);
+		}
+		else//if not init send zeros
+		{
+			ECanaMboxes.MBOX6.MDH.all = 0;
+			ECanaMboxes.MBOX6.MDH.all = 0;
+		}
 		ECanaShadow.CANMC.bit.MBNR = 0;
 		ECanaShadow.CANMC.bit.CDR = 0;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
@@ -278,10 +412,18 @@ char FillCAN(unsigned int Mbox)
 		ECanaShadow.CANMC.bit.MBNR = Mbox;
 		ECanaShadow.CANMC.bit.CDR = 1;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
-		ECanaMboxes.MBOX7.MDL.word.LOW_WORD = Cell_Send(13);
-		ECanaMboxes.MBOX7.MDL.word.HI_WORD = Cell_Send(14);
-		ECanaMboxes.MBOX7.MDH.word.LOW_WORD = Cell_Send(15);
-		ECanaMboxes.MBOX7.MDH.word.HI_WORD = Cell_Send(16);
+		if (ops.Flags.bit.BIM_init == 1)//if init send data
+		{
+			ECanaMboxes.MBOX7.MDL.word.LOW_WORD = Cell_Send(13);
+			ECanaMboxes.MBOX7.MDL.word.HI_WORD = Cell_Send(14);
+			ECanaMboxes.MBOX7.MDH.word.LOW_WORD = Cell_Send(15);
+			ECanaMboxes.MBOX7.MDH.word.HI_WORD = Cell_Send(16);
+		}
+		else//if not init send zeros
+		{
+			ECanaMboxes.MBOX7.MDH.all = 0;
+			ECanaMboxes.MBOX7.MDH.all = 0;
+		}
 		ECanaShadow.CANMC.bit.MBNR = 0;
 		ECanaShadow.CANMC.bit.CDR = 0;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
@@ -292,10 +434,18 @@ char FillCAN(unsigned int Mbox)
 		ECanaShadow.CANMC.bit.MBNR = Mbox;
 		ECanaShadow.CANMC.bit.CDR = 1;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
-		ECanaMboxes.MBOX8.MDL.word.LOW_WORD = Cell_Send(17);
-		ECanaMboxes.MBOX8.MDL.word.HI_WORD = Cell_Send(18);
-		ECanaMboxes.MBOX8.MDH.word.LOW_WORD = Cell_Send(19);
-		ECanaMboxes.MBOX8.MDH.word.HI_WORD = Cell_Send(20);
+		if (ops.Flags.bit.BIM_init == 1)//if init send data
+		{
+			ECanaMboxes.MBOX8.MDL.word.LOW_WORD = Cell_Send(17);
+			ECanaMboxes.MBOX8.MDL.word.HI_WORD = Cell_Send(18);
+			ECanaMboxes.MBOX8.MDH.word.LOW_WORD = Cell_Send(19);
+			ECanaMboxes.MBOX8.MDH.word.HI_WORD = Cell_Send(20);
+		}
+		else//if not init send zeros
+		{
+			ECanaMboxes.MBOX8.MDH.all = 0;
+			ECanaMboxes.MBOX8.MDH.all = 0;
+		}
 		ECanaShadow.CANMC.bit.MBNR = 0;
 		ECanaShadow.CANMC.bit.CDR = 0;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
@@ -306,10 +456,18 @@ char FillCAN(unsigned int Mbox)
 		ECanaShadow.CANMC.bit.MBNR = Mbox;
 		ECanaShadow.CANMC.bit.CDR = 1;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
-		ECanaMboxes.MBOX9.MDL.word.LOW_WORD = Cell_Send(21);
-		ECanaMboxes.MBOX9.MDL.word.HI_WORD = Cell_Send(22);
-		ECanaMboxes.MBOX9.MDH.word.LOW_WORD = Cell_Send(23);
-		ECanaMboxes.MBOX9.MDH.word.HI_WORD = Cell_Send(24);
+		if (ops.Flags.bit.BIM_init == 1)//if init send data
+		{
+			ECanaMboxes.MBOX9.MDL.word.LOW_WORD = Cell_Send(21);
+			ECanaMboxes.MBOX9.MDL.word.HI_WORD = Cell_Send(22);
+			ECanaMboxes.MBOX9.MDH.word.LOW_WORD = Cell_Send(23);
+			ECanaMboxes.MBOX9.MDH.word.HI_WORD = Cell_Send(24);
+		}
+		else//if not init send zeros
+		{
+			ECanaMboxes.MBOX9.MDH.all = 0;
+			ECanaMboxes.MBOX9.MDH.all = 0;
+		}
 		ECanaShadow.CANMC.bit.MBNR = 0;
 		ECanaShadow.CANMC.bit.CDR = 0;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
@@ -320,10 +478,18 @@ char FillCAN(unsigned int Mbox)
 		ECanaShadow.CANMC.bit.MBNR = Mbox;
 		ECanaShadow.CANMC.bit.CDR = 1;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
-		ECanaMboxes.MBOX10.MDL.word.LOW_WORD = Cell_Send(25);
-		ECanaMboxes.MBOX10.MDL.word.HI_WORD = Cell_Send(26);
-		ECanaMboxes.MBOX10.MDH.word.LOW_WORD = Cell_Send(27);
-		ECanaMboxes.MBOX10.MDH.word.HI_WORD = Cell_Send(28);
+		if (ops.Flags.bit.BIM_init == 1)//if init send data
+		{
+			ECanaMboxes.MBOX10.MDL.word.LOW_WORD = Cell_Send(25);
+			ECanaMboxes.MBOX10.MDL.word.HI_WORD = Cell_Send(26);
+			ECanaMboxes.MBOX10.MDH.word.LOW_WORD = Cell_Send(27);
+			ECanaMboxes.MBOX10.MDH.word.HI_WORD = Cell_Send(28);
+		}
+		else//if not init send zeros
+		{
+			ECanaMboxes.MBOX10.MDH.all = 0;
+			ECanaMboxes.MBOX10.MDH.all = 0;
+		}
 		ECanaShadow.CANMC.bit.MBNR = 0;
 		ECanaShadow.CANMC.bit.CDR = 0;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
@@ -334,10 +500,84 @@ char FillCAN(unsigned int Mbox)
 		ECanaShadow.CANMC.bit.MBNR = Mbox;
 		ECanaShadow.CANMC.bit.CDR = 1;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
-		ECanaMboxes.MBOX11.MDL.word.LOW_WORD = Cell_Send(29);
-		ECanaMboxes.MBOX11.MDL.word.HI_WORD = Cell_Send(30);
-		ECanaMboxes.MBOX11.MDH.word.LOW_WORD = Cell_Send(31);
-		ECanaMboxes.MBOX11.MDH.word.HI_WORD = Cell_Send(32);
+		if (ops.Flags.bit.BIM_init == 1)//if init send data
+		{
+			ECanaMboxes.MBOX11.MDL.word.LOW_WORD = Cell_Send(29);
+			ECanaMboxes.MBOX11.MDL.word.HI_WORD = Cell_Send(30);
+			ECanaMboxes.MBOX11.MDH.word.LOW_WORD = Cell_Send(31);
+			ECanaMboxes.MBOX11.MDH.word.HI_WORD = Cell_Send(32);
+		}
+		else//if not init send zeros
+		{
+			ECanaMboxes.MBOX11.MDH.all = 0;
+			ECanaMboxes.MBOX11.MDH.all = 0;
+		}
+		ECanaShadow.CANMC.bit.MBNR = 0;
+		ECanaShadow.CANMC.bit.CDR = 0;
+		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
+		EDIS;
+		return 1;
+	case Temp1_box:
+		EALLOW;
+		ECanaShadow.CANMC.bit.MBNR = Mbox;
+		ECanaShadow.CANMC.bit.CDR = 1;
+		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
+		if (ops.Flags.bit.BIM_init == 1)//if init send data
+		{
+			ECanaMboxes.MBOX14.MDL.word.LOW_WORD = data.bq_pack.bq_devs[0].temperature1;
+			ECanaMboxes.MBOX14.MDL.word.HI_WORD = data.bq_pack.bq_devs[0].temperature2;
+			ECanaMboxes.MBOX14.MDH.word.LOW_WORD = data.bq_pack.bq_devs[1].temperature1;
+			ECanaMboxes.MBOX14.MDH.word.HI_WORD = data.bq_pack.bq_devs[1].temperature2;
+		}
+		else//if not init send zeros
+		{
+			ECanaMboxes.MBOX14.MDH.all = 0;
+			ECanaMboxes.MBOX14.MDH.all = 0;
+		}
+		ECanaShadow.CANMC.bit.MBNR = 0;
+		ECanaShadow.CANMC.bit.CDR = 0;
+		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
+		EDIS;
+		return 1;
+	case Temp2_box:
+		EALLOW;
+		ECanaShadow.CANMC.bit.MBNR = Mbox;
+		ECanaShadow.CANMC.bit.CDR = 1;
+		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
+		if (ops.Flags.bit.BIM_init == 1)//if init send data
+		{
+//			ECanaMboxes.MBOX15.MDL.word.LOW_WORD = data.bq_pack.bq_devs[2].temperature1;
+//			ECanaMboxes.MBOX15.MDL.word.HI_WORD = data.bq_pack.bq_devs[2].temperature2;
+//			ECanaMboxes.MBOX15.MDH.word.LOW_WORD = data.bq_pack.bq_devs[3].temperature1;
+//			ECanaMboxes.MBOX15.MDH.word.HI_WORD = data.bq_pack.bq_devs[3].temperature2;
+		}
+		else//if not init send zeros
+		{
+			ECanaMboxes.MBOX15.MDH.all = 0;
+			ECanaMboxes.MBOX15.MDH.all = 0;
+		}
+		ECanaShadow.CANMC.bit.MBNR = 0;
+		ECanaShadow.CANMC.bit.CDR = 0;
+		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
+		EDIS;
+		return 1;
+	case Temp3_box:
+		EALLOW;
+		ECanaShadow.CANMC.bit.MBNR = Mbox;
+		ECanaShadow.CANMC.bit.CDR = 1;
+		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
+		if (ops.Flags.bit.BIM_init == 1)//if init send data
+		{
+//			ECanaMboxes.MBOX16.MDL.word.LOW_WORD = data.bq_pack.bq_devs[4].temperature1;
+//			ECanaMboxes.MBOX16.MDL.word.HI_WORD = data.bq_pack.bq_devs[4].temperature2;
+//			ECanaMboxes.MBOX16.MDH.word.LOW_WORD = data.bq_pack.bq_devs[5].temperature1;
+//			ECanaMboxes.MBOX16.MDH.word.HI_WORD = data.bq_pack.bq_devs[5].temperature2;
+		}
+		else//if not init send zeros
+		{
+			ECanaMboxes.MBOX16.MDH.all = 0;
+			ECanaMboxes.MBOX16.MDH.all = 0;
+		}
 		ECanaShadow.CANMC.bit.MBNR = 0;
 		ECanaShadow.CANMC.bit.CDR = 0;
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
@@ -429,6 +669,7 @@ __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
   		StopWatchRestart(ops.BIM[BIM2].Reset_stopwatch);
   		ops.BIM[BIM2].lowest_cell_volts = ECanaMboxes.MBOX12.MDH.word.LOW_WORD;
   		ECanaRegs.CANRMP.bit.RMP12 = 1;
+
   		break;
   	case BIM3_box:
   		StopWatchRestart(ops.BIM[BIM3].Reset_stopwatch);
