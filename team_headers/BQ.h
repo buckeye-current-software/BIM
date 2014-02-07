@@ -24,8 +24,8 @@ void Flash_Bal_LED();
 #define		READBQDRDY()			GpioDataRegs.GPBDAT.bit.GPIO34
 #define		READBALBUTTON()			GpioDataRegs.GPADAT.bit.GPIO27
 //outputs
-#define 	EnableISO()				GpioDataRegs.GPACLEAR.bit.GPIO20 = 1
-#define 	DisableISO()			GpioDataRegs.GPASET.bit.GPIO20 = 1
+#define 	EnableISO()				GpioDataRegs.GPASET.bit.GPIO20 = 1
+#define 	DisableISO()			GpioDataRegs.GPACLEAR.bit.GPIO20 = 1
 #define 	SLAVEENSET()			GpioDataRegs.GPASET.bit.GPIO22 = 1
 #define 	SLAVEENCLEAR()			GpioDataRegs.GPACLEAR.bit.GPIO22 = 1
 #define 	BALLEDSET()				GpioDataRegs.GPASET.bit.GPIO4 = 1;

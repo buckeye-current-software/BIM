@@ -6,7 +6,7 @@
 
 //Battery pack definition
 #define NUMBER_OF_BQ_DEVICES      	1 		//BQ76PL536 devices are connected
-#define NUMBER_OF_CELLS           	36		//Total number of cells in the system
+#define NUMBER_OF_CELLS           	6		//Total number of cells in the system
 #define MAX_CELLS_NUMBER_IN_BQ    	6  		//MAX number of cells per BQ76PL536 device
 #define BALANCE_CELL_MIN			3600 	// mV
 

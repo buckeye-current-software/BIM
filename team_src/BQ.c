@@ -51,7 +51,7 @@ void InitBQ76PL536ports()
 	GpioDataRegs.GPASET.bit.GPIO22 = 1;
 	GpioCtrlRegs.GPAPUD.bit.GPIO22 = 0;
 	GpioCtrlRegs.GPADIR.bit.GPIO22 = 1;	// output
-	GpioDataRegs.GPASET.bit.GPIO22 = 1;
+	GpioDataRegs.GPACLEAR.bit.GPIO22 = 1;
 
 	//ISO ENABLE
 	GpioDataRegs.GPASET.bit.GPIO20 = 1;
@@ -108,8 +108,8 @@ void BQ_SpiGpio()
 	// This will enable the pullups for the specified pins.
 	// Comment out other unwanted lines.
 
-	GpioCtrlRegs.GPAPUD.bit.GPIO12 = 0;     // Enable pull-up on GPIO12 (SPISIMOB)
-	//  GpioCtrlRegs.GPAPUD.bit.GPIO24 = 0;     // Enable pull-up on GPIO24 (SPISIMOB)
+	//GpioCtrlRegs.GPAPUD.bit.GPIO12 = 0;     // Enable pull-up on GPIO12 (SPISIMOB)
+	  GpioCtrlRegs.GPAPUD.bit.GPIO24 = 0;     // Enable pull-up on GPIO24 (SPISIMOB)
 
 	GpioCtrlRegs.GPAPUD.bit.GPIO13 = 0;     // Enable pull-up on GPIO13 (SPISOMIB)
 	//  GpioCtrlRegs.GPAPUD.bit.GPIO25 = 0;     // Enable pull-up on GPIO25 (SPISOMIB)
@@ -125,8 +125,8 @@ void BQ_SpiGpio()
 	// This will select asynch (no qualification) for the selected pins.
 	// Comment out other unwanted lines.
 
-	GpioCtrlRegs.GPAQSEL1.bit.GPIO12 = 3;   // Asynch input GPIO12 (SPISIMOB)
-	//  GpioCtrlRegs.GPAQSEL2.bit.GPIO24 = 3;   // Asynch input GPIO24 (SPISIMOB)
+	//GpioCtrlRegs.GPAQSEL1.bit.GPIO12 = 3;   // Asynch input GPIO12 (SPISIMOB)
+	  GpioCtrlRegs.GPAQSEL2.bit.GPIO24 = 3;   // Asynch input GPIO24 (SPISIMOB)
 
 	GpioCtrlRegs.GPAQSEL1.bit.GPIO13 = 3;   // Asynch input GPIO13 (SPISOMIB)
 	//  GpioCtrlRegs.GPAQSEL2.bit.GPIO25 = 3;   // Asynch input GPIO25 (SPISOMIB)
@@ -141,8 +141,8 @@ void BQ_SpiGpio()
 	// This specifies which of the possible GPIO pins will be SPI functional pins.
 	// Comment out other unwanted lines.
 
-	GpioCtrlRegs.GPAMUX1.bit.GPIO12 = 3;    // Configure GPIO12 as SPISIMOB
-	//  GpioCtrlRegs.GPAMUX2.bit.GPIO24 = 3;    // Configure GPIO24 as SPISIMOB
+	//GpioCtrlRegs.GPAMUX1.bit.GPIO12 = 3;    // Configure GPIO12 as SPISIMOB
+	  GpioCtrlRegs.GPAMUX2.bit.GPIO24 = 3;    // Configure GPIO24 as SPISIMOB
 
 	GpioCtrlRegs.GPAMUX1.bit.GPIO13 = 3;    // Configure GPIO13 as SPISOMIB
 	//  GpioCtrlRegs.GPAMUX2.bit.GPIO25 = 3;    // Configure GPIO25 as SPISOMIB

@@ -44,9 +44,7 @@ calculate_crc				DONE
 SPI_Setup					DONE
 BQ_Setup					DONE
 
-spi_fifo_init()				BAUDRATE?
-
-PIN STUFF: 
+sp
 SpiGpio()					DONE
 InitBQ76PL536ports()		DONE
 READBQDRDY()				DONE
@@ -58,7 +56,7 @@ data						DONE
 CAN messages 				UPDATE WITH CORRECT BIM stats
 find lowest cell			DONE
 
-
+v
 BAL LED/SWITCH
 Button setup				DONE
 Button check				DONE
@@ -74,5 +72,6 @@ device cell_bal				DONE
 alert status				DONE
 fault status				DONE
 Flag problem				DONE	
-SPI stopwatch
-BQ_error dection Init	
+SPI stopwatch				DONE
+BQ_error dection Init		DONE
+Send zeros if not init		DONE

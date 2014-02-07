@@ -80,7 +80,7 @@ short bq_pack_address_discovery(void)
         if ((reg_val[0]&0x3F) == n)
         {
           //address next device or finish device detection
-        	ops_temp.Flags.bit.BQ_error &= ~(1 << i); // correctly addressed clear error flag
+        	ops_temp.Flags.bit.BQ_error &= ~(1 << (n-1)); // correctly addressed clear error flag
           if (n==NUMBER_OF_BQ_DEVICES)
             return n;
         }
