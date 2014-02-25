@@ -29,7 +29,7 @@ void FillCANData();
 void FillSendCAN(unsigned int Mbox);
 void ClearMailBoxes();
 
-signed int Cell_Send(int cell_num);
+unsigned int Cell_Send(int cell_num);
 
 //todo USER: DEFINE IDs and mailboxes for output
 #define COMMAND_ID 		0xB0

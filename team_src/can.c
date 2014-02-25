@@ -685,52 +685,23 @@ __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
 }
 
 
-signed int Cell_Send(int cell_num)
+unsigned int Cell_Send(int cell_num)
 {
 	cell_num--;
-	if(cell_num <= 6)
+	int dev = cell_num / 6;
+	cell_num = cell_num % 6;
+
+	if (dev < NUMBER_OF_BQ_DEVICES)
 	{
-		if (data.bq_pack.bq_devs[0].cell_bal & (1 << cell_num) != 0)
+		if (data.bq_pack.bq_devs[dev].cell_bal & (1 << cell_num) != 0)
 		{
-			return 0 - (data.bq_pack.bq_devs[0].cell_voltage[cell_num]);
+			return (unsigned int)(data.bq_pack.bq_devs[dev].cell_voltage[cell_num]) | 0x8000;
 		}
 		else
 		{
-			return data.bq_pack.bq_devs[0].cell_voltage[cell_num];
+			return data.bq_pack.bq_devs[dev].cell_voltage[cell_num];
 		}
 	}
-	else if(cell_num <= 12)
-	{
-		if (data.bq_pack.bq_devs[0].cell_bal & (1 << (cell_num-12)) != 0)
-		{
-			return 0 - (data.bq_pack.bq_devs[0].cell_voltage[cell_num-12]);
-		}
-		else
-		{
-			return data.bq_pack.bq_devs[0].cell_voltage[cell_num-12];
-		}
-	}
-	else if(cell_num <= 18)
-	{
-		if (data.bq_pack.bq_devs[0].cell_bal & (1 << (cell_num-18)) != 0)
-		{
-			return 0 - (data.bq_pack.bq_devs[0].cell_voltage[cell_num-18]);
-		}
-		else
-		{
-			return data.bq_pack.bq_devs[0].cell_voltage[cell_num-18];
-		}
-	}
-	else
-	{
-		if (data.bq_pack.bq_devs[0].cell_bal & (1 << (cell_num-32)) != 0)
-		{
-			return 0 - (data.bq_pack.bq_devs[0].cell_voltage[cell_num-32]);
-		}
-		else
-		{
-			return data.bq_pack.bq_devs[0].cell_voltage[cell_num-32];
-		}
-	}
+	return 0;
 }
 
