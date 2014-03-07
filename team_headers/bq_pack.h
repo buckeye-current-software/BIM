@@ -141,8 +141,8 @@ typedef struct BQ_DEV
 
   unsigned short cell_voltage[MAX_CELLS_NUMBER_IN_BQ];  //[mV]
   
-  unsigned short temperature1;
-  unsigned short temperature2;
+  unsigned int temperature1; //m C
+  unsigned int temperature2; // m C
   float temperature1ratio;
   float temperature2ratio;
 
