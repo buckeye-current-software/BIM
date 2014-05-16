@@ -36,6 +36,33 @@ void SensorCovInit()
 	ops.Flags.bit.BIM_init = 0;
 	BQ_Setup();
 
+	EALLOW;
+	GpioDataRegs.GPACLEAR.bit.GPIO15 = 1;
+	GpioCtrlRegs.GPAMUX1.bit.GPIO15 = 0;         // GPIO
+	GpioCtrlRegs.GPADIR.bit.GPIO15 = 1;          // output
+	GpioCtrlRegs.GPAQSEL1.bit.GPIO15 = 0;        //Synch to SYSCLKOUT only
+	GpioCtrlRegs.GPAPUD.bit.GPIO15 = 1; 		//disable pull up
+	GpioDataRegs.GPACLEAR.bit.GPIO15 = 1;
+	EDIS;
+
+	EALLOW;
+	GpioDataRegs.GPASET.bit.GPIO4 = 1;
+	GpioCtrlRegs.GPAMUX1.bit.GPIO4 = 0;         // GPIO
+	GpioCtrlRegs.GPADIR.bit.GPIO4 = 1;          // output
+	GpioCtrlRegs.GPAQSEL1.bit.GPIO4 = 0;        //Synch to SYSCLKOUT only
+	GpioCtrlRegs.GPAPUD.bit.GPIO4 = 1; 		//disable pull up
+	GpioDataRegs.GPASET.bit.GPIO4 = 1;
+	EDIS;
+
+	EALLOW;
+	GpioDataRegs.GPASET.bit.GPIO5 = 1;
+	GpioCtrlRegs.GPAMUX1.bit.GPIO5 = 0;         // GPIO
+	GpioCtrlRegs.GPADIR.bit.GPIO5 = 1;          // output
+	GpioCtrlRegs.GPAQSEL1.bit.GPIO5 = 0;        //Synch to SYSCLKOUT only
+	GpioCtrlRegs.GPAPUD.bit.GPIO5 = 1; 		//disable pull up
+	GpioDataRegs.GPASET.bit.GPIO5 = 1;
+	EDIS;
+
 	BIM_watch = StartStopWatch(100);
 	while(isStopWatchComplete(BIM_watch) != 1);		//delay for microsecond for voltage regulator to start up
 }
@@ -104,10 +131,11 @@ void SensorCovMeasure()
 			update_bq_pack_data();									//update data
 			CellBalancing();	//balance if ops says so
 			Flash_Bal_LED();	//flash led according to balance
-			BMM_Sleep();
+			//BMM_Sleep();
 			data_temp.update = 1;									//actually latch data
 			ops_temp.BIM_State = COV;
 			StopWatchRestartTime(BIM_watch,ops_temp.Update_period);
+			BIM_LED_Clear();
 		}
 		break;
 	default:
@@ -154,6 +182,7 @@ void UpdateStruct()
 void SensorCovDeInit()
 {
 	//todo USER: SensorCovDeInit()
+	BIM_low();
 	StopStopWatch(BIM_watch);
 
 }

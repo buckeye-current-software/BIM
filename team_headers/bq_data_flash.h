@@ -5,7 +5,7 @@
 
 
 //Battery pack definition
-#define NUMBER_OF_BQ_DEVICES      	6 		//BQ76PL536 devices are connected
+#define NUMBER_OF_BQ_DEVICES      	6		//BQ76PL536 devices are connected
 #define NUMBER_OF_CELLS           	36		//Total number of cells in the system
 #define MAX_CELLS_NUMBER_IN_BQ    	6  		//MAX number of cells per BQ76PL536 device
 #define BALANCE_CELL_MIN			3600 	// mV
@@ -50,7 +50,7 @@ CONFIG_OT	VTS_SET	VTS_CLEAR	TSET		TCLEAR
 
 
 
-#define dBALANCE_TIME                  (unsigned long)10    //BALANCE_TIME A.K.A CB_TIME[s]
+#define dBALANCE_TIME                  (unsigned long)1    //BALANCE_TIME A.K.A CB_TIME[s]
 #define dBALANCE_VOLTS_THRESHOLD       10    //BALANCE_VOLTS_THRESHOLD      [mV]
 
 

@@ -21,9 +21,10 @@
 #define OPS_ID_UPDATE_PERIOD	2
 #define OPS_ID_BALANCE 			3
 
-#define EX_BIM	2  	//NUMBER OF EXTERNAL BIMs
+#define EX_BIM	3  	//NUMBER OF EXTERNAL BIMs
 #define BIM2 	0	//index of BIM2
 #define BIM3	1	//index of BIM3
+#define BIM4	2	//index of BIM3
 
 typedef struct BIM
 {

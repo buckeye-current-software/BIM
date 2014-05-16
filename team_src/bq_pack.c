@@ -8,6 +8,21 @@ extern ops_struct ops_temp;
 /*                            Local variables                                 */
 /******************************************************************************/
 
+void BIM_low()
+{
+	bq_dev_write_reg(BROADCAST_ADDR, IO_CONTROL_REG, IO_CONTROL_VAL_LOW);
+}
+
+
+void BIM_LED_Set()
+{
+	  bq_dev_write_reg(BROADCAST_ADDR, IO_CONTROL_REG, IO_CONTROL_VAL);
+}
+
+void BIM_LED_Clear()
+{
+	bq_dev_write_reg(BROADCAST_ADDR, IO_CONTROL_REG, IO_CONTROL_VAL_CLEAR);
+}
 
 void BMM_Sleep()
 {
@@ -42,10 +57,26 @@ short bq_pack_address_discovery(void)
     {
     	return INVALID;
     }
+
+    DELAY_US(1000);
+
+    if(bq_dev_write_reg(BROADCAST_ADDR, RESET_REG, BQ76PL536_RESET) == INVALID)
+    {
+    	return INVALID;
+    }
+
+    DELAY_US(1000);
+
+    if(bq_dev_write_reg(BROADCAST_ADDR, RESET_REG, BQ76PL536_RESET) == INVALID)
+    {
+    	return INVALID;
+    }
     DELAY_US(1000);
     n=0;  //controls number of discovered devices
     while (n<NUMBER_OF_BQ_DEVICES)
     {
+
+
     //*Read DEVICE_STATUS reg at address 0x00*/
     if (bq_dev_read_reg(DISCOVERY_ADDR, DEVICE_STATUS_REG, 1, DISCARD_CRC, reg_val) == INVALID)
     {
@@ -205,7 +236,7 @@ unsigned char update_bq_pack_data(void)
 	  bq_dev_read_temps(&data_temp.bq_pack.bq_devs[i]);
 
 
-	  total_cells++;
+	 // total_cells++;
 
   }
   
@@ -255,14 +286,25 @@ void CellBalancing(void)
 	unsigned short low_cell;
 
 	//cell balancing enabled by event?
-	if (ops_temp.Balance == 1)
+	if (ops_temp.Balance == 1 && data_temp.bq_pack.bq_devs[1].temperature2 < 8500)
 	{
+
 		//cell balancing enabled by event? ->YES
 		//cell balancing achieved?
 		if (BIM_lowest_cell(&ops_temp,&low_cell) == INVALID)
 		{
 			ops_temp.Balance = 0;		//BIM not updated recently than stop Balancing
 			return;
+		}
+
+		if (data_temp.bq_pack.lowest_cell_volts < low_cell)
+		{
+			low_cell = data_temp.bq_pack.lowest_cell_volts;
+		}
+
+		if (low_cell < BALANCE_CELL_MIN )
+		{
+			low_cell = BALANCE_CELL_MIN;
 		}
 
 		if ((data_temp.bq_pack.highest_cell_volts - low_cell) >= get_u32_value(BALANCE_VOLTS_THRESHOLD) )
@@ -274,7 +316,7 @@ void CellBalancing(void)
 			{
 				//*Enable bypass resistor for all balanced cells*/
 				enable_bypass_resistor(dev_id, (~find_imbalanced_cell(dev_id,low_cell)));
-				data_temp.bq_pack.bal_num =+ data_temp.bq_pack.bq_devs[dev_id].num_cell_bal;
+				data_temp.bq_pack.bal_num = data_temp.bq_pack.bal_num + data_temp.bq_pack.bq_devs[dev_id].num_cell_bal;
 			}
 
 		}
@@ -754,35 +796,60 @@ short bq_dev_read_errors(bq_dev_t* this)
 */     
 short bq_dev_read_temps(bq_dev_t* this)
 {
-  unsigned char data[2];
+	  unsigned char data[2];
+	  float temp;
+
+	#define r_inf		(double).09919118979
+	#define B			(double)3435
+	#define r2  		(double)1470 //resistor before adc
+	#define r1			(double)1820 //resistor after adc
+
+	#define r_inf2		(double)0.12885174498
+	#define B2			(double)3375
+
+	  //Bytes need to be swapped as BQ device supports Big Endian
+
+	  if(bq_dev_read_reg(this->device_address, TEMPERATURE1_L_REG, 2, DISCARD_CRC,
+	                 (unsigned char*) &data[0]) == INVALID)
+	  {
+	  	return INVALID;
+	  }
+
+	  this->temperature1ratio  = ((float)((data[0] << 8) | data[1]))/33104;
+
+	  if (this->device_address == 5 )
+	  {
+		  temp = -(r1+r2) + (r1/this->temperature1ratio);
+		  this->temperature1 = (int)(((B)/(log((temp/r_inf)))- 273.5)*100);
+	  }
+	  else
+	  {
+			temp = -(r1+r2) + (r1/this->temperature1ratio);
+			this->temperature1 = (int)(((B2)/(log((temp/r_inf2)))- 273.5)*100);
+	  }
 
 
-  //RTS = (REGMSB × 256 + REGLSB) / 33104
-  // RTS = .2 THEN TEMP = 40000 mC
-  // RTS = .4 then temp = 90000 mC
-  // slope = 250000
-  // intercept = -10000
-  // temp = (rts * 250000) - 10000
-  //Bytes need to be swapped as BQ device supports Big Endian
+	  if(bq_dev_read_reg(this->device_address, TEMPERATURE2_L_REG, 2, DISCARD_CRC,
+	                 (unsigned char*) &data[0]) == INVALID)
+	  {
+	  	return INVALID;
+	  }
 
-  if(bq_dev_read_reg(this->device_address, TEMPERATURE1_L_REG, 2, DISCARD_CRC,
-                 (unsigned char*) &data[0]) == INVALID)
-  {
-  	return INVALID;
-  }
 
-  this->temperature1ratio  = ((float)((data[0] << 8) | data[1]))/33104;
-  this->temperature1 = (this->temperature1ratio * 250000) - 10000;
+	  this->temperature2ratio  = ((float)((data[0] << 8) | data[1]))/33104;
 
-  if(bq_dev_read_reg(this->device_address, TEMPERATURE2_L_REG, 2, DISCARD_CRC,
-                 (unsigned char*) &data[0]) == INVALID)
-  {
-  	return INVALID;
-  }
-  this->temperature2ratio  = ((float)((data[0] << 8) | data[1]))/33104;
-  this->temperature2 = (this->temperature2ratio * 250000) - 10000;
- 
-  return VALID;
+	  if(this->device_address == 2)
+	  {
+	  	  temp = -(r1+r2) + (r1/this->temperature2ratio);
+		this->temperature2 = (int)(((B)/(log((temp/r_inf)))- 273.5)*100);
+	  }
+	  else
+	  {
+	  	  temp = -(r1+r2) + (r1/this->temperature2ratio);
+		this->temperature2 = (int)(((B2)/(log((temp/r_inf2)))- 273.5)*100);
+	  }
+
+	  return VALID;
 }
 
 
@@ -845,7 +912,7 @@ unsigned short find_imbalanced_cell(unsigned short in_dev_id,unsigned short low_
   unsigned short cell_id, imb_cells_mask, cnt, cell_cnt;
   
   cnt = 0;
-  cell_cnt = 0;
+  cell_cnt = data_temp.bq_pack.bq_devs[in_dev_id].cell_count;
   imb_cells_mask = 0xFFFF;
   
   /*Read each cell voltage and compare it vs lowest cell voltage*/
@@ -853,10 +920,10 @@ unsigned short find_imbalanced_cell(unsigned short in_dev_id,unsigned short low_
   {
     imb_cells_mask &= ~(1<<cnt);
     //changed to use lowest
-    if ((data_temp.bq_pack.bq_devs[in_dev_id].cell_voltage[cell_id]) - low_cell < get_u32_value(BALANCE_VOLTS_THRESHOLD) && (data_temp.bq_pack.bq_devs[in_dev_id].cell_voltage[cell_id] > BALANCE_CELL_MIN) )
+    if ((data_temp.bq_pack.bq_devs[in_dev_id].cell_voltage[cell_id]) - low_cell < get_u32_value(BALANCE_VOLTS_THRESHOLD) || (data_temp.bq_pack.bq_devs[in_dev_id].cell_voltage[cell_id] < BALANCE_CELL_MIN) )
     {
       imb_cells_mask |= (1<<cnt);
-      cell_cnt++;
+      cell_cnt--;
     }
     cnt++;
   }

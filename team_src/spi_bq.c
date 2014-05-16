@@ -89,9 +89,11 @@ short spi_write_reg(unsigned char dev_addr,
 				ret = INVALID;
 				i = 5;
 			}
+			DELAY_US(5);
 
 		}
 		SLAVEENSET();
+		DELAY_US(200);
 	}
 
 	return ret;
@@ -136,12 +138,14 @@ short spi_read_reg(unsigned char dev_addr,
 				ret = INVALID;
 				i = 4;
 			}
+			DELAY_US(5);
 		}
 
 		if (i == 3)
 		{
 			for (i=0; i<elem_num+1/*+1 to count CRC*/; i++)
 			{
+				readchar = 0;
 				if(Send_SPI(&readchar) == INVALID) //send data
 				{
 					ret = INVALID;
@@ -161,10 +165,12 @@ short spi_read_reg(unsigned char dev_addr,
 					/*Read data*/
 					*pData++ = readchar;               // R15 = 00|MSB
 				}
+				DELAY_US(5);
 			}
 		}
 
 		SLAVEENSET();
+		DELAY_US(200);
 
 		if(discard_crc)
 		{

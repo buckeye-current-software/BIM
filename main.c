@@ -8,13 +8,13 @@
 #include "Boot.h"
 #include "all.h"
 
-Uint16 MesgID = 5;
+Uint16 MesgID = 0x3d;
 
 int main(void)
 {
 	StartUp();
 	BootISRSetup();
-	PowerDownISRSetup();
+	//PowerDownISRSetup();
 	ops.State = STATE_INIT;
 	while(1)
 	{

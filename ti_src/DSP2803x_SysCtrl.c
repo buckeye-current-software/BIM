@@ -266,7 +266,7 @@ void InitPeripheralClocks(void)
 // LOSPCP prescale register settings, normally it will be set to default values
 
    //GpioCtrlRegs.GPAMUX2.bit.GPIO18 = 3;  // GPIO18 = XCLKOUT
-   SysCtrlRegs.LOSPCP.all = 0x0002;
+   SysCtrlRegs.LOSPCP.all = 0x007;			//2 is default
 
 // XCLKOUT to SYSCLKOUT ratio.  By default XCLKOUT = 1/4 SYSCLKOUT
    SysCtrlRegs.XCLK.bit.XCLKOUTDIV=2;

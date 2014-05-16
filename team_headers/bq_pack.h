@@ -19,7 +19,11 @@
 #define ADC_CONTROL_VAL_4 ((1<<6)|(3<<4)|(1<<3)|(3<<0))
 
 //AUX,GPIO_OUT,GPIO_IN,SLEEP,TS2_on,TS1_on, LED_ON
-#define IO_CONTROL_VAL    ((0<<7)|(1<<6)|(0<<5)|(0<<2)|(1<<1)|(1<<0))
+#define IO_CONTROL_VAL    		((0<<7)|(1<<6)|(0<<5)|(0<<2)|(1<<1)|(1<<0))
+//SAME as above with no LED
+#define IO_CONTROL_VAL_CLEAR	((0<<7)|(0<<6)|(0<<5)|(0<<2)|(1<<1)|(1<<0))
+
+#define IO_CONTROL_VAL_LOW		((0<<7)|(0<<6)|(0<<5)|(0<<2)|(0<<1)|(0<<0))
 
 //cell ballancing defines
 #define CB_CTRL_VAL       0
@@ -141,8 +145,8 @@ typedef struct BQ_DEV
 
   unsigned short cell_voltage[MAX_CELLS_NUMBER_IN_BQ];  //[mV]
   
-  unsigned int temperature1; //m C
-  unsigned int temperature2; // m C
+  signed int temperature1; //m C
+  signed int temperature2; // m C
   float temperature1ratio;
   float temperature2ratio;
 
@@ -198,6 +202,9 @@ typedef struct BQ_PACK
 /******************************************************************************/
 /*                       Global functions declaration                          */
 /******************************************************************************/
+extern void BIM_low();
+extern void BIM_LED_Set();
+extern void BIM_LED_Clear();
 extern void BMM_Sleep();
 extern void BMM_Wake();
 extern short bq_pack_address_discovery(void);

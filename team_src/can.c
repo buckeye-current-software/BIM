@@ -7,7 +7,7 @@
 #include "all.h"
 
 extern data_struct data;
-unsigned int mask;
+unsigned long mask;
 stopwatch_struct* can_watch;
 struct ECAN_REGS ECanaShadow;
 
@@ -143,6 +143,14 @@ void CANSetup()
 	ECanaShadow.CANMD.bit.MD11 = 0; 			//transmit
 	ECanaShadow.CANME.bit.ME11 = 1;			//enable
 
+	//Cell 33-36 TRANSMIT
+	ECanaMboxes.MBOX18.MSGID.bit.IDE = 0; 	//standard id
+	ECanaMboxes.MBOX18.MSGID.bit.AME = 0; 	// all bit must match
+	ECanaMboxes.MBOX18.MSGID.bit.AAM = 1; 	//RTR AUTO TRANSMIT
+	ECanaMboxes.MBOX18.MSGCTRL.bit.DLC = 8;
+	ECanaMboxes.MBOX18.MSGID.bit.STDMSGID = Cell_33_36_ID;
+	ECanaShadow.CANMD.bit.MD18 = 0; 			//transmit
+	ECanaShadow.CANME.bit.ME18 = 1;			//enable
 
 	//BIM2 RECEIVE
 	ECanaMboxes.MBOX12.MSGID.bit.IDE = 0; 	//standard id
@@ -192,6 +200,18 @@ void CANSetup()
 	ECanaMboxes.MBOX16.MSGID.bit.STDMSGID = Temp3_ID;
 	ECanaShadow.CANMD.bit.MD16 = 0; 			//transmit
 	ECanaShadow.CANME.bit.ME16 = 1;			//enable
+
+
+	//BIM4 RECEIVE
+	ECanaMboxes.MBOX17.MSGID.bit.IDE = 0; 	//standard id
+	ECanaMboxes.MBOX17.MSGID.bit.AME = 0;	// all bit must match
+	ECanaMboxes.MBOX17.MSGID.bit.AAM = 0; 	// no RTR AUTO TRANSMIT
+	ECanaMboxes.MBOX17.MSGCTRL.bit.DLC = 6;
+	ECanaMboxes.MBOX17.MSGID.bit.STDMSGID = BIM4_ID;
+	ECanaShadow.CANMD.bit.MD17 = 1;			//receive
+	ECanaShadow.CANME.bit.ME17 = 1;			//enable
+	ECanaShadow.CANMIM.bit.MIM17  = 1; 		//int enable
+	ECanaShadow.CANMIL.bit.MIL17  = 1;  	// Int.-Level MB#0  -> I1EN
 
 	ECanaRegs.CANGAM.all = ECanaShadow.CANGAM.all;
 	ECanaRegs.CANGIM.all = ECanaShadow.CANGIM.all;
@@ -305,10 +325,10 @@ char FillCAN(unsigned int Mbox)
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
 		if (ops.Flags.bit.BIM_init == 1)//if init send data
 		{
-			ECanaMboxes.MBOX2.MDL.word.LOW_WORD = data.bq_pack.highest_cell_volts;
-			ECanaMboxes.MBOX2.MDL.byte.BYTE2 = data.bq_pack.highest_cell_num;
-			ECanaMboxes.MBOX2.MDH.word.LOW_WORD = data.bq_pack.lowest_cell_volts;
-			ECanaMboxes.MBOX2.MDH.byte.BYTE6 = data.bq_pack.lowest_cell_num;
+			ECanaMboxes.MBOX2.MDL.word.LOW_WORD = (unsigned int)data.bq_pack.highest_cell_volts;
+			ECanaMboxes.MBOX2.MDL.byte.BYTE1 = (unsigned int)data.bq_pack.highest_cell_num;
+			ECanaMboxes.MBOX2.MDH.word.LOW_WORD = (unsigned int)data.bq_pack.lowest_cell_volts;
+			ECanaMboxes.MBOX2.MDH.byte.BYTE5 = (unsigned int)data.bq_pack.lowest_cell_num;
 		}
 		else//if not init send zeros
 		{
@@ -329,7 +349,7 @@ char FillCAN(unsigned int Mbox)
 		{
 			ECanaMboxes.MBOX3.MDL.word.LOW_WORD = data.bq_pack.average;
 			ECanaMboxes.MBOX3.MDL.word.HI_WORD = data.bq_pack.std_dev;
-			ECanaMboxes.MBOX3.MDH.byte.BYTE4 = data.bq_pack.bal_num;
+			ECanaMboxes.MBOX3.MDH.byte.BYTE7 = data.bq_pack.bal_num;
 		}
 		else//if not init send zeros
 		{
@@ -517,6 +537,28 @@ char FillCAN(unsigned int Mbox)
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
 		EDIS;
 		return 1;
+	case Cell_33_36_box:
+		EALLOW;
+		ECanaShadow.CANMC.bit.MBNR = Mbox;
+		ECanaShadow.CANMC.bit.CDR = 1;
+		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
+		if (ops.Flags.bit.BIM_init == 1)//if init send data
+		{
+			ECanaMboxes.MBOX18.MDL.word.LOW_WORD = Cell_Send(33);
+			ECanaMboxes.MBOX18.MDL.word.HI_WORD = Cell_Send(34);
+			ECanaMboxes.MBOX18.MDH.word.LOW_WORD = Cell_Send(35);
+			ECanaMboxes.MBOX18.MDH.word.HI_WORD = Cell_Send(36);
+		}
+		else//if not init send zeros
+		{
+			ECanaMboxes.MBOX18.MDH.all = 0;
+			ECanaMboxes.MBOX18.MDH.all = 0;
+		}
+		ECanaShadow.CANMC.bit.MBNR = 0;
+		ECanaShadow.CANMC.bit.CDR = 0;
+		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
+		EDIS;
+		return 1;
 	case Temp1_box:
 		EALLOW;
 		ECanaShadow.CANMC.bit.MBNR = Mbox;
@@ -546,10 +588,10 @@ char FillCAN(unsigned int Mbox)
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
 		if (ops.Flags.bit.BIM_init == 1)//if init send data
 		{
-//			ECanaMboxes.MBOX15.MDL.word.LOW_WORD = data.bq_pack.bq_devs[2].temperature1;
-//			ECanaMboxes.MBOX15.MDL.word.HI_WORD = data.bq_pack.bq_devs[2].temperature2;
-//			ECanaMboxes.MBOX15.MDH.word.LOW_WORD = data.bq_pack.bq_devs[3].temperature1;
-//			ECanaMboxes.MBOX15.MDH.word.HI_WORD = data.bq_pack.bq_devs[3].temperature2;
+			ECanaMboxes.MBOX15.MDL.word.LOW_WORD = data.bq_pack.bq_devs[2].temperature1;
+			ECanaMboxes.MBOX15.MDL.word.HI_WORD = data.bq_pack.bq_devs[2].temperature2;
+			ECanaMboxes.MBOX15.MDH.word.LOW_WORD = data.bq_pack.bq_devs[3].temperature1;
+			ECanaMboxes.MBOX15.MDH.word.HI_WORD = data.bq_pack.bq_devs[3].temperature2;
 		}
 		else//if not init send zeros
 		{
@@ -568,10 +610,10 @@ char FillCAN(unsigned int Mbox)
 		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
 		if (ops.Flags.bit.BIM_init == 1)//if init send data
 		{
-//			ECanaMboxes.MBOX16.MDL.word.LOW_WORD = data.bq_pack.bq_devs[4].temperature1;
-//			ECanaMboxes.MBOX16.MDL.word.HI_WORD = data.bq_pack.bq_devs[4].temperature2;
-//			ECanaMboxes.MBOX16.MDH.word.LOW_WORD = data.bq_pack.bq_devs[5].temperature1;
-//			ECanaMboxes.MBOX16.MDH.word.HI_WORD = data.bq_pack.bq_devs[5].temperature2;
+			ECanaMboxes.MBOX16.MDL.word.LOW_WORD = data.bq_pack.bq_devs[4].temperature1;
+			ECanaMboxes.MBOX16.MDL.word.HI_WORD = data.bq_pack.bq_devs[4].temperature2;
+			ECanaMboxes.MBOX16.MDH.word.LOW_WORD = data.bq_pack.bq_devs[5].temperature1;
+			ECanaMboxes.MBOX16.MDH.word.HI_WORD = data.bq_pack.bq_devs[5].temperature2;
 		}
 		else//if not init send zeros
 		{
@@ -597,7 +639,7 @@ void FillSendCAN(unsigned Mbox)
 
 void SendCAN(unsigned int Mbox)
 {
-	mask = 1 << Mbox;
+	mask = 1UL << Mbox;
 	ECanaRegs.CANTRS.all = mask;
 
 	//todo Nathan: calibrate sendcan stopwatch
@@ -631,6 +673,10 @@ void FillCANData()
 	FillCAN(Cell_21_24_box);
 	FillCAN(Cell_25_28_box);
 	FillCAN(Cell_29_32_box);
+	FillCAN(Cell_33_36_box);
+	FillCAN(Temp3_box);
+	FillCAN(Temp2_box);
+	FillCAN(Temp1_box);
 
 }
 
@@ -669,14 +715,17 @@ __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
   		StopWatchRestart(ops.BIM[BIM2].Reset_stopwatch);
   		ops.BIM[BIM2].lowest_cell_volts = ECanaMboxes.MBOX12.MDH.word.LOW_WORD;
   		ECanaRegs.CANRMP.bit.RMP12 = 1;
-
   		break;
   	case BIM3_box:
   		StopWatchRestart(ops.BIM[BIM3].Reset_stopwatch);
   		ops.BIM[BIM3].lowest_cell_volts = ECanaMboxes.MBOX13.MDH.word.LOW_WORD;
   		ECanaRegs.CANRMP.bit.RMP13 = 1;
   		break;
-
+  	case BIM4_box:
+  		StopWatchRestart(ops.BIM[BIM4].Reset_stopwatch);
+  		ops.BIM[BIM4].lowest_cell_volts = ECanaMboxes.MBOX17.MDH.word.LOW_WORD;
+  		ECanaRegs.CANRMP.bit.RMP17 = 1;
+  		break;
   	}
   	//todo USER: Setup other reads
 
@@ -693,7 +742,7 @@ unsigned int Cell_Send(int cell_num)
 
 	if (dev < NUMBER_OF_BQ_DEVICES)
 	{
-		if (data.bq_pack.bq_devs[dev].cell_bal & (1 << cell_num) != 0)
+		if ((data.bq_pack.bq_devs[dev].cell_bal & (1 << cell_num)) != 0)
 		{
 			return (unsigned int)(data.bq_pack.bq_devs[dev].cell_voltage[cell_num]) | 0x8000;
 		}
