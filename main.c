@@ -13,8 +13,9 @@ Uint16 MesgID = 0x3d;
 int main(void)
 {
 	StartUp();
+	ops.State = STATE_INIT;
 	BootISRSetup();
-	//PowerDownISRSetup();
+	PowerDownISRSetup();
 	ops.State = STATE_INIT;
 	while(1)
 	{

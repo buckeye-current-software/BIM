@@ -72,6 +72,12 @@ void StartPowerDownInt()
 __interrupt void EPWM1_TZINT_ISR(void)    // EPWM-1
 {
 
+if (ops.State == STATE_SENSOR_COV)
+{
+	SLAVEENSET();
+	BIM_low();
+	PowerDown();
+}
 	ops.Change.bit.State = 1;
 	// To receive more interrupts from this PIE group, acknowledge this interrupt
 	ops.State = STATE_POWER_DOWN;
