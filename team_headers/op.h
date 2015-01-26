@@ -15,7 +15,9 @@
 //todo User: add user flags
 typedef struct USER_FLAGS
 {
-	unsigned char user_error : 1;
+	char BIM_init  : 1;
+	char SPI_error: 1;
+	char BQ_error : 4;
 } user_flags_struct;
 
 
@@ -28,6 +30,7 @@ typedef struct USER_OPERATIONS
 	  int						all;
 	  user_flags_struct			bit;
   }								UserFlags;
+  unsigned long BIM_State;
 } user_ops_struct;
 
 #endif /* OP_H_ */

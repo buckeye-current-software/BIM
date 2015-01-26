@@ -7,31 +7,9 @@
 
 #include "all.h"
 
-extern DSPfilter A0filter;
-extern DSPfilter A1filter;
-extern DSPfilter A2filter;
-extern DSPfilter A3filter;
-extern DSPfilter A4filter;
-extern DSPfilter A5filter;
-extern DSPfilter A6filter;
-extern DSPfilter A7filter;
-extern DSPfilter B0filter;
-extern DSPfilter B1filter;
-extern DSPfilter B2filter;
-extern DSPfilter B3filter;
-extern DSPfilter B4filter;
-extern DSPfilter B5filter;
-extern DSPfilter B6filter;
-extern DSPfilter B7filter;
-extern DSPfilter GPIO19filter;
-extern DSPfilter GPIO26filter;
-
 user_ops_struct ops_temp;
 user_data_struct data_temp;
-
-int max = 2000, min = 2000;
-float r_th;
-float v_in;
+stopwatch_struct* BIM_watch;
 
 void SensorCov()
 {
@@ -48,93 +26,107 @@ void SensorCov()
 
 void SensorCovInit()
 {
-	//todo USER: SensorCovInit()
-	SystemSensorInit(SENSOR_COV_STOPWATCH);
-	initDSPfilter(&A0filter, ALPHA_SYS);
-	initDSPfilter(&A1filter, ALPHA_SYS);
-	initDSPfilter(&A2filter, ALPHA_SYS);
-	initDSPfilter(&A3filter, ALPHA_SYS);
-	initDSPfilter(&A4filter, ALPHA_SYS);
-	initDSPfilter(&A5filter, ALPHA_SYS);
-	initDSPfilter(&A6filter, ALPHA_SYS);
-	initDSPfilter(&A7filter, ALPHA_SYS);
-	initDSPfilter(&B0filter, ALPHA_SYS);
-	initDSPfilter(&B1filter, ALPHA_SYS);
-	initDSPfilter(&B2filter, ALPHA_SYS);
-	initDSPfilter(&B3filter, ALPHA_SYS);
-	initDSPfilter(&B4filter, ALPHA_SYS);
-	initDSPfilter(&B5filter, ALPHA_SYS);
-	initDSPfilter(&B6filter, ALPHA_SYS);
-	initDSPfilter(&B7filter, ALPHA_SYS);
-	ConfigGPIOSensor(410, 10000, 26, 0, 2);
-	ConfigGPIOSensor(410, 10000, 19, 0, 2);
+	user_ops.BIM_State = INIT;
+	user_ops.UserFlags.bit.BIM_init = 0;
+	BQ_Setup();
+
+	EALLOW;
+	GpioDataRegs.GPACLEAR.bit.GPIO15 = 1;
+	GpioCtrlRegs.GPAMUX1.bit.GPIO15 = 0;         // GPIO
+	GpioCtrlRegs.GPADIR.bit.GPIO15 = 1;          // output
+	GpioCtrlRegs.GPAQSEL1.bit.GPIO15 = 0;        //Synch to SYSCLKOUT only
+	GpioCtrlRegs.GPAPUD.bit.GPIO15 = 1; 		//disable pull up
+	GpioDataRegs.GPACLEAR.bit.GPIO15 = 1;
+	EDIS;
+
+	EALLOW;
+	GpioDataRegs.GPASET.bit.GPIO4 = 1;
+	GpioCtrlRegs.GPAMUX1.bit.GPIO4 = 0;         // GPIO
+	GpioCtrlRegs.GPADIR.bit.GPIO4 = 1;          // output
+	GpioCtrlRegs.GPAQSEL1.bit.GPIO4 = 0;        //Synch to SYSCLKOUT only
+	GpioCtrlRegs.GPAPUD.bit.GPIO4 = 1; 		//disable pull up
+	GpioDataRegs.GPASET.bit.GPIO4 = 1;
+	EDIS;
+
+	EALLOW;
+	GpioDataRegs.GPASET.bit.GPIO5 = 1;
+	GpioCtrlRegs.GPAMUX1.bit.GPIO5 = 0;         // GPIO
+	GpioCtrlRegs.GPADIR.bit.GPIO5 = 1;          // output
+	GpioCtrlRegs.GPAQSEL1.bit.GPIO5 = 0;        //Synch to SYSCLKOUT only
+	GpioCtrlRegs.GPAPUD.bit.GPIO5 = 1; 		//disable pull up
+	GpioDataRegs.GPASET.bit.GPIO5 = 1;
+	EDIS;
+
+	BIM_watch = StartStopWatch(100);
+	while(isStopWatchComplete(BIM_watch) != 1);		//delay for microsecond for voltage regulator to start up
 }
 
 
 
 void SensorCovMeasure()
 {
-	#define R1 10000.0 //Before ADC, Ohms
-	#define R2 20000.0
-	#define V5 5.08
-	#define B 1568.583480 //Ohm
 
 	SensorCovSystemInit();
-
-	//todo USER: Sensor Conversion
-	//update data_temp and ops_temp
-	//use stopwatch to catch timeouts
-	//waiting should poll isStopWatchComplete() to catch timeout and throw StopWatchError
-
-	data_temp.coolant_flow.F32 = (GPIO26filter.filtered_value*0.283);
-	/*
-	data_temp.motor_coolant_temp.F32 = 70.0*(A4RESULT/4096.0);
-	data_temp.motor_control_coolant_temp.F32 = (140.0*(A5RESULT/4096.0)) - 50;
-	data_temp.radiator_coolant_temp.F32 = (140.0*(A0RESULT/4096.0)) - 50;
-	*/
-	v_in = 3.3*(A4RESULT/4096.0);
-	r_th = -1.0*(R1*R2*v_in)/((-1.0*R2*V5)+(R1*v_in)+(R2*v_in));
-	data_temp.motor_coolant_temp.F32 = (3435.0)/(log((r_th/0.0991912))) - 273.15;
-
-	v_in = 3.3*(A5RESULT/4096.0);
-	r_th = -1.0*(R1*R2*v_in)/((-1.0*R2*V5)+(R1*v_in)+(R2*v_in));
-	data_temp.motor_control_coolant_temp.F32 = (3435.0)/(log((r_th/0.0991912))) - 273.15;
-
-	v_in = 3.3*(A0RESULT/4096.0);
-	r_th = -1.0*(R1*R2*v_in)/((-1.0*R2*V5)+(R1*v_in)+(R2*v_in));
-	data_temp.radiator_coolant_temp.F32 = (3435.0)/(log((r_th/0.0991912))) - 273.15;
-
-	v_in = 3.3*(B1RESULT/4096.0);
-	r_th = -1.0*(R1*R2*v_in)/((-1.0*R2*V5)+(R1*v_in)+(R2*v_in));
-	data_temp.motor_plate_temp_1.F32 = (3380.0)/(log((r_th/0.119286))) - 273.15;
-
-	v_in = 3.3*(A1RESULT/4096.0);
-	r_th = -1.0*(R1*R2*v_in)/((-1.0*R2*V5)+(R1*v_in)+(R2*v_in));
-	data_temp.motor_plate_temp_2.F32 = (3380.0)/(log((r_th/0.119286))) - 273.15;
-
-	v_in = 3.3*(B4RESULT/4096.0);
-	r_th = -1.0*(R1*R2*v_in)/((-1.0*R2*V5)+(R1*v_in)+(R2*v_in));
-	data_temp.ambient_temp.F32 = (3380.0)/(log((r_th/0.119286))) - 273.15;
-
-	data_temp.motor_temp.F32 = (pow((B3RESULT/4096.0),2)*2380.13) + ((B3RESULT/4096.0)*940.533) - 232.125;
-
-	v_in = 3.3*(A7RESULT/4096.0);
-	data_temp.coolant_pressure_1.F32 = (37.5/V5)*(1.56*v_in) - 3.75;
-
-	v_in = 3.3*(A3RESULT/4096.0);
-	data_temp.coolant_pressure_2.F32 = (37.5/V5)*(1.56*v_in) - 3.75;
-
-	data_temp.gp_button = READGPBUTTON();
-	/*
-	if(A7RESULT > max)
+	switch (ops_temp.BIM_State)
 	{
-		max = A7RESULT;
+	case INIT:
+		data_temp.update = 1; //cause an update to clear mailboxes
+		BALLEDCLEAR();
+		ops_temp.UserFlags.bit.BIM_init = 0;
+		if(NUMBER_OF_BQ_DEVICES != bq_pack_address_discovery())
+		{
+			ops_temp.BIM_State = INIT_DELAY;
+		}
+		else
+		{
+			bq_pack_init();
+			ops_temp.BIM_State = COV;
+			StopWatchRestart(BIM_watch);
+			ops_temp.UserFlags.bit.BIM_init = 1;
+		}
+		StopWatchRestartSetTime(BIM_watch,50000);	// half second delay
+		break;
+	case INIT_DELAY:
+		BALLEDCLEAR();
+		if (isStopWatchComplete(BIM_watch) == 1) 	// if delayed enough
+		{
+			if(NUMBER_OF_BQ_DEVICES != bq_pack_address_discovery()) //try to init again
+			{
+				ops_temp.BIM_State = INIT_DELAY;					//if didn't work try again
+				StopWatchRestart(BIM_watch);
+			}
+			else
+			{
+				bq_pack_init();
+				ops_temp.BIM_State = COV;
+				StopWatchRestartSetTime(BIM_watch,BIMUpdatePeriod);
+				ops_temp.UserFlags.bit.BIM_init = 1;
+			}
+		}
+		break;
+	case COV:
+		if (isStopWatchComplete(BIM_watch) == 1)					// if delayed conversion
+		{
+			BMM_Wake();
+			bq_pack_start_conv();
+			ops_temp.BIM_State = MEASURE;
+		}
+		break;
+	case MEASURE:
+		if (READBQDRDY() == 1)										//wait until data is ready
+		{
+			update_bq_pack_data();									//update data
+			//BMM_Sleep();
+			data_temp.update = 1;									//actually latch data
+			ops_temp.BIM_State = COV;
+			StopWatchRestartSetTime(BIM_watch,BIMUpdatePeriod);
+			BIM_LED_Clear();
+		}
+		break;
+	default:
+		ops_temp.BIM_State = INIT;
 	}
-	if(A7RESULT < min)
-	{
-		min = A7RESULT;
-	}
-	*/
+
 	PerformSystemChecks();
 }
 
@@ -149,6 +141,7 @@ void UpdateStruct()
 {
 	SaveOpStates();
 	user_data = data_temp;
+	user_ops = ops_temp;
 	//todo USER: UpdateStruct
 	//update with node specific op changes
 

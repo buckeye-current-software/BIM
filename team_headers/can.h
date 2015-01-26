@@ -14,46 +14,63 @@ void FillCANData();
 void FillSendCAN(unsigned int Mbox);
 void ClearMailBoxes();
 void BUS_OFF();
+unsigned int Cell_Send(int cell_num);
 
 //todo USER: DEFINE IDs for all output
 //           DEFINE mailboxes for all output except heartbeat and command
 //			 Mailboxes and ID's 0 or 1 are reserved for system use.
 
-#define COMMAND_ID 		0x3E8
-#define HEARTBEAT_ID 	0x3E7
+#define COMMAND_ID 		0xB0
+#define COMMAND_BOX 	0
 
-#define COOLANT_FLOW_ID 		0x3E2
-#define COOLANT_FLOW_BOX 		2
-#define COOLANT_FLOX_TRS 		TRS2
+#define HEARTBEAT_ID 	0x3A
+#define HEARTBEAT_BOX 	1
 
-#define MOTOR_TEMP_ID			0x3E3
-#define MOTOR_TEMP_BOX			3
-#define MOTOR_TEMP_TRS			TRS3
+#define Stats1_ID		0x300
+#define Stats1_box		2
 
-#define MOTOR_CONT_TEMP_ID		0x3E4
-#define MOTOR_CONT_TEMP_BOX		4
-#define MOTOR_CONT_TEMP_TRS		TRS4
+#define Stats2_ID		0x301
+#define Stats2_box		3
 
-#define RADIATOR_TEMP_ID		0x3E5
-#define RADIATOR_TEMP_BOX		5
-#define RADIATOR_TEMP_TRS		TRS5
+#define Cell_1_4_ID			0x310
+#define Cell_1_4_box		4
 
-#define COOLANT_PRESSURES_ID		0x3E6
-#define COOLANT_PRESSURES_BOX	6
-#define COOLANT_PRESSURES_TRS	TRS6
+#define Cell_5_8_ID			0x311
+#define Cell_5_8_box		5
 
-#define EMRAX_TEMP_ID			0x3DF
-#define EMRAX_TEMP_BOX			7
-#define EMRAX_TEMP_TRS			TRS7
 
-#define AMBIENT_TEMP_ID			0x3E0
-#define AMBIENT_TEMP_BOX		8
-#define AMBIENT_TEMP_TRS		TRS8
+#define Cell_9_12_ID		0x312
+#define Cell_9_12_box		6
 
-#define MOTOR_PLATE_TEMP_ID		0x3E1
-#define MOTOR_PLATE_TEMP_BOX	9
-#define MOTOR_PLATE_TEMP_TRS	TRS9
+#define Cell_13_16_ID		0x313
+#define Cell_13_16_box		7
 
+#define Cell_17_20_ID		0x314
+#define Cell_17_20_box		8
+
+#define Cell_21_24_ID		0x315
+#define Cell_21_24_box		9
+
+#define Cell_25_28_ID		0x316
+#define Cell_25_28_box		10
+
+#define Cell_29_32_ID		0x317
+#define Cell_29_32_box		11
+
+#define BIM2_ID				0x302
+#define BIM2_box			12
+
+#define BIM3_ID				0x304
+#define BIM3_box			13
+
+#define Temp1_ID			0x335
+#define Temp1_box			14
+
+#define Temp2_ID			0x336
+#define Temp2_box			15
+
+#define Temp3_ID			0x337
+#define Temp3_box			16
 
 
 

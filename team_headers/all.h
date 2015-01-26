@@ -34,6 +34,11 @@
 #include "gpio_template.h"
 #include "DSP2803x_GlobalPrototypes.h"
 #include "Flash2803x_API_Library.h"
+#include "BQ.h"
+#include "bq_data_flash.h"
+#include "bq_pack.h"
+#include "spi_bq.h"
+#include "spi.h"
 
 extern sys_ops_struct sys_ops;
 extern user_ops_struct user_ops;
