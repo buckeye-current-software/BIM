@@ -21,7 +21,7 @@
 //AUX,GPIO_OUT,GPIO_IN,SLEEP,TS2_on,TS1_on, LED_ON
 #define IO_CONTROL_VAL    		((0<<7)|(1<<6)|(0<<5)|(0<<2)|(1<<1)|(1<<0))
 //SAME as above with no LED
-#define IO_CONTROL_VAL_CLEAR	((0<<7)|(0<<6)|(0<<5)|(0<<2)|(1<<1)|(1<<0))
+#define IO_CONTROL_VAL_CLEAR	((0<<7)|(0<<6)|(1<<5)|(0<<2)|(1<<1)|(0<<0))
 
 //cell ballancing defines
 #define CB_CTRL_VAL       0

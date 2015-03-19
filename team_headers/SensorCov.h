@@ -17,7 +17,7 @@ void SensorCovDeInit();
 
 #define FULL_SCALE 		(4096*0.9)
 
-#define BIMUpdatePeriod 50000;
+#define BIMUpdatePeriod 50000
 #define INIT 		0
 #define INIT_DELAY 	1
 #define COV		 	2

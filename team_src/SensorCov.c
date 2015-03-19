@@ -11,6 +11,8 @@ user_ops_struct ops_temp;
 user_data_struct data_temp;
 stopwatch_struct* BIM_watch;
 
+char led;
+
 void SensorCov()
 {
 	SensorCovInit(4);
@@ -57,6 +59,7 @@ void SensorCovInit()
 	GpioDataRegs.GPASET.bit.GPIO5 = 1;
 	EDIS;
 
+	led = 1;
 	BIM_watch = StartStopWatch(100);
 	while(isStopWatchComplete(BIM_watch) != 1);		//delay for microsecond for voltage regulator to start up
 }
@@ -120,7 +123,16 @@ void SensorCovMeasure()
 			data_temp.update = 1;									//actually latch data
 			ops_temp.BIM_State = COV;
 			StopWatchRestartSetTime(BIM_watch,BIMUpdatePeriod);
-			BIM_LED_Clear();
+			if (led == 1)
+			{
+				led = 0;
+				BIM_LED_Clear();
+			}
+			else
+			{
+				led = 1;
+				BIM_LED_Set();
+			}
 		}
 		break;
 	default:

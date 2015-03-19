@@ -139,9 +139,9 @@ SECTIONS
 
 
    .bootloader_boot : {
-   boot_template.obj(.text)}                         > BOOTLOADER	   PAGE = 0
+   MCN_Library.lib<boot_template.obj>(.text)}       > BOOTLOADER	   PAGE = 0
    .bootloader_shared : {
-   SharedBoot_template.obj(.text)}                  > BOOTLOADER	   PAGE = 0
+   MCN_Library.lib<SharedBoot_template.obj>(.text)} > BOOTLOADER	   PAGE = 0
 
 
    /* Initalized sections go in Flash */

@@ -20,8 +20,6 @@ void CANSetup()
 	SystemCANInit(&ECanaShadow);
 
 	EALLOW;
-	//MBOX 0 - 1
-	CommandBoxInit(COMMAND_ID);   // Mbox 0
 	HeartbeatBoxInit(HEARTBEAT_ID); // Mbox 1
 	/*
 	* todo USER: Node specifc CAN setup
