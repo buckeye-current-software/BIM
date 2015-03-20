@@ -87,7 +87,7 @@ void SensorCovMeasure()
 			StopWatchRestart(BIM_watch);
 			ops_temp.UserFlags.bit.BIM_init = 1;
 		}
-		StopWatchRestartSetTime(BIM_watch,50000);	// half second delay
+		StopWatchRestartSetTime(BIM_watch,1000);	// half second delay
 		break;
 	case INIT_DELAY:
 		BALLEDCLEAR();
@@ -120,19 +120,11 @@ void SensorCovMeasure()
 		{
 			update_bq_pack_data();									//update data
 			//BMM_Sleep();
+			BIM_LED_Clear();
 			data_temp.update = 1;									//actually latch data
 			ops_temp.BIM_State = COV;
 			StopWatchRestartSetTime(BIM_watch,BIMUpdatePeriod);
-			if (led == 1)
-			{
-				led = 0;
-				BIM_LED_Clear();
-			}
-			else
-			{
-				led = 1;
-				BIM_LED_Set();
-			}
+
 		}
 		break;
 	default:
