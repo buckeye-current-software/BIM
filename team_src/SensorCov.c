@@ -68,6 +68,8 @@ void SensorCovInit()
 
 void SensorCovMeasure()
 {
+	int i  = 0;
+	unsigned char reg_val[2];
 
 	SensorCovSystemInit();
 	switch (ops_temp.BIM_State)
@@ -82,11 +84,21 @@ void SensorCovMeasure()
 		}
 		else
 		{
-			bq_pack_init();
+			//bq_pack_init();
+			DELAY_US(10000);
 			ops_temp.BIM_State = COV;
 			StopWatchRestart(BIM_watch);
 			ops_temp.UserFlags.bit.BIM_init = 1;
+			  for (i=0; i<NUMBER_OF_BQ_DEVICES; i++)
+			  {
+				  data_temp.bq_pack.bq_devs[i].cell_count = MAX_CELLS_NUMBER_IN_BQ;
+				  bq_dev_read_status(&data_temp.bq_pack.bq_devs[i]);
+				  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address, ALERT_STATUS_REG, 1, DISCARD_CRC,(unsigned char*) &data_temp.bq_pack.bq_devs[i].alert_status);
+				  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address, FAULT_STATUS_REG, 1, DISCARD_CRC,(unsigned char*) &data_temp.bq_pack.bq_devs[i].fault_status);
+				  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address, ADDRESS_CONTROL_REG, 1, DISCARD_CRC, reg_val);
+			  }
 		}
+
 		StopWatchRestartSetTime(BIM_watch,1000);	// half second delay
 		break;
 	case INIT_DELAY:
@@ -100,17 +112,39 @@ void SensorCovMeasure()
 			}
 			else
 			{
-				bq_pack_init();
+				//bq_pack_init();
 				ops_temp.BIM_State = COV;
 				StopWatchRestartSetTime(BIM_watch,BIMUpdatePeriod);
 				ops_temp.UserFlags.bit.BIM_init = 1;
+				DELAY_US(10000);
+				  for (i=0; i<NUMBER_OF_BQ_DEVICES; i++)
+				  {
+					  bq_dev_read_status(&data_temp.bq_pack.bq_devs[i]);
+					  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address, ALERT_STATUS_REG, 1, DISCARD_CRC,(unsigned char*) &data_temp.bq_pack.bq_devs[i].alert_status);
+					  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address, FAULT_STATUS_REG, 1, DISCARD_CRC,(unsigned char*) &data_temp.bq_pack.bq_devs[i].fault_status);
+					  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address,ADDRESS_CONTROL_REG , 1, DISCARD_CRC, reg_val);
+				  }
 			}
 		}
 		break;
 	case COV:
 		if (isStopWatchComplete(BIM_watch) == 1)					// if delayed conversion
 		{
+			  for (i=0; i<NUMBER_OF_BQ_DEVICES; i++)
+			  {
+				  bq_dev_read_status(&data_temp.bq_pack.bq_devs[i]);
+
+			  }
 			BMM_Wake();
+			DELAY_US(10000);
+			  for (i=0; i<NUMBER_OF_BQ_DEVICES; i++)
+			  {
+				  bq_dev_read_status(&data_temp.bq_pack.bq_devs[i]);
+				  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address, ALERT_STATUS_REG, 1, DISCARD_CRC,(unsigned char*) &data_temp.bq_pack.bq_devs[i].alert_status);
+				  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address, FAULT_STATUS_REG, 1, DISCARD_CRC,(unsigned char*) &data_temp.bq_pack.bq_devs[i].fault_status);
+				  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address, ADDRESS_CONTROL_REG, 1, DISCARD_CRC, reg_val);
+			  }
+			DELAY_US(10000);
 			bq_pack_start_conv();
 			ops_temp.BIM_State = MEASURE;
 		}
@@ -118,9 +152,19 @@ void SensorCovMeasure()
 	case MEASURE:
 		if (READBQDRDY() == 1)										//wait until data is ready
 		{
-			update_bq_pack_data();									//update data
-			//BMM_Sleep();
-			BIM_LED_Clear();
+			update_bq_pack_data(); // update data
+			DELAY_US(10000);
+			  for (i=0; i<NUMBER_OF_BQ_DEVICES; i++)
+			  {
+				  bq_dev_read_status(&data_temp.bq_pack.bq_devs[i]);
+				  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address, ALERT_STATUS_REG, 1, DISCARD_CRC,(unsigned char*) &data_temp.bq_pack.bq_devs[i].alert_status);
+				  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address, FAULT_STATUS_REG, 1, DISCARD_CRC,(unsigned char*) &data_temp.bq_pack.bq_devs[i].fault_status);
+				  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address, ADDRESS_CONTROL_REG, 1, DISCARD_CRC, reg_val);
+
+			  }
+			  DELAY_US(10000);
+			BMM_Sleep();
+			//BIM_LED_Clear();
 			data_temp.update = 1;									//actually latch data
 			ops_temp.BIM_State = COV;
 			StopWatchRestartSetTime(BIM_watch,BIMUpdatePeriod);
@@ -129,6 +173,12 @@ void SensorCovMeasure()
 		break;
 	default:
 		ops_temp.BIM_State = INIT;
+	}
+	if (data_temp.bq_pack.highest_crc > 5)
+	{
+		ops_temp.BIM_State = INIT;
+		data_temp.bq_pack.highest_crc = 0;
+		data_temp.update = 1;
 	}
 
 	PerformSystemChecks();

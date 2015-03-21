@@ -22,19 +22,27 @@ void BIM_LED_Clear()
 void BMM_Sleep()
 {
 	int i;
-	 for (i=NUMBER_OF_BQ_DEVICES-1; i>=0; i--)			//put devices to sleep backwards
-	 {
-		 bq_dev_sleep(&data_temp.bq_pack.bq_devs[i]);
-	 }
+	bq_dev_write_reg(BROADCAST_ADDR, IO_CONTROL_REG, 0x04);
+//	 for (i=NUMBER_OF_BQ_DEVICES-1; i>=0; i--)			//put devices to sleep backwards
+//	 {
+//		 bq_dev_sleep(&data_temp.bq_pack.bq_devs[i]);
+//		 DELAY_US(1000);
+//
+//	 }
+	 //DELAY_US(10000);
 }
 
 void BMM_Wake()
 {
-	int i;
-	for (i=0; i<NUMBER_OF_BQ_DEVICES; i++)				//wake them up forwards
-	{
-		bq_dev_wake(&data_temp.bq_pack.bq_devs[i]);
-	}
+//	int i;
+//	for (i=0; i<NUMBER_OF_BQ_DEVICES; i++)				//wake them up forwards
+//	{
+//		bq_dev_wake(&data_temp.bq_pack.bq_devs[i]);
+//		DELAY_US(1000);
+//	}
+	bq_dev_write_reg(BROADCAST_ADDR, IO_CONTROL_REG, IO_CONTROL_VAL);
+	DELAY_US(500000);
+
 }
 
 
@@ -47,76 +55,76 @@ short bq_pack_address_discovery(void)
   i=NUMBER_OF_BQ_DEVICES; //controls iteration loop
   while (i>0)
   {
-    //*Send BROADCAST_RESET to address 0x00*/
-    if(bq_dev_write_reg(BROADCAST_ADDR, RESET_REG, BQ76PL536_RESET) == INVALID)
-    {
-    	return INVALID;
-    }
+	  //*Send BROADCAST_RESET to address 0x00*/
+	  if(bq_dev_write_reg(BROADCAST_ADDR, RESET_REG, BQ76PL536_RESET) == INVALID)
+	  {
+		  return INVALID;
+	  }
 
-    DELAY_US(1000);
+	  DELAY_US(1000);
 
-    if(bq_dev_write_reg(BROADCAST_ADDR, RESET_REG, BQ76PL536_RESET) == INVALID)
-    {
-    	return INVALID;
-    }
+	  if(bq_dev_write_reg(BROADCAST_ADDR, RESET_REG, BQ76PL536_RESET) == INVALID)
+	  {
+		  return INVALID;
+	  }
 
-    DELAY_US(1000);
+	  DELAY_US(1000);
 
-    if(bq_dev_write_reg(BROADCAST_ADDR, RESET_REG, BQ76PL536_RESET) == INVALID)
-    {
-    	return INVALID;
-    }
-    DELAY_US(1000);
-    n=0;  //controls number of discovered devices
-    while (n<NUMBER_OF_BQ_DEVICES)
-    {
-    //*Read DEVICE_STATUS reg at address 0x00*/
-    if (bq_dev_read_reg(DISCOVERY_ADDR, DEVICE_STATUS_REG, 1, DISCARD_CRC, reg_val) == INVALID)
-    {
-    	return INVALID;
-    }
-  
-      //*Verify if MSB is equal to 0*/
-      if (reg_val[0] & (1<<7))
-      {
-        n = NUMBER_OF_BQ_DEVICES; //break internal loop
-      }
-      else
-      {
-        //*Assign a new address*/        
+	  if(bq_dev_write_reg(BROADCAST_ADDR, RESET_REG, BQ76PL536_RESET) == INVALID)
+	  {
+		  return INVALID;
+	  }
+	  DELAY_US(1000);
+	  n=0;  //controls number of discovered devices
+	  while (n<NUMBER_OF_BQ_DEVICES)
+	  {
+		  //*Read DEVICE_STATUS reg at address 0x00*/
+		  if (bq_dev_read_reg(DISCOVERY_ADDR, DEVICE_STATUS_REG, 1, DISCARD_CRC, reg_val) == INVALID)
+		  {
+			  return INVALID;
+		  }
 
-        //Save assigned address
-        n++;
-        data_temp.bq_pack.bq_devs[n-1].device_address = n;
-        
-        //ADDR_CTRL = n;   
-        if(bq_dev_write_reg(DISCOVERY_ADDR, ADDRESS_CONTROL_REG, n) == INVALID)
-        {
-        	return INVALID;
-        }
-        
-        //read ADDR_CTRL
-        if (bq_dev_read_reg(n, ADDRESS_CONTROL_REG, 1, DISCARD_CRC, reg_val) == INVALID)
-        {
-        	return INVALID;
-		}
+		  //*Verify if MSB is equal to 0*/
+		  if (reg_val[0] & (1<<7))
+		  {
+			  n = NUMBER_OF_BQ_DEVICES; //break internal loop
+		  }
+		  else
+		  {
+			  //*Assign a new address*/
 
-        if ((reg_val[0]&0x3F) == n)
-        {
-          //address next device or finish device detection
-        	ops_temp.UserFlags.bit.BQ_error &= ~(1 << (n-1)); // correctly addressed clear error flag
-          if (n==NUMBER_OF_BQ_DEVICES)
-            return n;
-        }
-        else
-        {
-          //break internal loop
-          n = NUMBER_OF_BQ_DEVICES;
-        }
-      }
-    }
+			  //Save assigned address
+			  n++;
+			  data_temp.bq_pack.bq_devs[n-1].device_address = n;
 
-    i--;
+			  //ADDR_CTRL = n;
+			  if(bq_dev_write_reg(DISCOVERY_ADDR, ADDRESS_CONTROL_REG, n) == INVALID)
+			  {
+				  return INVALID;
+			  }
+
+			  //read ADDR_CTRL
+			  if (bq_dev_read_reg(n, ADDRESS_CONTROL_REG, 1, DISCARD_CRC, reg_val) == INVALID)
+			  {
+				  return INVALID;
+			  }
+
+			  if ((reg_val[0]&0x3F) == n)
+			  {
+				  //address next device or finish device detection
+				  ops_temp.UserFlags.bit.BQ_error &= ~(1 << (n-1)); // correctly addressed clear error flag
+				  if (n==NUMBER_OF_BQ_DEVICES)
+					  return n;
+			  }
+			  else
+			  {
+				  //break internal loop
+				  n = NUMBER_OF_BQ_DEVICES;
+			  }
+		  }
+	  }
+
+	  i--;
   }
   
   return INVALID;
@@ -151,12 +159,12 @@ short bq_pack_init(void)
 		}
 
 		//*Read cell voltage*/
-		if(bq_dev_read_cell_voltage(&data_temp.bq_pack.bq_devs[i]) == INVALID)
-		{
-			return INVALID;
-		}
+//		if(bq_dev_read_cell_voltage(&data_temp.bq_pack.bq_devs[i]) == INVALID)
+//		{
+//			return INVALID;
+//		}
 	}
-	update_bq_pack_data();
+//	update_bq_pack_data();
 	return VALID;
 }
 
@@ -526,7 +534,7 @@ unsigned char bq_dev_wake(bq_dev_t* this)
 
 unsigned char bq_dev_sleep(bq_dev_t* this)
 {
-	bq_dev_write_reg(this->device_address, IO_CONTROL_REG, 0x04);	//put to sleep
+	//bq_dev_write_reg(this->device_address, IO_CONTROL_REG, 0x04);	//put to sleep
 	bq_dev_clear_alerts(this);
 	return VALID;
 }
@@ -541,21 +549,21 @@ unsigned char bq_dev_clear_alerts(bq_dev_t* this)
 {
 	unsigned char Value;
 
-	//clear alert bit in device status register
-	if(bq_dev_read_reg(this->device_address, DEVICE_STATUS_REG, 1, DISCARD_CRC,
-			(unsigned char*) &Value) == INVALID)
-	{
-		return INVALID;
-	}
-	Value |= BIT5;
-	//set alert bit as 1
-	bq_dev_write_reg(this->device_address, DEVICE_STATUS_REG, Value);
+//	//clear alert bit in device status register
+//	if(bq_dev_read_reg(this->device_address, DEVICE_STATUS_REG, 1, DISCARD_CRC,
+//			(unsigned char*) &Value) == INVALID)
+//	{
+//		return INVALID;
+//	}
+//	Value |= BIT5;
+//	//set alert bit as 1
+//	bq_dev_write_reg(this->device_address, DEVICE_STATUS_REG, Value);
+//
+//	Value &= ~BIT5;
+//	//clear alert bit
+//	bq_dev_write_reg(this->device_address, DEVICE_STATUS_REG, Value);
 
-	Value &= ~BIT5;
-	//clear alert bit
-	bq_dev_write_reg(this->device_address, DEVICE_STATUS_REG, Value);
-
-	//read correct 1's from aleart status
+	//read correct 1's from alert status
 	bq_dev_read_reg(this->device_address, ALERT_STATUS_REG, 1, DISCARD_CRC,
 			(unsigned char*) &Value);
 
@@ -576,18 +584,18 @@ unsigned char bq_dev_clear_faults(bq_dev_t* this)
 	unsigned char Value;
 
 	//clear fault bit in device status register
-	if(bq_dev_read_reg(this->device_address, DEVICE_STATUS_REG, 1, DISCARD_CRC,
-			(unsigned char*) &Value) == INVALID)
-	{
-		return INVALID;
-	}
-
-	Value |= BIT6; //set fault bit as 1
-	bq_dev_write_reg(this->device_address, DEVICE_STATUS_REG, Value);
-
-
-	Value &= ~BIT6; //clear fault bit
-	bq_dev_write_reg(this->device_address, DEVICE_STATUS_REG, Value);
+//	if(bq_dev_read_reg(this->device_address, DEVICE_STATUS_REG, 1, DISCARD_CRC,
+//			(unsigned char*) &Value) == INVALID)
+//	{
+//		return INVALID;
+//	}
+//
+//	Value |= BIT6; //set fault bit as 1
+//	bq_dev_write_reg(this->device_address, DEVICE_STATUS_REG, Value);
+//
+//
+//	Value &= ~BIT6; //clear fault bit
+//	bq_dev_write_reg(this->device_address, DEVICE_STATUS_REG, Value);
 
 	//read correct 1's from fault status
 	bq_dev_read_reg(this->device_address, FAULT_STATUS_REG, 1, DISCARD_CRC,
