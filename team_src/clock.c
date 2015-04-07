@@ -48,6 +48,8 @@ __interrupt void INT14_ISR(void)     // INT14 or CPU-Timer2
 		//send data or fill data
 		SendCAN(Stats1_box);
 		SendCAN(Stats2_box);
+		SendCAN(Temp2_box);
+		SendCAN(Temp1_box);
 		Clock_Ticks.DataOut = 0;
 	}
 

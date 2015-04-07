@@ -21,7 +21,7 @@ unsigned int Cell_Send(int cell_num);
 //			 Mailboxes and ID's 0 or 1 are reserved for system use.
 
 
-#define HEARTBEAT_ID 	0x3A
+#define HEARTBEAT_ID 	0x337
 #define HEARTBEAT_BOX 	1
 
 #define Stats1_ID		0x305

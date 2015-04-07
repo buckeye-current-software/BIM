@@ -62,14 +62,14 @@ char FillCAN(unsigned int Mbox)
 			if (user_ops.UserFlags.bit.BIM_init == 1)//if init send data
 			{
 				ECanaMboxes.MBOX2.MDL.word.LOW_WORD = user_data.bq_pack.highest_cell_volts;
-				ECanaMboxes.MBOX2.MDL.byte.BYTE2 = user_data.bq_pack.highest_cell_num;
+				ECanaMboxes.MBOX2.MDL.byte.BYTE1 = user_data.bq_pack.highest_cell_num;
 				ECanaMboxes.MBOX2.MDH.word.LOW_WORD = user_data.bq_pack.lowest_cell_volts;
-				ECanaMboxes.MBOX2.MDH.byte.BYTE6 = user_data.bq_pack.lowest_cell_num;
+				ECanaMboxes.MBOX2.MDH.byte.BYTE5 = user_data.bq_pack.lowest_cell_num;
 			}
 			else//if not init send zeros
 			{
 				ECanaMboxes.MBOX2.MDH.all = 0;
-				ECanaMboxes.MBOX2.MDH.all = 0;
+				ECanaMboxes.MBOX2.MDL.all = 0;
 			}
 			ECanaShadow.CANMC.bit.MBNR = 0;
 			ECanaShadow.CANMC.bit.CDR = 0;
@@ -89,7 +89,7 @@ char FillCAN(unsigned int Mbox)
 			else//if not init send zeros
 			{
 				ECanaMboxes.MBOX3.MDH.all = 0;
-				ECanaMboxes.MBOX3.MDH.all = 0;
+				ECanaMboxes.MBOX3.MDL.all = 0;
 			}
 			ECanaShadow.CANMC.bit.MBNR = 0;
 			ECanaShadow.CANMC.bit.CDR = 0;
@@ -111,7 +111,7 @@ char FillCAN(unsigned int Mbox)
 			else//if not init send zeros
 			{
 				ECanaMboxes.MBOX4.MDH.all = 0;
-				ECanaMboxes.MBOX4.MDH.all = 0;
+				ECanaMboxes.MBOX4.MDL.all = 0;
 			}
 			ECanaShadow.CANMC.bit.MBNR = 0;
 			ECanaShadow.CANMC.bit.CDR = 0;
@@ -133,7 +133,7 @@ char FillCAN(unsigned int Mbox)
 			else//if not init send zeros
 			{
 				ECanaMboxes.MBOX5.MDH.all = 0;
-				ECanaMboxes.MBOX5.MDH.all = 0;
+				ECanaMboxes.MBOX5.MDL.all = 0;
 			}
 			ECanaShadow.CANMC.bit.MBNR = 0;
 			ECanaShadow.CANMC.bit.CDR = 0;
@@ -155,7 +155,7 @@ char FillCAN(unsigned int Mbox)
 			else//if not init send zeros
 			{
 				ECanaMboxes.MBOX6.MDH.all = 0;
-				ECanaMboxes.MBOX6.MDH.all = 0;
+				ECanaMboxes.MBOX6.MDL.all = 0;
 			}
 			ECanaShadow.CANMC.bit.MBNR = 0;
 			ECanaShadow.CANMC.bit.CDR = 0;
@@ -177,7 +177,7 @@ char FillCAN(unsigned int Mbox)
 			else//if not init send zeros
 			{
 				ECanaMboxes.MBOX7.MDH.all = 0;
-				ECanaMboxes.MBOX7.MDH.all = 0;
+				ECanaMboxes.MBOX7.MDL.all = 0;
 			}
 			ECanaShadow.CANMC.bit.MBNR = 0;
 			ECanaShadow.CANMC.bit.CDR = 0;
@@ -199,7 +199,7 @@ char FillCAN(unsigned int Mbox)
 			else//if not init send zeros
 			{
 				ECanaMboxes.MBOX8.MDH.all = 0;
-				ECanaMboxes.MBOX8.MDH.all = 0;
+				ECanaMboxes.MBOX8.MDL.all = 0;
 			}
 			ECanaShadow.CANMC.bit.MBNR = 0;
 			ECanaShadow.CANMC.bit.CDR = 0;
@@ -221,7 +221,7 @@ char FillCAN(unsigned int Mbox)
 			else//if not init send zeros
 			{
 				ECanaMboxes.MBOX9.MDH.all = 0;
-				ECanaMboxes.MBOX9.MDH.all = 0;
+				ECanaMboxes.MBOX9.MDL.all = 0;
 			}
 			ECanaShadow.CANMC.bit.MBNR = 0;
 			ECanaShadow.CANMC.bit.CDR = 0;
@@ -243,7 +243,7 @@ char FillCAN(unsigned int Mbox)
 			else//if not init send zeros
 			{
 				ECanaMboxes.MBOX14.MDH.all = 0;
-				ECanaMboxes.MBOX14.MDH.all = 0;
+				ECanaMboxes.MBOX14.MDL.all = 0;
 			}
 			ECanaShadow.CANMC.bit.MBNR = 0;
 			ECanaShadow.CANMC.bit.CDR = 0;
@@ -265,7 +265,7 @@ char FillCAN(unsigned int Mbox)
 			else//if not init send zeros
 			{
 				ECanaMboxes.MBOX15.MDH.all = 0;
-				ECanaMboxes.MBOX15.MDH.all = 0;
+				ECanaMboxes.MBOX15.MDL.all = 0;
 			}
 			ECanaShadow.CANMC.bit.MBNR = 0;
 			ECanaShadow.CANMC.bit.CDR = 0;
@@ -305,14 +305,9 @@ unsigned int Cell_Send(int cell_num)
 
 	if (dev < NUMBER_OF_BQ_DEVICES)
 	{
-		if (user_data.bq_pack.bq_devs[dev].cell_bal & (1 << cell_num) != 0)
-		{
-			return (unsigned int)(user_data.bq_pack.bq_devs[dev].cell_voltage[cell_num]) | 0x8000;
-		}
-		else
-		{
-			return user_data.bq_pack.bq_devs[dev].cell_voltage[cell_num];
-		}
+
+		return user_data.bq_pack.bq_devs[dev].cell_voltage[cell_num];
+
 	}
 	return 0;
 }

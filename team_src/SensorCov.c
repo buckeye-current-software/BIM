@@ -84,8 +84,7 @@ void SensorCovMeasure()
 		}
 		else
 		{
-			//bq_pack_init();
-			DELAY_US(10000);
+			bq_pack_init();
 			ops_temp.BIM_State = COV;
 			StopWatchRestart(BIM_watch);
 			ops_temp.UserFlags.bit.BIM_init = 1;
@@ -112,11 +111,10 @@ void SensorCovMeasure()
 			}
 			else
 			{
-				//bq_pack_init();
+				bq_pack_init();
 				ops_temp.BIM_State = COV;
 				StopWatchRestartSetTime(BIM_watch,BIMUpdatePeriod);
 				ops_temp.UserFlags.bit.BIM_init = 1;
-				DELAY_US(10000);
 				  for (i=0; i<NUMBER_OF_BQ_DEVICES; i++)
 				  {
 					  bq_dev_read_status(&data_temp.bq_pack.bq_devs[i]);
@@ -136,7 +134,6 @@ void SensorCovMeasure()
 
 			  }
 			BMM_Wake();
-			DELAY_US(10000);
 			  for (i=0; i<NUMBER_OF_BQ_DEVICES; i++)
 			  {
 				  bq_dev_read_status(&data_temp.bq_pack.bq_devs[i]);
@@ -144,7 +141,6 @@ void SensorCovMeasure()
 				  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address, FAULT_STATUS_REG, 1, DISCARD_CRC,(unsigned char*) &data_temp.bq_pack.bq_devs[i].fault_status);
 				  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address, ADDRESS_CONTROL_REG, 1, DISCARD_CRC, reg_val);
 			  }
-			DELAY_US(10000);
 			bq_pack_start_conv();
 			ops_temp.BIM_State = MEASURE;
 		}
@@ -153,7 +149,6 @@ void SensorCovMeasure()
 		if (READBQDRDY() == 1)										//wait until data is ready
 		{
 			update_bq_pack_data(); // update data
-			DELAY_US(10000);
 			  for (i=0; i<NUMBER_OF_BQ_DEVICES; i++)
 			  {
 				  bq_dev_read_status(&data_temp.bq_pack.bq_devs[i]);
@@ -162,7 +157,6 @@ void SensorCovMeasure()
 				  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address, ADDRESS_CONTROL_REG, 1, DISCARD_CRC, reg_val);
 
 			  }
-			  DELAY_US(10000);
 			BMM_Sleep();
 			//BIM_LED_Clear();
 			data_temp.update = 1;									//actually latch data
@@ -178,6 +172,7 @@ void SensorCovMeasure()
 	{
 		ops_temp.BIM_State = INIT;
 		data_temp.bq_pack.highest_crc = 0;
+		ops_temp.UserFlags.bit.BIM_init = 0;
 		data_temp.update = 1;
 	}
 
