@@ -736,13 +736,14 @@ short bq_dev_read_temps(bq_dev_t* this)
 {
   unsigned char data[2];
 
+	#define B 1568.583480 //Ohm
+	#define r_inf 1 //Ohm
+	#define r1 1470 // ohm
+  float R;
+  //T = B/(log(R/r_inf)
+  //R = r1*(1/RTS) - r1
 
   //RTS = (REGMSB × 256 + REGLSB) / 33104
-  // RTS = .2 THEN TEMP = 40000 mC
-  // RTS = .4 then temp = 90000 mC
-  // slope = 250000
-  // intercept = -10000
-  // temp = (rts * 250000) - 10000
   //Bytes need to be swapped as BQ device supports Big Endian
 
   if(bq_dev_read_reg(this->device_address, TEMPERATURE1_L_REG, 2, DISCARD_CRC,
@@ -752,7 +753,8 @@ short bq_dev_read_temps(bq_dev_t* this)
   }
 
   this->temperature1ratio  = ((float)((data[0] << 8) | data[1]))/33104;
-  this->temperature1 = (this->temperature1ratio * 250000) - 10000;
+  R = r1*(1/this->temperature1ratio) - r1;
+  this->temperature1.F32 = B/(log(R/r_inf));
 
   if(bq_dev_read_reg(this->device_address, TEMPERATURE2_L_REG, 2, DISCARD_CRC,
                  (unsigned char*) &data[0]) == INVALID)
@@ -760,7 +762,8 @@ short bq_dev_read_temps(bq_dev_t* this)
   	return INVALID;
   }
   this->temperature2ratio  = ((float)((data[0] << 8) | data[1]))/33104;
-  this->temperature2 = (this->temperature2ratio * 250000) - 10000;
+  R = r1*(1/this->temperature2ratio) - r1;
+  this->temperature1.F32 = B/(log(R/r_inf));
  
   return VALID;
 }

@@ -10,11 +10,6 @@
 
 #include "bq_pack.h"
 
-typedef union CANFLOAT
-{
-	float F32;
-	unsigned long U32;
-} canfloat;
 
 typedef struct USER_DATA
 {

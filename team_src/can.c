@@ -38,6 +38,8 @@ void CANSetup()
 	CreateCANMailbox(Cell_21_24_box, 0, 0, 1, 8,Cell_21_24_ID, 0);
 	CreateCANMailbox(Temp1_box, 0, 0, 1, 8,Temp1_ID, 0);
 	CreateCANMailbox(Temp2_box, 0, 0, 1, 8,Temp2_ID, 0);
+	CreateCANMailbox(Temp3_box, 0, 0, 1, 8,Temp3_ID, 0);
+	CreateCANMailbox(Temp4_box, 0, 0, 1, 8,Temp4_ID, 0);
 
     EDIS;
     FinishCANInit();
@@ -235,10 +237,8 @@ char FillCAN(unsigned int Mbox)
 			ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
 			if (user_ops.UserFlags.bit.BIM_init == 1)//if init send data
 			{
-				ECanaMboxes.MBOX14.MDL.word.LOW_WORD = user_data.bq_pack.bq_devs[0].temperature1;
-				ECanaMboxes.MBOX14.MDL.word.HI_WORD = user_data.bq_pack.bq_devs[0].temperature2;
-				ECanaMboxes.MBOX14.MDH.word.LOW_WORD = user_data.bq_pack.bq_devs[1].temperature1;
-				ECanaMboxes.MBOX14.MDH.word.HI_WORD = user_data.bq_pack.bq_devs[1].temperature2;
+				ECanaMboxes.MBOX14.MDL.word.LOW_WORD = user_data.bq_pack.bq_devs[0].temperature1.U32;
+				ECanaMboxes.MBOX14.MDL.word.HI_WORD = user_data.bq_pack.bq_devs[0].temperature2.U32;
 			}
 			else//if not init send zeros
 			{
@@ -257,15 +257,53 @@ char FillCAN(unsigned int Mbox)
 			ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
 			if (user_ops.UserFlags.bit.BIM_init == 1)//if init send data
 			{
-				ECanaMboxes.MBOX15.MDL.word.LOW_WORD = user_data.bq_pack.bq_devs[2].temperature1;
-				ECanaMboxes.MBOX15.MDL.word.HI_WORD = user_data.bq_pack.bq_devs[2].temperature2;
-				ECanaMboxes.MBOX15.MDH.word.LOW_WORD = user_data.bq_pack.bq_devs[3].temperature1;
-				ECanaMboxes.MBOX15.MDH.word.HI_WORD = user_data.bq_pack.bq_devs[3].temperature2;
+				ECanaMboxes.MBOX15.MDL.word.LOW_WORD = user_data.bq_pack.bq_devs[1].temperature1.U32;
+				ECanaMboxes.MBOX15.MDL.word.HI_WORD = user_data.bq_pack.bq_devs[1].temperature2.U32;
 			}
 			else//if not init send zeros
 			{
 				ECanaMboxes.MBOX15.MDH.all = 0;
 				ECanaMboxes.MBOX15.MDL.all = 0;
+			}
+			ECanaShadow.CANMC.bit.MBNR = 0;
+			ECanaShadow.CANMC.bit.CDR = 0;
+			ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
+			EDIS;
+			return 1;
+		case Temp3_box:
+			EALLOW;
+			ECanaShadow.CANMC.bit.MBNR = Mbox;
+			ECanaShadow.CANMC.bit.CDR = 1;
+			ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
+			if (user_ops.UserFlags.bit.BIM_init == 1)//if init send data
+			{
+				ECanaMboxes.MBOX16.MDL.word.LOW_WORD = user_data.bq_pack.bq_devs[2].temperature1.U32;
+				ECanaMboxes.MBOX16.MDL.word.HI_WORD = user_data.bq_pack.bq_devs[2].temperature2.U32;
+			}
+			else//if not init send zeros
+			{
+				ECanaMboxes.MBOX16.MDH.all = 0;
+				ECanaMboxes.MBOX16.MDL.all = 0;
+			}
+			ECanaShadow.CANMC.bit.MBNR = 0;
+			ECanaShadow.CANMC.bit.CDR = 0;
+			ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
+			EDIS;
+			return 1;
+		case Temp4_box:
+			EALLOW;
+			ECanaShadow.CANMC.bit.MBNR = Mbox;
+			ECanaShadow.CANMC.bit.CDR = 1;
+			ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
+			if (user_ops.UserFlags.bit.BIM_init == 1)//if init send data
+			{
+				ECanaMboxes.MBOX17.MDL.word.LOW_WORD = user_data.bq_pack.bq_devs[3].temperature1.U32;
+				ECanaMboxes.MBOX17.MDL.word.HI_WORD = user_data.bq_pack.bq_devs[3].temperature2.U32;
+			}
+			else//if not init send zeros
+			{
+				ECanaMboxes.MBOX17.MDH.all = 0;
+				ECanaMboxes.MBOX17.MDL.all = 0;
 			}
 			ECanaShadow.CANMC.bit.MBNR = 0;
 			ECanaShadow.CANMC.bit.CDR = 0;
@@ -295,6 +333,8 @@ void FillCANData()
 	FillCAN(Cell_21_24_box);
 	FillCAN(Temp1_box);
 	FillCAN(Temp2_box);
+	FillCAN(Temp3_box);
+	FillCAN(Temp4_box);
 }
 
 unsigned int Cell_Send(int cell_num)
