@@ -11,6 +11,19 @@ extern stopwatch_struct* SPI_watch;
 extern user_ops_struct ops_temp;
 extern user_data_struct data_temp;
 
+char DRDY()
+{
+	bq_dev_read_status(&data_temp.bq_pack.bq_devs[0]);
+	if (data_temp.bq_pack.bq_devs[0].device_status & 1 == 1)
+		{
+			return 1;
+		}
+	else
+		{
+			return 0;
+		}
+}
+
 void BQ_Setup()
 {
     BQ_SpiGpio();

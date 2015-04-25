@@ -10,6 +10,8 @@
 user_ops_struct ops_temp;
 user_data_struct data_temp;
 stopwatch_struct* BIM_watch;
+stopwatch_struct* cov_watch;
+
 
 char led;
 
@@ -60,8 +62,9 @@ void SensorCovInit()
 	EDIS;
 
 	led = 1;
+	cov_watch = StartStopWatch(100);					//delay for cov
 	BIM_watch = StartStopWatch(100);
-	while(isStopWatchComplete(BIM_watch) != 1);		//delay for microsecond for voltage regulator to start up
+	while(isStopWatchComplete(BIM_watch) != 1);		//delay voltage regulator to start up
 }
 
 
@@ -142,27 +145,31 @@ void SensorCovMeasure()
 				  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address, ADDRESS_CONTROL_REG, 1, DISCARD_CRC, reg_val);
 			  }
 			bq_pack_start_conv();
+			StopWatchRestart(cov_watch);
 			ops_temp.BIM_State = MEASURE;
 		}
 		break;
 	case MEASURE:
-		if (READBQDRDY() == 1)										//wait until data is ready
+		if(isStopWatchComplete(cov_watch) == 1)
 		{
-			update_bq_pack_data(); // update data
-			  for (i=0; i<NUMBER_OF_BQ_DEVICES; i++)
-			  {
-				  bq_dev_read_status(&data_temp.bq_pack.bq_devs[i]);
-				  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address, ALERT_STATUS_REG, 1, DISCARD_CRC,(unsigned char*) &data_temp.bq_pack.bq_devs[i].alert_status);
-				  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address, FAULT_STATUS_REG, 1, DISCARD_CRC,(unsigned char*) &data_temp.bq_pack.bq_devs[i].fault_status);
-				  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address, ADDRESS_CONTROL_REG, 1, DISCARD_CRC, reg_val);
+			if (DRDY() == 1)										//wait until data is ready
+			{
+				update_bq_pack_data(); // update data
+				  for (i=0; i<NUMBER_OF_BQ_DEVICES; i++)
+				  {
+					  bq_dev_read_status(&data_temp.bq_pack.bq_devs[i]);
+					  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address, ALERT_STATUS_REG, 1, DISCARD_CRC,(unsigned char*) &data_temp.bq_pack.bq_devs[i].alert_status);
+					  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address, FAULT_STATUS_REG, 1, DISCARD_CRC,(unsigned char*) &data_temp.bq_pack.bq_devs[i].fault_status);
+					  bq_dev_read_reg(data_temp.bq_pack.bq_devs[i].device_address, ADDRESS_CONTROL_REG, 1, DISCARD_CRC, reg_val);
 
-			  }
-			BMM_Sleep();
-			//BIM_LED_Clear();
-			data_temp.update = 1;									//actually latch data
-			ops_temp.BIM_State = COV;
-			StopWatchRestartSetTime(BIM_watch,BIMUpdatePeriod);
+				  }
+				BMM_Sleep();
+				//BIM_LED_Clear();
+				data_temp.update = 1;									//actually latch data
+				ops_temp.BIM_State = COV;
+				StopWatchRestartSetTime(BIM_watch,BIMUpdatePeriod);
 
+			}
 		}
 		break;
 	default:
