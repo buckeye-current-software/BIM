@@ -176,8 +176,8 @@ typedef struct BQ_PACK
 {
   bq_dev_t bq_devs[NUMBER_OF_BQ_DEVICES];
 
-  long voltage;
-  long std_dev;
+  unsigned long voltage;
+  unsigned short std_dev;
   unsigned short average;
   unsigned short lowest_cell_volts;
   unsigned short lowest_cell_num;

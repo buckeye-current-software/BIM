@@ -18,6 +18,7 @@ typedef struct USER_FLAGS
 	char BIM_init  : 1;
 	char SPI_error: 1;
 	char BQ_error : 4;
+	char Temp_disconnect: 8;
 } user_flags_struct;
 
 

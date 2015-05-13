@@ -61,7 +61,7 @@ void SensorCovInit()
 	GpioDataRegs.GPASET.bit.GPIO5 = 1;
 	EDIS;
 
-	led = 1;
+
 	cov_watch = StartStopWatch(100);					//delay for cov
 	BIM_watch = StartStopWatch(100);
 	while(isStopWatchComplete(BIM_watch) != 1);		//delay voltage regulator to start up

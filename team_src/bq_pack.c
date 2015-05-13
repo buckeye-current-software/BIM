@@ -55,6 +55,7 @@ short bq_pack_address_discovery(void)
   i=NUMBER_OF_BQ_DEVICES; //controls iteration loop
   while (i>0)
   {
+
 	  //*Send BROADCAST_RESET to address 0x00*/
 	  if(bq_dev_write_reg(BROADCAST_ADDR, RESET_REG, BQ76PL536_RESET) == INVALID)
 	  {
@@ -78,6 +79,8 @@ short bq_pack_address_discovery(void)
 	  n=0;  //controls number of discovered devices
 	  while (n<NUMBER_OF_BQ_DEVICES)
 	  {
+		  //set led
+		  bq_dev_write_reg(DISCOVERY_ADDR, IO_CONTROL_REG, IO_CONTROL_VAL);
 		  //*Read DEVICE_STATUS reg at address 0x00*/
 		  if (bq_dev_read_reg(DISCOVERY_ADDR, DEVICE_STATUS_REG, 1, DISCARD_CRC, reg_val) == INVALID)
 		  {
@@ -85,7 +88,8 @@ short bq_pack_address_discovery(void)
 		  }
 
 		  //*Verify if MSB is equal to 0*/
-		  if (reg_val[0] & (1<<7))
+		  int ans = reg_val[0] & (0x80);
+		  if (ans !=0 )
 		  {
 			  n = NUMBER_OF_BQ_DEVICES; //break internal loop
 		  }
@@ -736,12 +740,13 @@ short bq_dev_read_temps(bq_dev_t* this)
 {
   unsigned char data[2];
 
-	#define B 1568.583480 //Ohm
-	#define r_inf 1 //Ohm
+	#define B 3380//Ohm
+  //r_inf = R0 * exp(-B/t0)
+	#define r_inf 0.128645364//Ohm
 	#define r1 1470 // ohm
+	#define r2 1820 // ohm
+
   float R;
-  //T = B/(log(R/r_inf)
-  //R = r1*(1/RTS) - r1
 
   //RTS = (REGMSB × 256 + REGLSB) / 33104
   //Bytes need to be swapped as BQ device supports Big Endian
@@ -753,8 +758,12 @@ short bq_dev_read_temps(bq_dev_t* this)
   }
 
   this->temperature1ratio  = ((float)((data[0] << 8) | data[1]))/33104;
-  R = r1*(1/this->temperature1ratio) - r1;
-  this->temperature1.F32 = B/(log(R/r_inf));
+  R = (r2/this->temperature1ratio) - (r1+r2);
+  if (R == 0)
+  {
+	  ops_temp.UserFlags.bit.Temp_disconnect = ops_temp.UserFlags.bit.Temp_disconnect | (1 << (this->device_address-1*2));
+  }
+  this->temperature1.F32 = B/(log(R/r_inf)) - 273.15;
 
   if(bq_dev_read_reg(this->device_address, TEMPERATURE2_L_REG, 2, DISCARD_CRC,
                  (unsigned char*) &data[0]) == INVALID)
@@ -762,8 +771,12 @@ short bq_dev_read_temps(bq_dev_t* this)
   	return INVALID;
   }
   this->temperature2ratio  = ((float)((data[0] << 8) | data[1]))/33104;
-  R = r1*(1/this->temperature2ratio) - r1;
-  this->temperature1.F32 = B/(log(R/r_inf));
+  R = (r2/this->temperature2ratio) - (r1+r2);
+  if (R == 0)
+  {
+	  ops_temp.UserFlags.bit.Temp_disconnect = ops_temp.UserFlags.bit.Temp_disconnect | (1 << (this->device_address-1*2+1));
+  }
+  this->temperature2.F32 = B/(log(R/r_inf)) - 273.15 ;
  
   return VALID;
 }

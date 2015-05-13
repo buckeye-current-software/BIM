@@ -69,6 +69,7 @@ short spi_write_reg(unsigned char dev_addr,
                     unsigned char reg_addr, 
                     unsigned char data)
 {
+	unsigned char crc = 0;
 	unsigned char package[4];
 	char ret = VALID;
 	short i=0;
@@ -77,7 +78,7 @@ short spi_write_reg(unsigned char dev_addr,
 		package[0] = (dev_addr<<1) | 0x01/*Write*/;
 		package[1] = reg_addr;
 		package[2] = data;
-		package[3] = calculate_crc(package, 3,0);
+		package[3] = calculate_crc(package, 3,crc);
 
 		//Write 1 byte into the selected register
 		SLAVEENCLEAR();
@@ -121,10 +122,11 @@ short spi_read_reg(unsigned char dev_addr,
 	short i=0;
 	if (spi_regs_rw_mask[reg_addr] & READ_ACCESS)
 	{
+		crc = 0;
 		package[0] = (dev_addr<<1)/*Read*/;
 		package[1] = reg_addr;
 		package[2] = elem_num;
-		crc = calculate_crc(package, 3,0);
+		crc = calculate_crc(package, 3,crc);
 
 
 		//Write 1 byte into the selected register
@@ -188,8 +190,8 @@ short spi_read_reg(unsigned char dev_addr,
 				{
 					data_temp.bq_pack.bq_devs[i].crc_error_count++;
 					ops_temp.UserFlags.bit.BQ_error |= 1 << i; //set error flag
-					ret = INVALID;
 				}
+				ret = INVALID;
 			}
 		}
 
@@ -213,7 +215,7 @@ unsigned char calculate_crc(unsigned char* buffer,
                             unsigned char buffer_length,
                             unsigned char crc)
 {
-//  unsigned char crc = 0;
+  //unsigned char crc = 0;
   unsigned short temp = 0;
   unsigned short i;
   for ( i = 0; i < buffer_length; i++)

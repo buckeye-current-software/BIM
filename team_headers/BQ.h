@@ -35,6 +35,6 @@ char DRDY();
 #define 	VALID 					1
 #define 	INVALID					0
 
-#define 	SPI_STOPWATCH_TIME		200
+#define 	SPI_STOPWATCH_TIME		500
 
 #endif /* BQ_H_ */
