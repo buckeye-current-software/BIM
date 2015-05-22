@@ -40,6 +40,7 @@
 #include "spi_bq.h"
 #include "spi.h"
 #include "canfloat.h"
+#include "BIM.h"
 
 extern sys_ops_struct sys_ops;
 extern user_ops_struct user_ops;

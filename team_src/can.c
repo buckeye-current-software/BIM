@@ -33,13 +33,22 @@ void CANSetup()
 	CreateCANMailbox(Cell_1_4_box, 0, 0, 1, 8,Cell_1_4_ID, 0);
 	CreateCANMailbox(Cell_5_8_box, 0, 0, 1, 8,Cell_5_8_ID, 0);
 	CreateCANMailbox(Cell_9_12_box, 0, 0, 1, 8,Cell_9_12_ID, 0);
-	CreateCANMailbox(Cell_13_16_box, 0, 0, 1, 8,Cell_13_16_ID, 0);
-	CreateCANMailbox(Cell_17_20_box, 0, 0, 1, 8,Cell_17_20_ID, 0);
-	CreateCANMailbox(Cell_21_24_box, 0, 0, 1, 8,Cell_21_24_ID, 0);
+
+	if (bim_cell_num > 12)
+	{
+		CreateCANMailbox(Cell_13_16_box, 0, 0, 1, 8,Cell_13_16_ID, 0);
+		CreateCANMailbox(Cell_17_20_box, 0, 0, 1, 8,Cell_17_20_ID, 0);
+		CreateCANMailbox(Cell_21_24_box, 0, 0, 1, 8,Cell_21_24_ID, 0);
+	}
+
 	CreateCANMailbox(Temp1_box, 0, 0, 1, 8,Temp1_ID, 0);
 	CreateCANMailbox(Temp2_box, 0, 0, 1, 8,Temp2_ID, 0);
-	CreateCANMailbox(Temp3_box, 0, 0, 1, 8,Temp3_ID, 0);
-	CreateCANMailbox(Temp4_box, 0, 0, 1, 8,Temp4_ID, 0);
+
+	if (bim_dev_num > 2)
+	{
+		CreateCANMailbox(Temp3_box, 0, 0, 1, 8,Temp3_ID, 0);
+		CreateCANMailbox(Temp4_box, 0, 0, 1, 8,Temp4_ID, 0);
+	}
 
     EDIS;
     FinishCANInit();
@@ -64,9 +73,9 @@ char FillCAN(unsigned int Mbox)
 			if (user_ops.UserFlags.bit.BIM_init == 1)//if init send data
 			{
 				ECanaMboxes.MBOX2.MDL.word.LOW_WORD = user_data.bq_pack.highest_cell_volts;
-				ECanaMboxes.MBOX2.MDL.byte.BYTE1 = user_data.bq_pack.highest_cell_num;
+				ECanaMboxes.MBOX2.MDL.byte.BYTE1 = user_data.bq_pack.highest_cell_num + bim_cell_offset;
 				ECanaMboxes.MBOX2.MDH.word.LOW_WORD = user_data.bq_pack.lowest_cell_volts;
-				ECanaMboxes.MBOX2.MDH.byte.BYTE5 = user_data.bq_pack.lowest_cell_num;
+				ECanaMboxes.MBOX2.MDH.byte.BYTE5 = user_data.bq_pack.lowest_cell_num + bim_cell_offset;
 			}
 			else//if not init send zeros
 			{
@@ -329,13 +338,21 @@ void FillCANData()
 	FillCAN(Cell_1_4_box);
 	FillCAN(Cell_5_8_box);
 	FillCAN(Cell_9_12_box);
-	FillCAN(Cell_13_16_box);
-	FillCAN(Cell_17_20_box);
-	FillCAN(Cell_21_24_box);
+	if (bim_cell_num > 12)
+	{
+		FillCAN(Cell_13_16_box);
+		FillCAN(Cell_17_20_box);
+		FillCAN(Cell_21_24_box);
+	}
+
 	FillCAN(Temp1_box);
 	FillCAN(Temp2_box);
-	FillCAN(Temp3_box);
-	FillCAN(Temp4_box);
+
+	if (bim_dev_num > 2)
+	{
+		FillCAN(Temp3_box);
+		FillCAN(Temp4_box);
+	}
 }
 
 unsigned int Cell_Send(int cell_num)

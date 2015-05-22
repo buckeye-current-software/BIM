@@ -5,6 +5,7 @@
 
 #include "bq_data_flash.h"
 #include "canfloat.h"
+#include "bim.h"
 
 /**
 * @brief  BQ pack signals defines         .                     
