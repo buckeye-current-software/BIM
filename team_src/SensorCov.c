@@ -116,11 +116,6 @@ void SensorCovMeasure()
 	case COV:
 		if (isStopWatchComplete(BIM_watch) == 1)					// if delayed conversion
 		{
-			  for (i=0; i<NUMBER_OF_BQ_DEVICES; i++)
-			  {
-				  bq_dev_read_status(&data_temp.bq_pack.bq_devs[i]);
-
-			  }
 			BMM_Wake();
 			bq_pack_start_conv();
 			StopWatchRestart(cov_watch);

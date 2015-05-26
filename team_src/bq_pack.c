@@ -41,7 +41,7 @@ void BMM_Wake()
 //		DELAY_US(1000);
 //	}
 	bq_dev_write_reg(BROADCAST_ADDR, IO_CONTROL_REG, IO_CONTROL_VAL);
-	DELAY_US(500000);
+	DELAY_US(500);
 
 }
 
