@@ -10,4 +10,5 @@
 	<rts value="libc.a"/>
 	<templateProperties value="id=com.ti.common.project.core.emptyProjectWithMainTemplate,"/>
 	<isTargetManual value="false"/>
+	<origin value="C:/Users/Sean/Documents/Buckeye Current New/CCS Workspace/BIM"/>
 </projectOptions>
