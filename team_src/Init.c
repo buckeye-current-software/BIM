@@ -17,7 +17,7 @@ void Initialize()
 	DataSetup();
 	CANSetup();
 	ClockSetup();
-	StartPowerDownInt();			//start power down interrupt, this will change state to PowerDown if necessary
+	//StartPowerDownInt();			//start power down interrupt, this will change state to PowerDown if necessary
 	StopWatchSetUp(10);
 }
 

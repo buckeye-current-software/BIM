@@ -16,4 +16,8 @@ void PowerDown()
 void UserPowerDown()
 {
 	//todo USER: special user power down
+	SLAVEENSET();
+	DELAY_US(200);
+	BMM_Sleep();
+
 }

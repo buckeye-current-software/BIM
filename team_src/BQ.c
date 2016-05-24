@@ -11,6 +11,19 @@ extern stopwatch_struct* SPI_watch;
 extern user_ops_struct ops_temp;
 extern user_data_struct data_temp;
 
+char DRDY()
+{
+	bq_dev_read_status(&data_temp.bq_pack.bq_devs[0]);
+	if (data_temp.bq_pack.bq_devs[0].device_status & 1 == 1)
+		{
+			return 1;
+		}
+	else
+		{
+			return 0;
+		}
+}
+
 void BQ_Setup()
 {
     BQ_SpiGpio();
@@ -79,7 +92,7 @@ void bq_spi_fifo_init()
    SpibRegs.SPICTL.all=0x0006;       	//// Enable master mode, normal phase,enable talk, and SPI int disabled.
 
    SpibRegs.SPISTS.all=0x0000;
-   SpibRegs.SPIBRR = 127; 				//Baudrate is slow as possible
+   SpibRegs.SPIBRR = 50; 				//Baudrate is slow as possible
   //SpiaRegs.SPIBRR=0x0063;           	// Baud rate
 
    SpibRegs.SPIFFTX.all=0xC021;      	// Enable FIFO's, set TX FIFO level to 1 CHOOSE LEVEL ACCORDING TO APPLICATION

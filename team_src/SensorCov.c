@@ -10,6 +10,8 @@
 user_ops_struct ops_temp;
 user_data_struct data_temp;
 stopwatch_struct* BIM_watch;
+stopwatch_struct* cov_watch;
+
 
 char led;
 
@@ -59,15 +61,18 @@ void SensorCovInit()
 	GpioDataRegs.GPASET.bit.GPIO5 = 1;
 	EDIS;
 
-	led = 1;
+
+	cov_watch = StartStopWatch(100);					//delay for cov
 	BIM_watch = StartStopWatch(100);
-	while(isStopWatchComplete(BIM_watch) != 1);		//delay for microsecond for voltage regulator to start up
+	while(isStopWatchComplete(BIM_watch) != 1);		//delay voltage regulator to start up
 }
 
 
 
 void SensorCovMeasure()
 {
+	int i  = 0;
+	unsigned char reg_val[2];
 
 	SensorCovSystemInit();
 	switch (ops_temp.BIM_State)
@@ -87,6 +92,7 @@ void SensorCovMeasure()
 			StopWatchRestart(BIM_watch);
 			ops_temp.UserFlags.bit.BIM_init = 1;
 		}
+
 		StopWatchRestartSetTime(BIM_watch,1000);	// half second delay
 		break;
 	case INIT_DELAY:
@@ -112,23 +118,34 @@ void SensorCovMeasure()
 		{
 			BMM_Wake();
 			bq_pack_start_conv();
+			StopWatchRestart(cov_watch);
 			ops_temp.BIM_State = MEASURE;
 		}
 		break;
 	case MEASURE:
-		if (READBQDRDY() == 1)										//wait until data is ready
+		if(isStopWatchComplete(cov_watch) == 1)
 		{
-			update_bq_pack_data();									//update data
-			//BMM_Sleep();
-			BIM_LED_Clear();
-			data_temp.update = 1;									//actually latch data
-			ops_temp.BIM_State = COV;
-			StopWatchRestartSetTime(BIM_watch,BIMUpdatePeriod);
+			if (DRDY() == 1)										//wait until data is ready
+			{
+				update_bq_pack_data(); // update data
+				BMM_Sleep();
+				//BIM_LED_Clear();
+				data_temp.update = 1;									//actually latch data
+				ops_temp.BIM_State = COV;
+				StopWatchRestartSetTime(BIM_watch,BIMUpdatePeriod);
 
+			}
 		}
 		break;
 	default:
 		ops_temp.BIM_State = INIT;
+	}
+	if (data_temp.bq_pack.highest_crc > 5)
+	{
+		ops_temp.BIM_State = INIT;
+		data_temp.bq_pack.highest_crc = 0;
+		ops_temp.UserFlags.bit.BIM_init = 0;
+		data_temp.update = 1;
 	}
 
 	PerformSystemChecks();

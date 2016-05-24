@@ -4,6 +4,8 @@
 #define BQ_PACK_H
 
 #include "bq_data_flash.h"
+#include "canfloat.h"
+#include "bim.h"
 
 /**
 * @brief  BQ pack signals defines         .                     
@@ -143,8 +145,8 @@ typedef struct BQ_DEV
 
   unsigned short cell_voltage[MAX_CELLS_NUMBER_IN_BQ];  //[mV]
   
-  unsigned int temperature1; //m C
-  unsigned int temperature2; // m C
+  canfloat temperature1; // C
+  canfloat temperature2; //  C
   float temperature1ratio;
   float temperature2ratio;
 
@@ -175,8 +177,8 @@ typedef struct BQ_PACK
 {
   bq_dev_t bq_devs[NUMBER_OF_BQ_DEVICES];
 
-  long voltage;
-  long std_dev;
+  unsigned long voltage;
+  unsigned short std_dev;
   unsigned short average;
   unsigned short lowest_cell_volts;
   unsigned short lowest_cell_num;

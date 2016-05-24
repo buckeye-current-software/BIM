@@ -15,6 +15,7 @@ unsigned int Send_SPI(unsigned char* a)
 	SpibRegs.SPITXBUF=(*a)<<8;
 	StopWatchRestart(SPI_watch);
 	while((SpibRegs.SPIFFRX.bit.RXFFST !=1) && (isStopWatchComplete(SPI_watch) == 0));
+	//while((SpibRegs.SPIFFRX.bit.RXFFST !=1));
 	SpiaRegs.SPIFFRX.bit.RXFFOVFCLR=1;  // Clear Overflow flag
 	if (isStopWatchComplete(SPI_watch) == 1)
 	{

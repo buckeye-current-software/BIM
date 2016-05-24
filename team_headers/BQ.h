@@ -17,10 +17,11 @@ void BQ_Disable();
 void BQ_SpiGpio();
 void Check_Bal_Button();
 void Flash_Bal_LED();
+char DRDY();
 
 //pin stuff
 //inputs
-#define		READBQDRDY()			GpioDataRegs.GPBDAT.bit.GPIO34
+
 #define		READBALBUTTON()			GpioDataRegs.GPADAT.bit.GPIO27
 //outputs
 #define 	EnableISO()				GpioDataRegs.GPASET.bit.GPIO20 = 1
@@ -34,6 +35,6 @@ void Flash_Bal_LED();
 #define 	VALID 					1
 #define 	INVALID					0
 
-#define 	SPI_STOPWATCH_TIME		200
+#define 	SPI_STOPWATCH_TIME		500
 
 #endif /* BQ_H_ */
