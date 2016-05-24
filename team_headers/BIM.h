@@ -56,11 +56,11 @@
 #define HEARTBEAT_ID 		0x358
 #define Stats1_ID			0x2f2
 #define Stats2_ID			0x2f3
-#define Cell_1_4_ID			0x315
-#define Cell_5_8_ID			0x316
-#define Cell_9_12_ID		0x317
-#define Cell_13_16_ID		0x318
-#define Cell_17_20_ID		0x319
+#define Cell_1_4_ID			0x31b
+#define Cell_5_8_ID			0x31c
+#define Cell_9_12_ID		0x31d
+#define Cell_13_16_ID		0x31e
+#define Cell_17_20_ID		0x31f
 #define Cell_21_24_ID		0x320
 #define Temp1_ID			0x341
 #define Temp2_ID			0x342

@@ -62,10 +62,10 @@
 									<listOptionValue builtIn="false" value="&quot;${CG_TOOL_ROOT}/lib&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${CG_TOOL_ROOT}/include&quot;"/>
 								</option>
-								<option id="com.ti.ccstudio.buildDefinitions.C2000_6.0.linkerID.XML_LINK_INFO.1358589417" superClass="com.ti.ccstudio.buildDefinitions.C2000_6.0.linkerID.XML_LINK_INFO" value="&quot;${ProjName}_linkInfo.xml&quot;" valueType="string"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.C2000_6.0.exeLinker.inputType__CMD_SRCS.206844013" name="Linker Command Files" superClass="com.ti.ccstudio.buildDefinitions.C2000_6.0.exeLinker.inputType__CMD_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.C2000_6.0.exeLinker.inputType__CMD2_SRCS.1295164371" name="Linker Command Files" superClass="com.ti.ccstudio.buildDefinitions.C2000_6.0.exeLinker.inputType__CMD2_SRCS"/>
-								<inputType id="com.ti.ccstudio.buildDefinitions.C2000_6.0.exeLinker.inputType__GEN_CMDS.68363509" name="Generated Linker Command Files" superClass="com.ti.ccstudio.buildDefinitions.C2000_6.0.exeLinker.inputType__GEN_CMDS"/>
+								<option id="com.ti.ccstudio.buildDefinitions.C2000_6.0.linkerID.XML_LINK_INFO.1258239723" superClass="com.ti.ccstudio.buildDefinitions.C2000_6.0.linkerID.XML_LINK_INFO" value="&quot;${ProjName}_linkInfo.xml&quot;" valueType="string"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.C2000_6.0.exeLinker.inputType__CMD_SRCS.526621174" name="Linker Command Files" superClass="com.ti.ccstudio.buildDefinitions.C2000_6.0.exeLinker.inputType__CMD_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.C2000_6.0.exeLinker.inputType__CMD2_SRCS.602319693" name="Linker Command Files" superClass="com.ti.ccstudio.buildDefinitions.C2000_6.0.exeLinker.inputType__CMD2_SRCS"/>
+								<inputType id="com.ti.ccstudio.buildDefinitions.C2000_6.0.exeLinker.inputType__GEN_CMDS.1974732500" name="Generated Linker Command Files" superClass="com.ti.ccstudio.buildDefinitions.C2000_6.0.exeLinker.inputType__GEN_CMDS"/>
 							</tool>
 						</toolChain>
 					</folderInfo>

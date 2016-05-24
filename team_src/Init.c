@@ -18,7 +18,6 @@ void Initialize()
 	CANSetup();
 	ClockSetup();
 	//StartPowerDownInt();			//start power down interrupt, this will change state to PowerDown if necessary
-	PowerDownISRSetup();
 	StopWatchSetUp(10);
 }
 
