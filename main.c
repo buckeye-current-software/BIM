@@ -31,9 +31,6 @@ void NextState(Uint16 MesgID)
 	case STATE_SENSOR_COV:
 		SensorCov();
 		break;
-	case STATE_BOOT:
-		Boot(MesgID);
-		break;
 	case STATE_POWER_DOWN:
 		PowerDown();
 		break;
