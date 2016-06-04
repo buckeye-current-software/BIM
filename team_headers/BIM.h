@@ -8,7 +8,7 @@
 #ifndef BIM_H_
 #define BIM_H_
 
-#define bim_num 			5       // bim number
+#define bim_num 			1       // bim number
 
 
 #if bim_num == 1
@@ -42,7 +42,7 @@
 #define Cell_9_12_ID		0x317
 #define Cell_13_16_ID		0x318
 #define Cell_17_20_ID		0x319
-#define Cell_21_24_ID		0x320
+#define Cell_21_24_ID		0x31a
 #define Temp1_ID			0x33d
 #define Temp2_ID			0x33e
 #define Temp3_ID			0x33f
