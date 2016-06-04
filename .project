@@ -84,17 +84,7 @@
 		<link>
 			<name>DSP2803x_GlobalVariableDefs.obj</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/MCN_Library/Debug/ti_src/DSP2803x_GlobalVariableDefs.obj</locationURI>
-		</link>
-		<link>
-			<name>SharedBoot_template.obj</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/MCN_Library/Debug/template_src/SharedBoot_template.obj</locationURI>
-		</link>
-		<link>
-			<name>boot_template.obj</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/MCN_Library/Debug/template_src/boot_template.obj</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/MCN_Library/Debug/ti_src/DSP2803x_GlobalVariableDefs.obj</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>
