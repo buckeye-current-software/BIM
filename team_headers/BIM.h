@@ -8,7 +8,9 @@
 #ifndef BIM_H_
 #define BIM_H_
 
-#define bim_num 			6      // bim number
+   #define bim_num 			2
+
+// bim number
 
 
 #if bim_num == 1
@@ -16,6 +18,7 @@
 #define bim_cell_num		24		//number of cells
 #define bim_cell_offset		0		//offset of cell numbering for full pack (used min and max cell number)
 #define HEARTBEAT_ID 		0x356
+#define COMMAND_ID 			0x35d
 #define Stats1_ID			0x2ee
 #define Stats2_ID			0x2ef
 #define Cell_1_4_ID			0x30f
@@ -35,6 +38,7 @@
 #define bim_cell_num		22		//number of cells
 #define bim_cell_offset		24		//offset of cell numbering for full pack (used min and max cell number)
 #define HEARTBEAT_ID 		0x357
+#define COMMAND_ID			0x35E
 #define Stats1_ID			0x2f0
 #define Stats2_ID			0x2f1
 #define Cell_1_4_ID			0x315
@@ -54,6 +58,7 @@
 #define bim_cell_num		24		//number of cells
 #define bim_cell_offset		46		//offset of cell numbering for full pack (used min and max cell number)
 #define HEARTBEAT_ID 		0x358
+#define COMMAND_ID			0x35f
 #define Stats1_ID			0x2f2
 #define Stats2_ID			0x2f3
 #define Cell_1_4_ID			0x31b
@@ -72,7 +77,8 @@
 #define bim_dev_num 		4		//number of devices
 #define bim_cell_num		24		//number of cells
 #define bim_cell_offset		70		//offset of cell numbering for full pack (used min and max cell number)
-#define HEARTBEAT_ID 		835
+#define HEARTBEAT_ID 		857
+#define COMMAND_ID			0x360
 #define Stats1_ID			0x2f4
 #define Stats2_ID			0x2f5
 #define Cell_1_4_ID			0x321
@@ -91,7 +97,8 @@
 #define bim_dev_num 		4		//number of devices
 #define bim_cell_num		24		//number of cells
 #define bim_cell_offset		96	//offset of cell numbering for full pack (used min and max cell number)
-#define HEARTBEAT_ID 		836
+#define HEARTBEAT_ID 		858
+#define COMMAND_ID			0x361
 #define Stats1_ID			0x2f6
 #define Stats2_ID			0x2f7
 #define Cell_1_4_ID			0x327
@@ -110,7 +117,8 @@
 #define bim_dev_num 		4		//number of devices
 #define bim_cell_num		16		//number of cells
 #define bim_cell_offset		118	//offset of cell numbering for full pack (used min and max cell number)
-#define HEARTBEAT_ID 		836
+#define HEARTBEAT_ID 		859
+#define COMMAND_ID			0x362
 #define Stats1_ID			0x2f8
 #define Stats2_ID			0x2f9
 #define Cell_1_4_ID			0x32D

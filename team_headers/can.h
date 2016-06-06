@@ -20,7 +20,7 @@ unsigned int Cell_Send(int cell_num);
 //           DEFINE mailboxes for all output except heartbeat and command
 //			 Mailboxes and ID's 0 or 1 are reserved for system use.
 
-
+#define COMMAND_BOX		0
 
 #define HEARTBEAT_BOX 	1
 
