@@ -208,7 +208,19 @@ unsigned char update_bq_pack_data(void)
 
 	  data_temp.bq_pack.bq_devs[i].cell_voltage[4] = 0;
 	  data_temp.bq_pack.bq_devs[i].cell_voltage[5] = 0;
+
+#elif bim_num == 2
+	  if (i == 3)
+	  {
+		  data_temp.bq_pack.bq_devs[i].cell_voltage[3] = data_temp.bq_pack.bq_devs[i].cell_voltage[3] +
+		  			  data_temp.bq_pack.bq_devs[i].cell_voltage[4] +
+		  			  data_temp.bq_pack.bq_devs[i].cell_voltage[5];
+
+		  	  data_temp.bq_pack.bq_devs[i].cell_voltage[4] = 0;
+		  	  data_temp.bq_pack.bq_devs[i].cell_voltage[5] = 0;
+	  }
 #endif
+
 	  //Identify the lowest and highest voltage in the pack
 	  if (i == 0)
 	  {
@@ -224,7 +236,7 @@ unsigned char update_bq_pack_data(void)
 		  highest_crc_num = i;
 	  }
 	  //calculate the pack voltage
-#if bim_num == 6
+#if (bim_num == 6) || (bim_num == 2)
 #define MAX_CELLS_PER_BQ 	(4)
 
 	  for (cell_cnt=0; cell_cnt < MAX_CELLS_PER_BQ; cell_cnt++)
@@ -258,7 +270,7 @@ unsigned char update_bq_pack_data(void)
 	  total_cells++;
 
   }
-  
+
   //*Save BQ Pack voltage*/
   data_temp.bq_pack.voltage = stack_voltage;
   data_temp.bq_pack.average = stack_voltage/(NUMBER_OF_CELLS);
