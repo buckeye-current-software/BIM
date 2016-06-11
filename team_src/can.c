@@ -139,10 +139,17 @@ char FillCAN(unsigned int Mbox)
 			ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
 			if (user_ops.UserFlags.bit.BIM_init == 1)//if init send data
 			{
+#if bim_num == 6
+				ECanaMboxes.MBOX5.MDL.word.LOW_WORD = Cell_Send7);
+				ECanaMboxes.MBOX5.MDL.word.HI_WORD = Cell_Send(8);
+				ECanaMboxes.MBOX5.MDH.word.LOW_WORD = Cell_Send(9);
+				ECanaMboxes.MBOX5.MDH.word.HI_WORD = Cell_Send(10);
+#else
 				ECanaMboxes.MBOX5.MDL.word.LOW_WORD = Cell_Send(5);
 				ECanaMboxes.MBOX5.MDL.word.HI_WORD = Cell_Send(6);
 				ECanaMboxes.MBOX5.MDH.word.LOW_WORD = Cell_Send(7);
 				ECanaMboxes.MBOX5.MDH.word.HI_WORD = Cell_Send(8);
+#endif
 			}
 			else//if not init send zeros
 			{
@@ -161,10 +168,18 @@ char FillCAN(unsigned int Mbox)
 			ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
 			if (user_ops.UserFlags.bit.BIM_init == 1)//if init send data
 			{
+#if bim_num == 6
+				ECanaMboxes.MBOX6.MDL.word.LOW_WORD = Cell_Send(13);
+				ECanaMboxes.MBOX6.MDL.word.HI_WORD = Cell_Send(14);
+				ECanaMboxes.MBOX6.MDH.word.LOW_WORD = Cell_Send(15);
+				ECanaMboxes.MBOX6.MDH.word.HI_WORD = Cell_Send(16);
+
+#else
 				ECanaMboxes.MBOX6.MDL.word.LOW_WORD = Cell_Send(9);
 				ECanaMboxes.MBOX6.MDL.word.HI_WORD = Cell_Send(10);
 				ECanaMboxes.MBOX6.MDH.word.LOW_WORD = Cell_Send(11);
 				ECanaMboxes.MBOX6.MDH.word.HI_WORD = Cell_Send(12);
+#endif
 			}
 			else//if not init send zeros
 			{
@@ -183,10 +198,17 @@ char FillCAN(unsigned int Mbox)
 			ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
 			if (user_ops.UserFlags.bit.BIM_init == 1)//if init send data
 			{
+#if bim_num == 6
+				ECanaMboxes.MBOX7.MDL.word.LOW_WORD = Cell_Send(19);
+				ECanaMboxes.MBOX7.MDL.word.HI_WORD = Cell_Send(20);
+				ECanaMboxes.MBOX7.MDH.word.LOW_WORD = Cell_Send(21);
+				ECanaMboxes.MBOX7.MDH.word.HI_WORD = Cell_Send(22);
+#else
 				ECanaMboxes.MBOX7.MDL.word.LOW_WORD = Cell_Send(13);
 				ECanaMboxes.MBOX7.MDL.word.HI_WORD = Cell_Send(14);
 				ECanaMboxes.MBOX7.MDH.word.LOW_WORD = Cell_Send(15);
 				ECanaMboxes.MBOX7.MDH.word.HI_WORD = Cell_Send(16);
+#endif
 			}
 			else//if not init send zeros
 			{
