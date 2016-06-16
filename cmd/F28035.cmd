@@ -161,14 +161,14 @@ SECTIONS
       will be loaded into other memory (SARAM, Flash, etc.) and will take
       up space, but 0 wait-state is possible.
    */
-   /*
+
    IQmathTables2    : > IQTABLES2, PAGE = 0, TYPE = NOLOAD
    {
 
               IQmath.lib<IQNexpTable.obj> (IQmathTablesRam)
 
    }
-   */
+
     /* Uncomment the section below if calling the IQNasin() or IQasin()
        functions from the IQMath.lib library in order to utilize the
        relevant IQ Math table in Boot ROM (This saves space and Boot ROM

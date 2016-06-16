@@ -1,8 +1,12 @@
 
 #include "all.h"
+#include "EMA_template.h"
   
 extern user_data_struct data_temp;
 extern user_ops_struct ops_temp;
+
+static filter tempFilter1;
+static filter tempFilter2;
 
 /******************************************************************************/
 /*                            Local variables                                 */
@@ -169,6 +173,9 @@ short bq_pack_init(void)
 //		}
 	}
 //	update_bq_pack_data();
+	EMA_Filter_Init(&tempFilter1, 1000000, 100);
+	EMA_Filter_Init(&tempFilter2, 1000000, 100);
+
 	return VALID;
 }
 
@@ -789,7 +796,9 @@ short bq_dev_read_temps(bq_dev_t* this)
   {
 	  ops_temp.UserFlags.bit.Temp_disconnect = ops_temp.UserFlags.bit.Temp_disconnect | (1 << (this->device_address-1*2));
   }
-  this->temperature1.F32 = B/(log(R/r_inf)) - 273.15;
+  float currentTemp = B/(log(R/r_inf)) - 273.15;
+  EMA_Filter_NewInput(&tempFilter1, currentTemp);
+  this->temperature1.F32 = EMA_Filter_GetFilteredOutput(&tempFilter1);
 
   if(bq_dev_read_reg(this->device_address, TEMPERATURE2_L_REG, 2, DISCARD_CRC,
                  (unsigned char*) &data[0]) == INVALID)
@@ -802,7 +811,9 @@ short bq_dev_read_temps(bq_dev_t* this)
   {
 	  ops_temp.UserFlags.bit.Temp_disconnect = ops_temp.UserFlags.bit.Temp_disconnect | (1 << (this->device_address-1*2+1));
   }
-  this->temperature2.F32 = B/(log(R/r_inf)) - 273.15 ;
+  currentTemp = B/(log(R/r_inf)) - 273.15;
+  EMA_Filter_NewInput(&tempFilter2, currentTemp);
+  this->temperature2.F32 = EMA_Filter_GetFilteredOutput(&tempFilter2);
  
   return VALID;
 }

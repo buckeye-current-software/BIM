@@ -84,7 +84,7 @@
 		<link>
 			<name>DSP2803x_GlobalVariableDefs.obj</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/MCN_Library/Debug/ti_src/DSP2803x_GlobalVariableDefs.obj</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/MCN_Library/Debug/ti_src/DSP2803x_GlobalVariableDefs.obj</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>

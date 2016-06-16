@@ -8,7 +8,7 @@
 #ifndef BIM_H_
 #define BIM_H_
 
-   #define bim_num 			2
+   #define bim_num 			1
 
 // bim number
 
